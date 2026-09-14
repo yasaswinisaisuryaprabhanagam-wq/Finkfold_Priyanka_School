@@ -1,0 +1,188 @@
+{
+  "name": "Finkfold - WhatsApp Inbound Reply Loop (Free Plan)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsapp-inbound",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "inbound-node-01",
+      "name": "Meta Inbound Message (POST)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// *** EDIT THIS NODE ***\n// 1. FINKFOLD_CALLBACK_URL:\n//    Production: https://yourdomain.com/api/whatsapp-reply\n//    Local dev:  https://xxxx.ngrok-free.app/api/whatsapp-reply  (use ngrok)\nconst FINKFOLD_CALLBACK_URL = \"PASTE_FINKFOLD_CALLBACK_URL_HERE\";\n\n// 2. FINKFOLD_SECRET: Same value as N8N_ATTENDANCE_WEBHOOK_SECRET in your .env.local\nconst FINKFOLD_SECRET = \"PASTE_YOUR_SECRET_HERE\";\n\nconst item = $input.first().json;\nconst body = item.body || item;\n\n// Extract message from Meta webhook payload\nconst entry = body.entry?.[0];\nconst changes = entry?.changes?.[0];\nconst value = changes?.value;\n\n// Ignore status deliveries (sent, delivered, read receipts)\nconst messages = value?.messages;\nif (!messages || messages.length === 0) {\n  return [];\n}\n\nconst msg = messages[0];\nconst rawFrom = msg.from || \"\";\nconst fromPhone = rawFrom.startsWith(\"+\") ? rawFrom : \"+\" + rawFrom;\nconst metaMessageId = msg.id || null;\n\nlet messageType = \"unknown\";\nlet reasonPayload = null;\nlet messageBody = null;\n\nif (msg.type === \"interactive\") {\n  messageType = \"interactive\";\n  if (msg.interactive?.type === \"button_reply\") {\n    reasonPayload = msg.interactive.button_reply.id;\n    messageBody = msg.interactive.button_reply.title;\n  } else if (msg.interactive?.type === \"list_reply\") {\n    reasonPayload = msg.interactive.list_reply.id;\n    messageBody = msg.interactive.list_reply.title;\n  }\n} else if (msg.type === \"button\") {\n  messageType = \"interactive\";\n  reasonPayload = msg.button?.payload || null;\n  messageBody = msg.button?.text || null;\n} else if (msg.type === \"text\") {\n  messageType = \"text\";\n  messageBody = msg.text?.body || \"\";\n}\n\nreturn [{\n  _url: FINKFOLD_CALLBACK_URL,\n  _secret: FINKFOLD_SECRET,\n  _payload: {\n    parentPhone: fromPhone,\n    messageType: messageType,\n    reasonPayload: reasonPayload,\n    messageBody: messageBody,\n    metaMessageId: metaMessageId\n  }\n}];"
+      },
+      "id": "inbound-node-02",
+      "name": "1. Parse Inbound Message (EDIT ME)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json._url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-finkfold-secret",
+              "value": "={{ $json._secret }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json._payload) }}",
+        "options": {}
+      },
+      "id": "inbound-node-03",
+      "name": "2. Forward to Finkfold API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        720,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const res = $input.first().json;\nreturn [{\n  status: res.success ? \"reconciled\" : \"logged\",\n  matched: res.matched,\n  autoHandled: res.autoHandled,\n  reason: res.reason,\n  message: res.message\n}];"
+      },
+      "id": "inbound-node-04",
+      "name": "3. Absence Loop Log",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "whatsapp-inbound",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "inbound-node-05",
+      "name": "Meta Webhook Verification (GET)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        200,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// *** META WEBHOOK VERIFICATION TOKEN ***\n// In Meta App Dashboard > WhatsApp > Configuration, enter:\n//   Callback URL : https://your-n8n.app/webhook/whatsapp-inbound\n//   Verify Token : finkfold_whatsapp_verify_token\nconst VERIFY_TOKEN = \"finkfold_whatsapp_verify_token\";\n\nconst d = $input.first().json;\nconst query = d.query || {};\nconst token = query[\"hub.verify_token\"];\nconst challenge = query[\"hub.challenge\"];\n\nif (token === VERIFY_TOKEN) {\n  return [{ challenge: challenge || \"OK\" }];\n}\nreturn [{ challenge: \"Verification failed: token mismatch\", status: 403 }];"
+      },
+      "id": "inbound-node-06",
+      "name": "Validate Meta Challenge",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.challenge }}",
+        "options": {}
+      },
+      "id": "inbound-node-07",
+      "name": "Return Challenge to Meta",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        720,
+        520
+      ]
+    }
+  ],
+  "connections": {
+    "Meta Inbound Message (POST)": {
+      "main": [
+        [
+          {
+            "node": "1. Parse Inbound Message (EDIT ME)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1. Parse Inbound Message (EDIT ME)": {
+      "main": [
+        [
+          {
+            "node": "2. Forward to Finkfold API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2. Forward to Finkfold API": {
+      "main": [
+        [
+          {
+            "node": "3. Absence Loop Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Meta Webhook Verification (GET)": {
+      "main": [
+        [
+          {
+            "node": "Validate Meta Challenge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Meta Challenge": {
+      "main": [
+        [
+          {
+            "node": "Return Challenge to Meta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "finkfold-inbound-v1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "finkfold-school-portal"
+  }
+}
