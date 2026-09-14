@@ -88,20 +88,21 @@ function LoginForm() {
         return;
       }
 
-      // Fetch user profile to get role and redirect correctly
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", data.user.id)
-        .maybeSingle();
+      // Fetch user profile to get role and redirect cleanly
+      let role = selectedRole === "teacher" ? "teacher" : selectedRole === "admin" ? "school_admin" : "student";
+      try {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", data.user.id)
+          .maybeSingle();
+        if (profile?.role) role = profile.role;
+      } catch {
+        // Fallback to selected role
+      }
 
-      const role = profile?.role || (selectedRole === "teacher" ? "teacher" : selectedRole === "admin" ? "school_admin" : "student");
       const destination = rolePortalMap[role] || "/portal/faculty";
-
-      startTransition(() => {
-        router.push(destination);
-        router.refresh();
-      });
+      window.location.href = destination;
     } catch (err) {
       setError("An unexpected error occurred. Please try again.");
       setLoading(false);
