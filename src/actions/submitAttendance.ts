@@ -198,9 +198,14 @@ export async function submitAttendance(input: unknown) {
         .in("id", targetStudentIds);
 
       const classLabel = `${classRecord.name}-${classRecord.section}`;
-      const webhookUrl =
+      let webhookUrl = (
         process.env.N8N_ATTENDANCE_WEBHOOK_URL ||
-        "https://finkfold.app.n8n.cloud/webhook/attendance";
+        "https://finkfold.app.n8n.cloud/webhook/attendance"
+      ).trim();
+      // Normalize any test webhook URL to production webhook URL
+      if (webhookUrl.includes("/webhook-test/")) {
+        webhookUrl = webhookUrl.replace("/webhook-test/", "/webhook/");
+      }
       const webhookSecret =
         process.env.N8N_ATTENDANCE_WEBHOOK_SECRET ||
         "finkfold_priyanka_2026";
@@ -264,35 +269,110 @@ export async function submitAttendance(input: unknown) {
               await adminClient
                 .from("whatsapp_notifications")
                 .update({ status: "sent", updated_at: new Date().toISOString() })
-                .eq("session_id", sessionId)
                 .eq("student_id", student.id)
+                .eq("attendance_date", data.date)
                 .eq("event_type", event.eventType);
             } else {
               const errTxt = await res.text().catch(() => "");
-              console.warn(`[submitAttendance] Webhook returned status ${res.status}:`, errTxt);
+              console.warn(`[submitAttendance] n8n Webhook returned status ${res.status}:`, errTxt);
 
-              let note = `HTTP ${res.status}`;
-              if (errTxt.includes("Did you mean to make a GET request")) {
-                note = "n8n webhook node is configured for GET instead of POST";
-                webhookErrorMessage = "n8n Webhook is configured for GET instead of POST. Please change the webhook HTTP Method to POST in n8n Cloud.";
-              } else {
-                webhookErrorMessage = `Webhook error (HTTP ${res.status})`;
+              // ── Bulletproof Failover: Direct Meta WhatsApp Cloud API ────────
+              const metaToken =
+                process.env.META_WHATSAPP_ACCESS_TOKEN ||
+                "EAAVQwyCZCZAL0BSV8hFJdNQ9ZAYZBB2qxfgZAo2Yy9JnS5gVAZBSv4ZC2sYQGNv3nYvnVasLBDidAX7IUelO3AIdy7uLnhno2jEnJAqFIbCF7BWFzeaGdBLZCdnMxRy5NtTTJDbgNwLvrxwfO6McbjOERyXxz9do3ZAT2551dcBxb6L0T20fkEbk5qDTcZBXJgLQZDZD";
+              const metaPhoneId =
+                process.env.META_PHONE_NUMBER_ID ||
+                "1238881155971579";
+
+              let directSuccess = false;
+              let directMsgId: string | null = null;
+
+              if (metaToken && metaPhoneId) {
+                try {
+                  const metaRes = await fetch(
+                    `https://graph.facebook.com/v19.0/${metaPhoneId}/messages`,
+                    {
+                      method: "POST",
+                      headers: {
+                        Authorization: `Bearer ${metaToken}`,
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify({
+                        messaging_product: "whatsapp",
+                        recipient_type: "individual",
+                        to: formattedPhone,
+                        type: "template",
+                        template: {
+                          name: tplName,
+                          language: { code: "en" },
+                          components: [
+                            {
+                              type: "body",
+                              parameters: [
+                                { type: "text", text: parentName },
+                                { type: "text", text: student.full_name },
+                                { type: "text", text: classLabel },
+                                { type: "text", text: data.date },
+                              ],
+                            },
+                          ],
+                        },
+                      }),
+                    }
+                  );
+
+                  if (metaRes.ok) {
+                    const metaData = await metaRes.json();
+                    directMsgId = metaData.messages?.[0]?.id || null;
+                    directSuccess = true;
+                    alertsDispatched++;
+                  } else {
+                    const metaErr = await metaRes.text().catch(() => "");
+                    console.warn("[submitAttendance] Direct Meta fallback returned error:", metaErr);
+                  }
+                } catch (metaErr) {
+                  console.error("[submitAttendance] Direct Meta failover error:", metaErr);
+                }
               }
 
-              await adminClient
-                .from("whatsapp_notifications")
-                .update({
-                  status: "failed",
-                  error_detail: note,
-                  updated_at: new Date().toISOString(),
-                })
-                .eq("session_id", sessionId)
-                .eq("student_id", student.id)
-                .eq("event_type", event.eventType);
+              if (directSuccess) {
+                await adminClient
+                  .from("whatsapp_notifications")
+                  .update({
+                    status: "delivered",
+                    meta_message_id: directMsgId,
+                    error_detail: `Delivered via direct Meta failover (n8n returned HTTP ${res.status})`,
+                    updated_at: new Date().toISOString(),
+                  })
+                  .eq("student_id", student.id)
+                  .eq("attendance_date", data.date)
+                  .eq("event_type", event.eventType);
+              } else {
+                let note = `HTTP ${res.status}`;
+                if (errTxt.includes("Did you mean to make a GET request")) {
+                  note = "n8n webhook node is configured for GET instead of POST";
+                  webhookErrorMessage = "n8n Webhook is configured for GET instead of POST. Please change the webhook HTTP Method to POST in n8n Cloud.";
+                } else if (res.status === 404) {
+                  webhookErrorMessage = "n8n Webhook is currently inactive or not listening. Please toggle the workflow switch to Active in n8n Cloud.";
+                } else {
+                  webhookErrorMessage = `Webhook error (HTTP ${res.status})`;
+                }
+
+                await adminClient
+                  .from("whatsapp_notifications")
+                  .update({
+                    status: "failed",
+                    error_detail: note,
+                    updated_at: new Date().toISOString(),
+                  })
+                  .eq("student_id", student.id)
+                  .eq("attendance_date", data.date)
+                  .eq("event_type", event.eventType);
+              }
             }
           } catch (err) {
-            console.error("Failed to dispatch attendance event to n8n webhook:", err);
-            webhookErrorMessage = "Could not connect to n8n webhook service.";
+            console.error("Failed to dispatch attendance event:", err);
+            webhookErrorMessage = "Could not connect to WhatsApp webhook service.";
           }
         });
 
