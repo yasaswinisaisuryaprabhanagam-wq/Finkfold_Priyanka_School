@@ -4,13 +4,13 @@ import { z } from "zod";
 import { createAdminClient } from "@/lib/supabase/server";
 
 const schema = z.object({
-  classId: z.string().uuid(),
-  schoolId: z.string().uuid(),
+  classId: z.string(),
+  schoolId: z.string(),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  userId: z.string().uuid(),
+  userId: z.string(),
   records: z.array(
     z.object({
-      studentId: z.string().uuid(),
+      studentId: z.string(),
       status: z.enum(["present", "absent"]),
     })
   ),

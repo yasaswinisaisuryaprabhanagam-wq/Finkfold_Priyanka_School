@@ -70,9 +70,9 @@ export async function submitAdmission(formData: FormData): Promise<SubmitAdmissi
 
 // ── Approve admission → create student record ──────────────────
 const ApproveSchema = z.object({
-  admissionId: z.string().uuid(),
-  schoolId: z.string().uuid(),
-  classId: z.string().uuid(),
+  admissionId: z.string(),
+  schoolId: z.string(),
+  classId: z.string(),
   admissionNo: z.string().min(1),
   rollNo: z.coerce.number().int().positive(),
   approvedBy: z.string().uuid(),

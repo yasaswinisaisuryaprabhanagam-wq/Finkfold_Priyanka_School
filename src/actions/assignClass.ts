@@ -5,8 +5,8 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 const AssignSchema = z.object({
-  teacherId: z.string().uuid(),
-  classId: z.string().uuid(),
+  teacherId: z.string(),
+  classId: z.string(),
   subject: z.string().optional(),
   isClassTeacher: z.coerce.boolean().optional().default(false),
   academicYear: z.string().default("2026-2027"),
