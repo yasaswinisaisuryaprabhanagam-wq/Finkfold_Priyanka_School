@@ -4,7 +4,7 @@ A production-ready school portal and website built for **Priyanka EM School**, R
 
 ---
 
-## 🚀 Features
+## 🚀 Featuress
 
 - **Public School Website**:
   - **Home**: Hero section, live WhatsApp parent connectivity preview, academic pillars, key statistics, admissions callout.
