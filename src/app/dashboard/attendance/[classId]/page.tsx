@@ -95,6 +95,40 @@ export default async function AttendancePage({
     day: "numeric",
   });
 
+  // 4. Fetch existing attendance session and records for today (if already taken)
+  let initialRecords: Record<
+    string,
+    { status: "present" | "absent"; reason?: string | null; parent_acknowledged?: boolean | null }
+  > = {};
+
+  try {
+    const { data: existingSession } = await adminClient
+      .from("attendance_sessions")
+      .select("id")
+      .eq("class_id", classId)
+      .eq("attendance_date", today)
+      .maybeSingle();
+
+    if (existingSession) {
+      const { data: recs } = await adminClient
+        .from("attendance_records")
+        .select("student_id, status, reason, parent_acknowledged")
+        .eq("session_id", existingSession.id);
+
+      if (recs) {
+        recs.forEach((r) => {
+          initialRecords[r.student_id] = {
+            status: r.status as "present" | "absent",
+            reason: r.reason,
+            parent_acknowledged: r.parent_acknowledged,
+          };
+        });
+      }
+    }
+  } catch (err) {
+    console.warn("Could not load existing session records:", err);
+  }
+
   return (
     <div className="space-y-6">
       {/* Breadcrumb Navigation */}
@@ -131,7 +165,7 @@ export default async function AttendancePage({
 
         <div className="flex items-center gap-2 self-start sm:self-center">
           <Link
-            href="/dashboard"
+            href="/portal/faculty"
             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-xs font-semibold text-slate-700 transition-colors"
           >
             ← Back to Classes
@@ -146,6 +180,7 @@ export default async function AttendancePage({
         date={today}
         initialStudents={studentsList}
         userId={profile.id}
+        initialRecords={initialRecords}
       />
     </div>
   );

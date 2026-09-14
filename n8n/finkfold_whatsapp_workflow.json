@@ -3,133 +3,19 @@
   "nodes": [
     {
       "parameters": {
-        "httpMethod": "POST",
-        "path": "attendance",
-        "responseMode": "responseNode",
-        "options": {}
-      },
-      "id": "node-01",
-      "name": "Receive from Finkfold",
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 2,
-      "position": [
-        240,
-        300
-      ]
-    },
-    {
-      "parameters": {
-        "jsCode": "// *** EDIT THIS NODE ***\n// Paste same value as N8N_ATTENDANCE_WEBHOOK_SECRET in your Finkfold .env.local\nconst EXPECTED_SECRET = \"PASTE_YOUR_SECRET_HERE\";\n\nconst body = $input.first().json;\nconst headers = body.headers || {};\nconst incoming = headers[\"x-finkfold-secret\"] || headers[\"X-Finkfold-Secret\"] || \"\";\n\nif (EXPECTED_SECRET !== \"PASTE_YOUR_SECRET_HERE\" && incoming !== EXPECTED_SECRET) {\n  throw new Error(\"Unauthorized: invalid x-finkfold-secret\");\n}\nreturn [body.body || body];"
-      },
-      "id": "node-02",
-      "name": "1. Validate Secret (EDIT ME)",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        480,
-        300
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "combinator": "and",
-          "conditions": [
-            {
-              "id": "c1",
-              "leftValue": "={{ $json.is_test }}",
-              "rightValue": true,
-              "operator": {
-                "type": "boolean",
-                "operation": "equals"
-              }
-            }
-          ]
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: true, status: $(\"3. Prepare Callback (EDIT ME)\").first().json._body.status }) }}",
+        "options": {
+          "responseCode": 200
         }
       },
-      "id": "node-03",
-      "name": "Is Test Message?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2,
-      "position": [
-        720,
-        300
-      ]
-    },
-    {
-      "parameters": {
-        "respondWith": "json",
-        "responseBody": "{\"ok\":true,\"mode\":\"test\",\"msg\":\"Test received - no WhatsApp sent\"}",
-        "options": {}
-      },
-      "id": "node-04",
-      "name": "Respond Test OK",
+      "id": "262a8074-f1a9-4186-947c-a864df96824a",
+      "name": "Respond to Finkfold",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        960,
-        160
-      ]
-    },
-    {
-      "parameters": {
-        "jsCode": "// *** EDIT THIS NODE ***\n// WA_PHONE_NUMBER_ID : Meta Business Manager > WhatsApp Manager > API Setup\n// WA_ACCESS_TOKEN    : Meta Business Manager > System Users > Generate Token\nconst WA_PHONE_NUMBER_ID = \"PASTE_PHONE_NUMBER_ID_HERE\";\nconst WA_ACCESS_TOKEN    = \"PASTE_META_ACCESS_TOKEN_HERE\";\n\nconst d = $input.first().json;\nconst tpl = d.event_type === \"absent\" ? \"school_absence_alert_v1\" : \"school_correction_v1\";\n\nreturn [{\n  _url: `https://graph.facebook.com/v19.0/${WA_PHONE_NUMBER_ID}/messages`,\n  _token: WA_ACCESS_TOKEN,\n  _input: d,\n  _payload: JSON.stringify({\n    messaging_product: \"whatsapp\",\n    recipient_type: \"individual\",\n    to: d.parent_phone,\n    type: \"template\",\n    template: {\n      name: tpl,\n      language: { code: \"en\" },\n      components: [{ type: \"body\", parameters: [\n        { type: \"text\", text: d.parent_name || \"Parent\" },\n        { type: \"text\", text: d.student_name },\n        { type: \"text\", text: d.class_label },\n        { type: \"text\", text: d.attendance_date }\n      ]}]\n    }\n  })\n}];"
-      },
-      "id": "node-05",
-      "name": "2. Build Payload (EDIT ME)",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        960,
-        420
-      ]
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "={{ $json._url }}",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Authorization",
-              "value": "={{ \"Bearer \" + $json._token }}"
-            },
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
-        "sendBody": true,
-        "contentType": "raw",
-        "rawContentType": "application/json",
-        "body": "={{ $json._payload }}",
-        "options": {
-          "timeout": 10000
-        }
-      },
-      "id": "node-06",
-      "name": "Send WhatsApp via Meta API",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        1200,
-        420
-      ],
-      "continueOnFail": true
-    },
-    {
-      "parameters": {
-        "jsCode": "// *** EDIT THIS NODE ***\n// CALLBACK_URL examples:\n//   Production : https://yourdomain.com/api/webhook/whatsapp-status\n//   Local dev  : https://xxxx.ngrok.io/api/webhook/whatsapp-status  (use ngrok)\nconst CALLBACK_URL = \"PASTE_FINKFOLD_CALLBACK_URL_HERE\";\n// Same secret as node 1\nconst SECRET = \"PASTE_YOUR_SECRET_HERE\";\n\nconst meta = $input.first().json;\nconst d = $(\"2. Build Payload (EDIT ME)\").first().json._input;\nconst msgId = meta?.messages?.[0]?.id || null;\nconst status = msgId ? \"delivered\" : \"failed\";\n\nreturn [{\n  _callbackUrl: CALLBACK_URL,\n  _secret: SECRET,\n  _body: {\n    school_id: d.school_id,\n    session_id: d.session_id || null,\n    student_id: d.student_id,\n    parent_phone: d.parent_phone,\n    event_type: d.event_type,\n    attendance_date: d.attendance_date,\n    template_name: d.event_type === \"absent\" ? \"school_absence_alert_v1\" : \"school_correction_v1\",\n    status: status,\n    meta_message_id: msgId,\n    is_test: false\n  }\n}];"
-      },
-      "id": "node-07",
-      "name": "3. Prepare Callback (EDIT ME)",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1440,
-        420
+        1328,
+        144
       ]
     },
     {
@@ -157,51 +43,194 @@
           "timeout": 10000
         }
       },
-      "id": "node-08",
+      "id": "f00258ab-acd8-42cd-b6ec-e610fc8beb03",
       "name": "Write Status to Finkfold",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1680,
-        420
+        1088,
+        144
       ],
       "continueOnFail": true
     },
     {
       "parameters": {
-        "respondWith": "json",
-        "responseBody": "={{ JSON.stringify({ ok: true, status: $(\"3. Prepare Callback (EDIT ME)\").first().json._body.status }) }}",
+        "jsCode": "// *** EDIT THIS NODE ***\n// CALLBACK_URL examples:\n//   Production : https://yourdomain.com/api/webhook/whatsapp-status\n//   Local dev  : https://xxxx.ngrok-free.app/api/webhook/whatsapp-status  (use ngrok)\nconst CALLBACK_URL = \"https://finkfold-priyanka-school.vercel.app/api/webhook/whatsapp-status\";\n// Same secret as node 1\nconst SECRET = \"finkfold_priyanka_2026\";\n\nconst meta = $input.first().json;\nconst d = $(\"2. Build Payload (EDIT ME)\").first().json._input;\nconst msgId = meta?.messages?.[0]?.id || null;\nconst status = msgId ? \"delivered\" : \"failed\";\n\nreturn [{\n  _callbackUrl: CALLBACK_URL,\n  _secret: SECRET,\n  _body: {\n    school_id: d.school_id,\n    session_id: d.session_id || null,\n    student_id: d.student_id,\n    parent_phone: d.parent_phone,\n    event_type: d.event_type,\n    attendance_date: d.attendance_date,\n    template_name: d.event_type === \"absent\" ? \"school_absence_alert_v1\" : \"school_correction_v1\",\n    status: status,\n    meta_message_id: msgId,\n    is_test: false\n  }\n}];"
+      },
+      "id": "4a86b7b3-43b0-42a9-862f-9475a5256fec",
+      "name": "3. Prepare Callback (EDIT ME)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        848,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json._url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ \"Bearer \" + $json._token }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ $json._payload }}",
         "options": {
-          "responseCode": 200
+          "timeout": 10000
         }
       },
-      "id": "node-09",
-      "name": "Respond to Finkfold",
+      "id": "c47c3e73-eca0-4bc4-ab8d-087241676959",
+      "name": "Send WhatsApp via Meta API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        608,
+        144
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// *** EDIT THIS NODE ***\n// WA_PHONE_NUMBER_ID : Meta Business Manager > WhatsApp Manager > API Setup\n// WA_ACCESS_TOKEN    : Meta Business Manager > System Users > Generate Token\nconst WA_PHONE_NUMBER_ID = \"1238881155971579\";\nconst WA_ACCESS_TOKEN    = \"EAAVQwyCZCZAL0BSXkBTo8HabR5LHhxZAEG3vhGyGuYIcCpdtQZCSvl5rkoLbmlAFqyZAeaiO9zHA6QaqtAqqMsVNbu8WEGXZBfmsGGwess3UAIklXwCyotZB0K2dL9ZCg0XZBZACw4ZBOyPQOVZBUpSLbWs8cIydXtlW2v6UzjYk63jPv0i8BN7SH8zqdI331k05BQZDZD\";\n\nconst d = $input.first().json;\nconst tpl = d.event_type === \"absent\" ? \"school_absence_alert_v1\" : \"school_correction_v1\";\n\nreturn [{\n  _url: `https://graph.facebook.com/v19.0/${WA_PHONE_NUMBER_ID}/messages`,\n  _token: WA_ACCESS_TOKEN,\n  _input: d,\n  _payload: JSON.stringify({\n    messaging_product: \"whatsapp\",\n    recipient_type: \"individual\",\n    to: d.parent_phone,\n    type: \"template\",\n    template: {\n      name: tpl,\n      language: { code: \"en\" },\n      components: [{ type: \"body\", parameters: [\n        { type: \"text\", text: d.parent_name || \"Parent\" },\n        { type: \"text\", text: d.student_name },\n        { type: \"text\", text: d.class_label },\n        { type: \"text\", text: d.attendance_date }\n      ]}]\n    }\n  })\n}];"
+      },
+      "id": "8aae451b-4d03-46af-9827-b8f44f6a8f0d",
+      "name": "2. Build Payload (EDIT ME)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        368,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\"ok\":true,\"mode\":\"test\",\"msg\":\"Test received - no WhatsApp sent\"}",
+        "options": {}
+      },
+      "id": "f07383e6-4ee9-4a91-9050-effe9bc14587",
+      "name": "Respond Test OK",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        1920,
-        420
+        368,
+        -128
       ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.is_test }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          }
+        },
+        "options": {}
+      },
+      "id": "d117a5f0-2d78-4742-8e8f-afba91a60763",
+      "name": "Is Test Message?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        128,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// *** EDIT THIS NODE ***\n// Paste same value as N8N_ATTENDANCE_WEBHOOK_SECRET in your Finkfold .env.local\nconst EXPECTED_SECRET = \"finkfold_priyanka_2026\";\n\nconst body = $input.first().json;\nconst headers = body.headers || {};\nconst incoming = headers[\"x-finkfold-secret\"] || headers[\"X-Finkfold-Secret\"] || \"\";\n\nif (EXPECTED_SECRET !== \"finkfold_priyanka_2026\" && incoming !== EXPECTED_SECRET) {\n  throw new Error(\"Unauthorized: invalid x-finkfold-secret\");\n}\nreturn [body.body || body];"
+      },
+      "id": "947bc7f5-67b7-45ac-902c-4376543c15a9",
+      "name": "1. Validate Secret (EDIT ME)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -112,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "path": "attendance",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "c4408612-5703-4775-be45-aca870221836",
+      "name": "Receive from Finkfold",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -352,
+        16
+      ],
+      "webhookId": "40176910-6c5f-494e-8014-b97486d2460e"
     }
   ],
   "connections": {
-    "Receive from Finkfold": {
+    "Write Status to Finkfold": {
       "main": [
         [
           {
-            "node": "1. Validate Secret (EDIT ME)",
+            "node": "Respond to Finkfold",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "1. Validate Secret (EDIT ME)": {
+    "3. Prepare Callback (EDIT ME)": {
       "main": [
         [
           {
-            "node": "Is Test Message?",
+            "node": "Write Status to Finkfold",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send WhatsApp via Meta API": {
+      "main": [
+        [
+          {
+            "node": "3. Prepare Callback (EDIT ME)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2. Build Payload (EDIT ME)": {
+      "main": [
+        [
+          {
+            "node": "Send WhatsApp via Meta API",
             "type": "main",
             "index": 0
           }
@@ -226,44 +255,22 @@
         ]
       ]
     },
-    "2. Build Payload (EDIT ME)": {
+    "1. Validate Secret (EDIT ME)": {
       "main": [
         [
           {
-            "node": "Send WhatsApp via Meta API",
+            "node": "Is Test Message?",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Send WhatsApp via Meta API": {
+    "Receive from Finkfold": {
       "main": [
         [
           {
-            "node": "3. Prepare Callback (EDIT ME)",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "3. Prepare Callback (EDIT ME)": {
-      "main": [
-        [
-          {
-            "node": "Write Status to Finkfold",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Write Status to Finkfold": {
-      "main": [
-        [
-          {
-            "node": "Respond to Finkfold",
+            "node": "1. Validate Secret (EDIT ME)",
             "type": "main",
             "index": 0
           }
@@ -272,19 +279,7 @@
     }
   },
   "pinData": {},
-  "settings": {
-    "executionOrder": "v1",
-    "saveManualExecutions": true
-  },
-  "staticData": null,
-  "tags": [
-    {
-      "name": "finkfold"
-    },
-    {
-      "name": "whatsapp"
-    }
-  ],
-  "triggerCount": 1,
-  "versionId": "finkfold-whatsapp-v2-free"
+  "meta": {
+    "instanceId": "a55bc3735e5e144902011188bb2c1643472b0daafdfb9f278687e96d860b810e"
+  }
 }

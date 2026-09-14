@@ -29,10 +29,22 @@ export default async function FacultyPortalLayout({
 
   const profile = userProfile;
 
+  // Query unhandled parent replies for notification bubble
+  let unhandledReplies = 0;
+  try {
+    const { createAdminClient } = await import("@/lib/supabase/server");
+    const admin = await createAdminClient();
+    const { count } = await admin
+      .from("parent_reply_log")
+      .select("id", { count: "exact", head: true })
+      .eq("handled", false);
+    unhandledReplies = count || 0;
+  } catch {}
+
   const navItems = [
     { href: "/portal/faculty",          label: "My Classes",        icon: "📋", exact: true },
     { href: "/portal/faculty/schedule", label: "Teaching Schedule", icon: "🗓️" },
-    { href: "/portal/faculty/messages", label: "Parent Messages",   icon: "💬" },
+    { href: "/portal/faculty/messages", label: "Parent Messages",   icon: "💬", badge: unhandledReplies > 0 ? unhandledReplies : undefined },
     { href: "/portal/faculty/students", label: "Student Roster",    icon: "👥" },
     { href: "/portal/faculty/settings", label: "Account Settings",  icon: "⚙️" },
   ];
@@ -78,9 +90,16 @@ export default async function FacultyPortalLayout({
         {/* Navigation — TEACHER ONLY links */}
         <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
           {navItems.map((item) => (
-            <Link key={item.href} href={item.href} className="sidebar-nav-item">
-              <span className="text-base w-5 flex-shrink-0 text-center">{item.icon}</span>
-              <span>{item.label}</span>
+            <Link key={item.href} href={item.href} className="sidebar-nav-item flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <span className="text-base w-5 flex-shrink-0 text-center">{item.icon}</span>
+                <span>{item.label}</span>
+              </div>
+              {item.badge && (
+                <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-500 text-white shadow-2xs">
+                  {item.badge}
+                </span>
+              )}
             </Link>
           ))}
         </nav>

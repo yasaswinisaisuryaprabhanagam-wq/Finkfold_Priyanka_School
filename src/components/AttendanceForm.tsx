@@ -17,12 +17,17 @@ export default function AttendanceForm({
   date,
   initialStudents,
   userId,
+  initialRecords = {},
 }: {
   classId: string;
   schoolId: string;
   date: string;
   initialStudents: Student[];
   userId: string;
+  initialRecords?: Record<
+    string,
+    { status: "present" | "absent"; reason?: string | null; parent_acknowledged?: boolean | null }
+  >;
 }) {
   const [students, setStudents] = useState<
     {
@@ -32,16 +37,23 @@ export default function AttendanceForm({
       parent_phone: string | null;
       consent_whatsapp: boolean;
       status: "present" | "absent";
+      reason?: string | null;
+      parent_acknowledged?: boolean | null;
     }[]
   >(
-    initialStudents.map((s) => ({
-      id: s.id,
-      full_name: s.full_name,
-      roll_no: s.roll_no,
-      parent_phone: s.parent_phone,
-      consent_whatsapp: s.consent_whatsapp,
-      status: "present", // Default to present for quick roll call
-    }))
+    initialStudents.map((s) => {
+      const rec = initialRecords[s.id];
+      return {
+        id: s.id,
+        full_name: s.full_name,
+        roll_no: s.roll_no,
+        parent_phone: s.parent_phone,
+        consent_whatsapp: s.consent_whatsapp,
+        status: rec ? rec.status : "present",
+        reason: rec?.reason || null,
+        parent_acknowledged: rec?.parent_acknowledged || false,
+      };
+    })
   );
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -202,8 +214,18 @@ export default function AttendanceForm({
                       <div className="text-sm font-semibold text-slate-900">
                         {s.full_name}
                       </div>
-                      <div className="flex flex-wrap items-center gap-2 mt-0.5">
-                        {s.consent_whatsapp && s.parent_phone ? (
+                      <div className="flex flex-wrap items-center gap-2 mt-1">
+                        {!isPresent ? (
+                          s.parent_acknowledged ? (
+                            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-800 bg-emerald-100/80 border border-emerald-300 px-2 py-0.5 rounded-md shadow-2xs">
+                              <span>✓</span> Acknowledged by Parent: <strong className="text-emerald-950">{s.reason || "Sick Leave"}</strong>
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md">
+                              <span>⏳</span> Absence alert dispatched · Awaiting WhatsApp reply
+                            </span>
+                          )
+                        ) : s.consent_whatsapp && s.parent_phone ? (
                           <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">
                             <span>💬</span> WhatsApp Alert Active ({s.parent_phone})
                           </span>
