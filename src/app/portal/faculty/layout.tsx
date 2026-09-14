@@ -3,7 +3,6 @@ import { getProfile } from "@/lib/auth";
 import { SCHOOL } from "@/lib/school-config";
 import SignOutButton from "@/components/SignOutButton";
 import { redirect } from "next/navigation";
-import { createAdminClient } from "@/lib/supabase/server";
 
 export default async function FacultyPortalLayout({
   children,
@@ -30,26 +29,10 @@ export default async function FacultyPortalLayout({
 
   const profile = userProfile;
 
-  // Fetch unhandled parent replies count for notification badge
-  let unhandledCount = 0;
-  try {
-    const adminClient = await createAdminClient();
-    const { count } = await adminClient
-      .from("parent_reply_log")
-      .select("*", { count: "exact", head: true })
-      .eq("handled", false);
-    unhandledCount = count || 0;
-  } catch {}
-
   const navItems = [
     { href: "/portal/faculty",          label: "My Classes",        icon: "📋", exact: true },
     { href: "/portal/faculty/schedule", label: "Teaching Schedule", icon: "🗓️" },
-    {
-      href: "/portal/faculty/messages",
-      label: "Parent Messages",
-      icon: "💬",
-      badge: unhandledCount > 0 ? unhandledCount : undefined,
-    },
+    { href: "/portal/faculty/messages", label: "Parent Messages",   icon: "💬" },
     { href: "/portal/faculty/students", label: "Student Roster",    icon: "👥" },
     { href: "/portal/faculty/settings", label: "Account Settings",  icon: "⚙️" },
   ];
@@ -95,20 +78,9 @@ export default async function FacultyPortalLayout({
         {/* Navigation — TEACHER ONLY links */}
         <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
           {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="sidebar-nav-item flex items-center justify-between"
-            >
-              <div className="flex items-center gap-2.5">
-                <span className="text-base w-5 flex-shrink-0 text-center">{item.icon}</span>
-                <span>{item.label}</span>
-              </div>
-              {item.badge && (
-                <span className="px-1.5 py-0.5 text-[10px] font-bold bg-rose-500 text-white rounded-full leading-none">
-                  {item.badge}
-                </span>
-              )}
+            <Link key={item.href} href={item.href} className="sidebar-nav-item">
+              <span className="text-base w-5 flex-shrink-0 text-center">{item.icon}</span>
+              <span>{item.label}</span>
             </Link>
           ))}
         </nav>

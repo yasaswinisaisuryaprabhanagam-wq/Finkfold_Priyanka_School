@@ -2,7 +2,6 @@
 
 import { createAdminClient } from "@/lib/supabase/server";
 import { getProfile } from "@/lib/auth";
-import { revalidatePath } from "next/cache";
 
 /**
  * Mark a parent reply as handled (acknowledged by teacher).
@@ -31,8 +30,6 @@ export async function acknowledgeParentReply(replyId: string): Promise<{
     return { success: false, message: error.message };
   }
 
-  revalidatePath("/portal/faculty/messages");
-  revalidatePath("/portal/faculty");
   return { success: true, message: "Reply acknowledged." };
 }
 
@@ -86,7 +83,5 @@ export async function acknowledgeWithReason(
     })
     .eq("id", replyId);
 
-  revalidatePath("/portal/faculty/messages");
-  revalidatePath("/portal/faculty");
   return { success: true, message: `Reason set to "${reason}" and acknowledged.` };
 }

@@ -228,20 +228,8 @@ N8N_ATTENDANCE_WEBHOOK_SECRET=your-strong-secret-key`}</pre>
         <div className="p-5 space-y-4">
           {[
             {
-              name: "absence_alert_interactive_v1",
-              event: "absent (interactive 2-way)",
-              badge: "badge-purple",
-              body: "Dear *{{1}}*, your child *{{2}}* was marked *absent* from Class *{{3}}* on *{{4}}*.\n\nPlease select the reason below to notify the school instantly:",
-              params: ["Parent Name", "Student Name", "Class-Section", "Date"],
-              buttons: [
-                { label: "Sick Leave", payload: "REASON_SICK" },
-                { label: "Family Event", payload: "REASON_FAMILY" },
-                { label: "Other", payload: "REASON_OTHER" },
-              ],
-            },
-            {
               name: "school_absence_alert_v1",
-              event: "absent (plain text)",
+              event: "absent",
               badge: "badge-amber",
               body: "Dear *{{1}}*, your child *{{2}}* was marked *absent* from Class *{{3}}* on *{{4}}*. Please contact the school if this is incorrect.\n\n— Priyanka EM School",
               params: ["Parent Name", "Student Name", "Class-Section", "Date"],
@@ -265,16 +253,6 @@ N8N_ATTENDANCE_WEBHOOK_SECRET=your-strong-secret-key`}</pre>
               <div className="p-4">
                 <div className="bg-[#dcf8c6] rounded-xl p-3 text-xs text-slate-700 font-sans whitespace-pre-wrap mb-3 max-w-xs border border-slate-200">
                   {t.body.replace(/\*\*\*?/g, "").replace(/\{\{(\d+)\}\}/g, (_, n) => `[${t.params[parseInt(n)-1]}]`)}
-                  {t.buttons && (
-                    <div className="mt-3 pt-2 border-t border-slate-300/60 space-y-1.5">
-                      <div className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">Quick Reply Buttons:</div>
-                      {t.buttons.map((b) => (
-                        <div key={b.payload} className="bg-white/90 rounded-lg py-1.5 px-3 text-center font-semibold text-brand-600 border border-slate-200 shadow-2xs text-xs">
-                          {b.label} <span className="text-[9px] font-mono text-slate-400">({b.payload})</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {t.params.map((p, i) => (
@@ -361,17 +339,13 @@ N8N_ATTENDANCE_WEBHOOK_SECRET=your-strong-secret-key`}</pre>
         </h2>
         <div className="flex flex-col gap-0 max-w-lg mx-auto">
           {[
-            { icon: "👩‍🏫", label: "1. Teacher marks attendance", sub: "Faculty portal → Submit" },
-            { icon: "⚡", label: "2. submitAttendance() fires", sub: "Server Action detects absent students" },
-            { icon: "🔗", label: "3. POST → n8n Webhook", sub: `N8N_ATTENDANCE_WEBHOOK_URL`, mono: true },
-            { icon: "🤖", label: "4. n8n processes workflow", sub: "Validates secret, builds interactive payload" },
-            { icon: "📱", label: "5. Meta WhatsApp Cloud API", sub: "Delivers Quick Reply buttons to parent" },
-            { icon: "↩️", label: "6. n8n writes status back", sub: `POST ${statusCallbackUrl}`, mono: true },
-            { icon: "📊", label: "7. Audit Log updated", sub: "Admin WhatsApp audit shows delivered/failed" },
-            { icon: "🔘", label: "8. Parent taps Quick Reply button", sub: "Sick Leave, Family Event, or custom text" },
-            { icon: "📥", label: "9. Meta delivers reply to n8n", sub: "finkfold_whatsapp_inbound.json workflow triggers" },
-            { icon: "🎯", label: "10. Inbound Reconciler updates DB", sub: "POST /api/whatsapp-reply tags attendance reason", mono: true },
-            { icon: "💬", label: "11. Faculty Inbox synchronized", sub: "Auto-resolved with zero teacher friction" },
+            { icon: "👩‍🏫", label: "Teacher marks attendance", sub: "Faculty portal → Submit" },
+            { icon: "⚡", label: "submitAttendance() fires", sub: "Server Action detects absent students" },
+            { icon: "🔗", label: "POST → n8n Webhook", sub: `N8N_ATTENDANCE_WEBHOOK_URL`, mono: true },
+            { icon: "🤖", label: "n8n processes workflow", sub: "Validates secret, skips duplicates" },
+            { icon: "📱", label: "Meta WhatsApp Cloud API", sub: "Sends template message to parent" },
+            { icon: "↩️", label: "n8n writes status back", sub: `POST ${statusCallbackUrl}`, mono: true },
+            { icon: "📊", label: "Audit Log updated", sub: "WhatsApp page shows delivered/failed" },
           ].map((step, i, arr) => (
             <div key={i} className="flex items-start gap-3">
               <div className="flex flex-col items-center flex-shrink-0">
