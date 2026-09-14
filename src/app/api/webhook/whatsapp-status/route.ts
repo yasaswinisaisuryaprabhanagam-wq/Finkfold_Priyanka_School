@@ -75,32 +75,29 @@ export async function POST(req: NextRequest) {
           template_name,
           status,
           meta_message_id,
+          updated_at: new Date().toISOString(),
         },
         {
-          onConflict: "session_id,student_id",
-          ignoreDuplicates: false, // update existing row with new status
+          onConflict: "student_id,attendance_date,event_type",
+          ignoreDuplicates: false,
         }
       );
 
     if (upsertErr) {
-      // Fallback: plain insert (in case unique constraint not set up)
-      const { error: insertErr } = await adminClient
+      console.warn("[whatsapp-status] Upsert failed, attempting targeted update:", upsertErr.message);
+      const { error: updateErr } = await adminClient
         .from("whatsapp_notifications")
-        .insert({
-          school_id,
-          session_id: session_id || null,
-          student_id,
-          parent_phone,
-          event_type,
-          attendance_date,
-          template_name,
+        .update({
           status,
           meta_message_id,
-        });
+          updated_at: new Date().toISOString(),
+        })
+        .eq("student_id", student_id)
+        .eq("attendance_date", attendance_date)
+        .eq("event_type", event_type);
 
-      if (insertErr) {
-        console.error("[whatsapp-status] DB write failed:", insertErr.message);
-        return NextResponse.json({ error: insertErr.message }, { status: 500 });
+      if (updateErr) {
+        console.error("[whatsapp-status] DB write failed:", updateErr.message);
       }
     }
 
