@@ -164,7 +164,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// *** EDIT THIS NODE ***\n// Paste same value as N8N_ATTENDANCE_WEBHOOK_SECRET in your Finkfold .env.local\nconst EXPECTED_SECRET = \"finkfold_priyanka_2026\";\n\nconst body = $input.first().json;\nconst headers = body.headers || {};\nconst incoming = headers[\"x-finkfold-secret\"] || headers[\"X-Finkfold-Secret\"] || \"\";\n\nif (EXPECTED_SECRET !== \"finkfold_priyanka_2026\" && incoming !== EXPECTED_SECRET) {\n  throw new Error(\"Unauthorized: invalid x-finkfold-secret\");\n}\nreturn [body.body || body];"
+        "jsCode": "// *** EDIT THIS NODE ***\n// Paste same value as N8N_ATTENDANCE_WEBHOOK_SECRET in your Finkfold .env.local\nconst EXPECTED_SECRET = \"finkfold_priyanka_2026\";\n\nconst raw = $input.first().json;\nconst headers = raw.headers || {};\nconst incoming = headers[\"x-finkfold-secret\"] || headers[\"X-Finkfold-Secret\"] || \"\";\n\nif (EXPECTED_SECRET !== \"finkfold_priyanka_2026\" && incoming !== EXPECTED_SECRET) {\n  throw new Error(\"Unauthorized: invalid x-finkfold-secret\");\n}\n\nconst payload = (raw.body && Object.keys(raw.body).length > 0)\n  ? raw.body\n  : (raw.query && Object.keys(raw.query).length > 0 ? raw.query : raw);\n\nreturn [payload];"
       },
       "id": "947bc7f5-67b7-45ac-902c-4376543c15a9",
       "name": "1. Validate Secret (EDIT ME)",
@@ -177,6 +177,7 @@
     },
     {
       "parameters": {
+        "httpMethod": "POST",
         "path": "attendance",
         "responseMode": "responseNode",
         "options": {}

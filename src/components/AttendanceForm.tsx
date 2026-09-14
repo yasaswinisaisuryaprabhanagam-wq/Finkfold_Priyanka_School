@@ -309,11 +309,23 @@ export default function AttendanceForm({
               <span>{result.message}</span>
             </div>
             {result.success && result.absentCount !== undefined && (
-              <p className="mt-1 text-xs text-emerald-800">
+              <p className="mt-1 text-xs text-slate-700">
                 Marked {result.absentCount} student(s) absent.{" "}
-                {result.alertsDispatched !== undefined && result.alertsDispatched > 0
-                  ? `Triggered ${result.alertsDispatched} automated WhatsApp notification(s) to parents via n8n.`
-                  : "No automated WhatsApp alerts required."}
+                {result.absentCount > 0 ? (
+                  result.alertsDispatched !== undefined && result.alertsDispatched > 0 ? (
+                    <span className="font-semibold text-emerald-800">
+                      ⚡ Successfully dispatched {result.alertsDispatched} WhatsApp alert(s) to parent(s).
+                    </span>
+                  ) : (
+                    <span className="text-amber-800 font-medium">
+                      (Absence recorded in database. WhatsApp webhook pending/retrying.)
+                    </span>
+                  )
+                ) : (
+                  <span className="text-emerald-700 font-medium">
+                    All students marked present.
+                  </span>
+                )}
               </p>
             )}
           </div>

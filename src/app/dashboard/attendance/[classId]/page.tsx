@@ -11,15 +11,9 @@ export default async function AttendancePage({
   params: Promise<{ classId: string }>;
 }) {
   const { classId } = await params;
-  let profile = await getProfile();
+  const profile = await getProfile();
   if (!profile) {
-    profile = {
-      id: "preview-faculty-id",
-      school_id: SCHOOL.id,
-      full_name: "Kiran Sir (Faculty)",
-      role: "teacher" as const,
-      phone: null,
-    };
+    redirect("/login");
   }
 
   const { createAdminClient } = await import("@/lib/supabase/server");

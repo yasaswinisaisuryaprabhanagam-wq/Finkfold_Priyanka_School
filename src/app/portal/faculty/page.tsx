@@ -30,10 +30,23 @@ export default async function FacultyPortalPage() {
   } catch {}
 
   if (teacherClassesList.length === 0) {
-    teacherClassesList = [
-      { class_id: "c10a2026-1701-4cc0-9c59-8812324eb396", subject: "Mathematics", is_class_teacher: true, classes: { id: "c10a2026-1701-4cc0-9c59-8812324eb396", name: "10", section: "A", academic_year: "2026-2027" } },
-      { class_id: "c09a2026-1701-4cc0-9c59-8812324eb396", subject: "Mathematics", is_class_teacher: false, classes: { id: "c09a2026-1701-4cc0-9c59-8812324eb396", name: "9", section: "A", academic_year: "2026-2027" } },
-    ];
+    try {
+      const { data: schoolClasses } = await adminClient
+        .from("classes")
+        .select("id, name, section, academic_year")
+        .eq("school_id", profile.school_id)
+        .order("name", { ascending: true })
+        .limit(6);
+
+      if (schoolClasses && schoolClasses.length > 0) {
+        teacherClassesList = schoolClasses.map((c: any) => ({
+          class_id: c.id,
+          subject: "General",
+          is_class_teacher: false,
+          classes: c,
+        }));
+      }
+    } catch {}
   }
 
   // -- Today's marked classes --
