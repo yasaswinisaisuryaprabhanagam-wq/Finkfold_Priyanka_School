@@ -219,7 +219,7 @@ export async function submitAttendance(input: unknown) {
 
           const formattedPhone = normalizePhoneNumber(student.parent_phone);
           const parentName = student.parent_name || `Parent of ${student.full_name}`;
-          const tplName = event.eventType === "absent" ? "school_absence_alert_v1" : "school_correction_v1";
+          const tplName = "finkfold_priyanka";
 
           // Log in whatsapp_notifications table in Supabase
           try {
@@ -261,10 +261,30 @@ export async function submitAttendance(input: unknown) {
                 attendance_date: data.date,
                 parent_phone: formattedPhone,
                 parent_name: parentName,
+                template_name: tplName,
               }),
             });
 
+            let n8nSuccess = false;
+            let n8nErrDetail = "";
+
             if (res.ok) {
+              try {
+                const n8nJson = await res.json();
+                if (n8nJson && n8nJson.status === "failed") {
+                  n8nSuccess = false;
+                  n8nErrDetail = "n8n reported delivery failure";
+                } else {
+                  n8nSuccess = true;
+                }
+              } catch {
+                n8nSuccess = true;
+              }
+            } else {
+              n8nErrDetail = await res.text().catch(() => `HTTP ${res.status}`);
+            }
+
+            if (n8nSuccess) {
               alertsDispatched++;
               await adminClient
                 .from("whatsapp_notifications")
@@ -273,8 +293,7 @@ export async function submitAttendance(input: unknown) {
                 .eq("attendance_date", data.date)
                 .eq("event_type", event.eventType);
             } else {
-              const errTxt = await res.text().catch(() => "");
-              console.warn(`[submitAttendance] n8n Webhook returned status ${res.status}:`, errTxt);
+              console.warn(`[submitAttendance] n8n delivery unsuccessful (${n8nErrDetail}), engaging direct Meta failover...`);
 
               // ── Bulletproof Failover: Direct Meta WhatsApp Cloud API ────────
               const metaToken =
@@ -282,7 +301,7 @@ export async function submitAttendance(input: unknown) {
                 "EAAVQwyCZCZAL0BSV8hFJdNQ9ZAYZBB2qxfgZAo2Yy9JnS5gVAZBSv4ZC2sYQGNv3nYvnVasLBDidAX7IUelO3AIdy7uLnhno2jEnJAqFIbCF7BWFzeaGdBLZCdnMxRy5NtTTJDbgNwLvrxwfO6McbjOERyXxz9do3ZAT2551dcBxb6L0T20fkEbk5qDTcZBXJgLQZDZD";
               const metaPhoneId =
                 process.env.META_PHONE_NUMBER_ID ||
-                "1238881155971579";
+                "1144602028740736";
 
               let directSuccess = false;
               let directMsgId: string | null = null;
@@ -303,15 +322,13 @@ export async function submitAttendance(input: unknown) {
                         to: formattedPhone,
                         type: "template",
                         template: {
-                          name: tplName,
+                          name: "finkfold_priyanka",
                           language: { code: "en" },
                           components: [
                             {
                               type: "body",
                               parameters: [
-                                { type: "text", text: parentName },
                                 { type: "text", text: student.full_name },
-                                { type: "text", text: classLabel },
                                 { type: "text", text: data.date },
                               ],
                             },
@@ -341,21 +358,21 @@ export async function submitAttendance(input: unknown) {
                   .update({
                     status: "delivered",
                     meta_message_id: directMsgId,
-                    error_detail: `Delivered via direct Meta failover (n8n returned HTTP ${res.status})`,
+                    error_detail: `Delivered via direct Meta failover (${n8nErrDetail || `HTTP ${res.status}`})`,
                     updated_at: new Date().toISOString(),
                   })
                   .eq("student_id", student.id)
                   .eq("attendance_date", data.date)
                   .eq("event_type", event.eventType);
               } else {
-                let note = `HTTP ${res.status}`;
-                if (errTxt.includes("Did you mean to make a GET request")) {
+                let note = n8nErrDetail || `HTTP ${res.status}`;
+                if (note.includes("Did you mean to make a GET request")) {
                   note = "n8n webhook node is configured for GET instead of POST";
                   webhookErrorMessage = "n8n Webhook is configured for GET instead of POST. Please change the webhook HTTP Method to POST in n8n Cloud.";
                 } else if (res.status === 404) {
                   webhookErrorMessage = "n8n Webhook is currently inactive or not listening. Please toggle the workflow switch to Active in n8n Cloud.";
                 } else {
-                  webhookErrorMessage = `Webhook error (HTTP ${res.status})`;
+                  webhookErrorMessage = `Webhook error (${note})`;
                 }
 
                 await adminClient
