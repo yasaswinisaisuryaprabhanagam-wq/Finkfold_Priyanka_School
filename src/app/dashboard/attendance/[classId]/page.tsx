@@ -95,13 +95,15 @@ export default async function AttendancePage({
     { status: "present" | "absent"; reason?: string | null; parent_acknowledged?: boolean | null }
   > = {};
 
+  let existingSession: any = null;
   try {
-    const { data: existingSession } = await adminClient
+    const res = await adminClient
       .from("attendance_sessions")
       .select("id")
       .eq("class_id", classId)
       .eq("attendance_date", today)
       .maybeSingle();
+    existingSession = res.data;
 
     if (existingSession) {
       const { data: recs } = await adminClient
@@ -141,9 +143,11 @@ export default async function AttendancePage({
       {/* Class Session Header Banner */}
       <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2.5 mb-1.5">
-            <span className="text-xs font-bold text-blue-900 bg-blue-50 px-2.5 py-0.5 rounded-md">
-              Session Active
+          <div className="flex items-center gap-2.5 mb-1.5 flex-wrap">
+            <span className={`text-xs font-bold px-2.5 py-0.5 rounded-md ${
+              existingSession ? "bg-emerald-100 text-emerald-800" : "bg-blue-50 text-blue-900"
+            }`}>
+              {existingSession ? "✓ Completed for Today" : "Session Pending"}
             </span>
             <span className="text-xs text-slate-400">
               Academic Year {classData.academic_year}
@@ -154,6 +158,9 @@ export default async function AttendancePage({
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
             Roll Call for: <span className="font-semibold text-slate-800">{todayFormatted}</span> ({today})
+            {existingSession && (
+              <span className="ml-2 font-medium text-emerald-700">&middot; Attendance Recorded</span>
+            )}
           </p>
         </div>
 

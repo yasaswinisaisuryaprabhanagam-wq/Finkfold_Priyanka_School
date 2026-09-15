@@ -198,10 +198,10 @@ export default async function AdminPortalPage() {
                 </div>
                 <div className="flex items-center gap-3">
                   <span className={`badge ${cls.isTodayMarked ? "badge-green" : "badge-amber"}`}>
-                    {cls.isTodayMarked ? "Marked" : "Pending"}
+                    {cls.isTodayMarked ? "✓ Completed" : "Pending"}
                   </span>
                   <Link href={`/dashboard/attendance/${cls.id}`} className="btn btn-ghost btn-sm">
-                    Mark &rarr;
+                    {cls.isTodayMarked ? "Edit / View →" : "Mark →"}
                   </Link>
                 </div>
               </div>

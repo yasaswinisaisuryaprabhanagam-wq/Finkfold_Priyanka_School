@@ -81,13 +81,18 @@ export async function addTeacher(formData: FormData): Promise<AddTeacherResult> 
   if (profileErr) {
     // Rollback: delete the auth user since profile creation failed
     await adminClient.auth.admin.deleteUser(userId);
-    let msg = profileErr.message;
-    if (msg.includes("employee_code") || profileErr.code === "23505") {
-      msg = `A staff member with Employee Code "${employee_code}" already exists. Please provide a unique Employee Code.`;
-    } else if (msg.includes("phone")) {
-      msg = `A staff member with Phone Number "${phone}" is already registered. Please check the staff directory.`;
+    const msg = (profileErr.message || "").toLowerCase();
+    const details = (profileErr.details || "").toLowerCase();
+    let userMsg = profileErr.message;
+
+    if (msg.includes("employee_code") || details.includes("employee_code")) {
+      userMsg = `A staff member with Employee Code "${employee_code}" already exists. Please provide a unique Employee Code.`;
+    } else if (msg.includes("phone") || details.includes("phone")) {
+      userMsg = `A staff member with Phone Number "${phone}" is already registered. Please provide a different phone number.`;
+    } else if (profileErr.code === "23505") {
+      userMsg = `Duplicate entry: A record with this information already exists (${profileErr.details || profileErr.message}).`;
     }
-    return { success: false, error: msg };
+    return { success: false, error: userMsg };
   }
 
   revalidatePath("/portal/admin/staff");

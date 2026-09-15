@@ -161,7 +161,7 @@ export default async function FacultyPortalPage() {
                       </div>
                     </div>
                     {isTodayMarked ? (
-                      <span className="badge badge-green">Done</span>
+                      <span className="badge badge-green">✓ Completed</span>
                     ) : (
                       <span className="badge badge-amber">Pending</span>
                     )}
@@ -169,10 +169,10 @@ export default async function FacultyPortalPage() {
 
                   <Link
                     href={`/dashboard/attendance/${classId}`}
-                    className="btn btn-primary w-full"
+                    className={`btn w-full ${isTodayMarked ? "btn-secondary text-emerald-800 border-emerald-300 hover:bg-emerald-50" : "btn-primary"}`}
                     style={{ justifyContent: "center" }}
                   >
-                    {isTodayMarked ? "View Today's Roll" : "Mark Roll Call"}
+                    {isTodayMarked ? "✓ Completed — View / Edit Roll" : "Mark Roll Call →"}
                   </Link>
                 </div>
               );
