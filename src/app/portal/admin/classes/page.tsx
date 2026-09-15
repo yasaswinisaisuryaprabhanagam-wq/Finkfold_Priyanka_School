@@ -5,7 +5,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export const metadata = {
-  title: `Class Management " ${SCHOOL.name}`,
+  title: `Class Management · ${SCHOOL.name}`,
 };
 
 export default async function AdminClassesPage() {
@@ -97,7 +97,7 @@ export default async function AdminClassesPage() {
             Admin Control Panel &middot; {SCHOOL.name}
           </div>
           <h1 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>
-             Class Management
+            🏫 Class Management
           </h1>
           <p className="text-white/60 text-sm">{classes.length} active classes &middot; {pendingCount} pending roll call today</p>
         </div>
@@ -131,7 +131,7 @@ export default async function AdminClassesPage() {
             <div className="flex items-start justify-between">
               <div>
                 <div className="text-xs font-bold text-purple-900 bg-purple-50 px-2.5 py-1 rounded-md inline-block mb-2">
-                  Class {cls.name} " Sec {cls.section}
+                  Class {cls.name} &middot; Sec {cls.section}
                 </div>
                 <div className="text-lg font-bold text-slate-900" style={{ fontFamily: "Outfit, sans-serif" }}>
                   Class {cls.name} (Section {cls.section})
@@ -139,7 +139,7 @@ export default async function AdminClassesPage() {
                 <div className="text-xs text-slate-500 mt-0.5">AY {cls.academic_year}</div>
               </div>
               {cls.todayMarked ? (
-                <span className="badge badge-green">âœ" Marked</span>
+                <span className="badge badge-green">✓ Marked</span>
               ) : (
                 <span className="badge badge-amber">Pending</span>
               )}
@@ -167,10 +167,12 @@ export default async function AdminClassesPage() {
                 {cls.todayMarked ? "View Roll" : "Mark Roll"}
               </Link>
               <Link
-                href={`/portal/admin/students`}
-                className="btn btn-ghost px-3"
+                href="/portal/admin/students"
+                className="btn btn-ghost px-3 border border-slate-200 text-xs font-semibold text-slate-700 flex items-center gap-1.5 hover:bg-slate-100 transition-colors"
+                title="View Students"
               >
-                
+                <span>👥</span>
+                <span>Students</span>
               </Link>
             </div>
           </div>

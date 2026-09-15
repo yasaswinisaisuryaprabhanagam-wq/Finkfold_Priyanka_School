@@ -5,7 +5,7 @@ import AllocationGrid from "./AllocationGrid";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-export const metadata = { title: `Class Allocations "“ ${SCHOOL.name}` };
+export const metadata = { title: `Class Allocations · ${SCHOOL.name}` };
 
 export default async function AllocationPage() {
   const profile = await getProfile();
@@ -48,18 +48,6 @@ export default async function AllocationPage() {
     allocations = data || [];
   } catch {}
 
-  // Fallback
-  if (teachers.length === 0) {
-    teachers = [
-      { id: "t1", full_name: "Kiran Sir", role: "teacher" },
-      { id: "t2", full_name: "Priya Ma'am", role: "teacher" },
-    ];
-    classes = [
-      { id: "c1a00000-0000-0000-0000-000000000001", name: "10", section: "A", academic_year: "2026-2027" },
-      { id: "c9a00000-0000-0000-0000-000000000003", name: "9", section: "A", academic_year: "2026-2027" },
-    ];
-  }
-
   return (
     <div className="space-y-6">
       <div className="rounded-2xl text-white p-6 overflow-hidden"
@@ -69,7 +57,7 @@ export default async function AllocationPage() {
             Admin Control Panel &middot; {SCHOOL.name}
           </div>
           <h1 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>
-             Class Allocation Grid
+            📋 Class Allocation Grid
           </h1>
           <p className="text-white/60 text-sm">Assign or remove classes from teachers – changes take effect immediately</p>
         </div>
@@ -77,9 +65,9 @@ export default async function AllocationPage() {
 
       <div className="flex items-center gap-2 text-xs text-slate-500">
         <Link href="/portal/admin" className="hover:text-blue-700">Dashboard</Link>
-        <span>"º</span>
+        <span>›</span>
         <Link href="/portal/admin/staff" className="hover:text-blue-700">Staff</Link>
-        <span>"º</span>
+        <span>›</span>
         <span className="font-semibold text-slate-800">Allocations</span>
       </div>
 

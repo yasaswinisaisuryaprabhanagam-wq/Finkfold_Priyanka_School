@@ -5,7 +5,7 @@ import AddTeacherClient from "./AddTeacherClient";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-export const metadata = { title: `Add Staff Member "“ ${SCHOOL.name}` };
+export const metadata = { title: `Add Staff Member · ${SCHOOL.name}` };
 
 export default async function AddTeacherPage() {
   const profile = await getProfile();
@@ -36,7 +36,7 @@ export default async function AddTeacherPage() {
             Admin Control Panel &middot; {SCHOOL.name}
           </div>
           <h1 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>
-            âž• Add New Staff Member
+            ➕ Add New Staff Member
           </h1>
           <p className="text-white/60 text-sm">
             Creates a login account + teacher profile in one step
@@ -47,15 +47,15 @@ export default async function AddTeacherPage() {
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-xs text-slate-500">
         <Link href="/portal/admin" className="hover:text-blue-700">Dashboard</Link>
-        <span>"º</span>
+        <span>›</span>
         <Link href="/portal/admin/staff" className="hover:text-blue-700">Staff</Link>
-        <span>"º</span>
+        <span>›</span>
         <span className="font-semibold text-slate-800">Add Member</span>
       </div>
 
       {/* Info card */}
       <div className="card p-4 text-sm text-slate-600 space-y-2">
-        <div className="font-bold text-slate-800"> How login is created:</div>
+        <div className="font-bold text-slate-800">🔑 How login is created:</div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {[
             { n: "1", t: "Fill this form", d: "Enter teacher's name, email, and set an initial password" },

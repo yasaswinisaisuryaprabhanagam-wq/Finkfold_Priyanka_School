@@ -24,7 +24,7 @@ export default function AboutPage() {
               About {SCHOOL.name}
             </h1>
             <p className="text-slate-300 text-base sm:text-lg max-w-3xl leading-relaxed">
-              Serving the Rasapūdipalem community with quality English-medium education, strong ethical discipline, and open digital partnership with parents.
+              Serving the Nellore community with quality English-medium education, strong ethical discipline, and open digital partnership with parents.
             </p>
           </div>
         </section>

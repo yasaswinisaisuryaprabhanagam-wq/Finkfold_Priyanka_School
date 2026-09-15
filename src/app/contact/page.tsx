@@ -34,7 +34,7 @@ export default function ContactPage() {
               Contact & Campus Visit
             </h1>
             <p className="text-slate-300 text-base sm:text-lg max-w-3xl leading-relaxed">
-              We welcome questions from prospective parents, current families, and community members. Visit our campus in Rasapūdipalem or send us a message below.
+              We welcome questions from prospective parents, current families, and community members. Visit our campus in Nellore or send us a message below.
             </p>
           </div>
         </section>
@@ -209,7 +209,7 @@ export default function ContactPage() {
                       disabled={loading}
                       className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3 rounded-xl bg-blue-900 text-sm font-semibold text-white hover:bg-blue-800 disabled:opacity-50 transition-all active:scale-98 shadow-sm"
                     >
-                      {loading ? "Sending..." : "Submit Inquiry &rarr;"}
+                      {loading ? "Sending..." : "Submit Inquiry →"}
                     </button>
                   </form>
                 )}

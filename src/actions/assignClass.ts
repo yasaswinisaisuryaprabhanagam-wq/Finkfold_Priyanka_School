@@ -8,7 +8,9 @@ const AssignSchema = z.object({
   teacherId: z.string(),
   classId: z.string(),
   subject: z.string().optional(),
-  isClassTeacher: z.coerce.boolean().optional().default(false),
+  isClassTeacher: z
+    .preprocess((val) => val === true || val === "true" || val === "1", z.boolean())
+    .default(false),
   academicYear: z.string().default("2026-2027"),
   action: z.enum(["assign", "remove"]),
 });

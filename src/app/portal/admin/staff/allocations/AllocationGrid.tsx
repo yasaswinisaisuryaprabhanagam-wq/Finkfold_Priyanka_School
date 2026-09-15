@@ -28,11 +28,13 @@ export default function AllocationGrid({
   const [classTeachers, setClassTeachers] = useState<Set<string>>(initialClassTeacher);
   const [loading, setLoading] = useState<string | null>(null);
   const [saved, setSaved] = useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   async function toggle(teacherId: string, classId: string) {
     const key = `${teacherId}|${classId}`;
     const isCurrentlyAssigned = assigned.has(key);
     setLoading(key);
+    setErrorMsg(null);
 
     const fd = new FormData();
     fd.append("teacherId", teacherId);
@@ -56,6 +58,8 @@ export default function AllocationGrid({
       setAssigned(next);
       setSaved(key);
       setTimeout(() => setSaved(null), 1500);
+    } else {
+      setErrorMsg(res.error || "Failed to update allocation. Please try again.");
     }
     setLoading(null);
   }
@@ -79,12 +83,31 @@ export default function AllocationGrid({
       if (isClassTeacher) ct.delete(key);
       else ct.add(key);
       setClassTeachers(ct);
+    } else {
+      setErrorMsg(res.error || "Failed to update Class Teacher status.");
     }
     setLoading(null);
   }
 
   return (
-    <div className="card overflow-auto">
+    <div className="space-y-3">
+      {errorMsg && (
+        <div className="rounded-xl p-3 bg-rose-50 border border-rose-200 text-xs text-rose-800 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span>⚠️</span>
+            <span className="font-semibold">{errorMsg}</span>
+          </div>
+          <button
+            onClick={() => setErrorMsg(null)}
+            type="button"
+            className="text-rose-500 hover:text-rose-800 font-bold ml-2 text-sm"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
+      <div className="card overflow-auto">
       <table className="min-w-max w-full text-xs border-collapse">
         <thead>
           <tr className="bg-slate-50">
@@ -174,6 +197,7 @@ export default function AllocationGrid({
           <span>Not assigned</span>
         </div>
         <span className="ml-auto text-blue-700 font-semibold">Changes save automatically ✓</span>
+      </div>
       </div>
     </div>
   );

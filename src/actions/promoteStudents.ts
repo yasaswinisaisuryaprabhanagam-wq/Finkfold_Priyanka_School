@@ -5,12 +5,12 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 const Schema = z.object({
-  schoolId: z.string().uuid(),
-  fromClassId: z.string().uuid(),
-  toClassId: z.string().uuid(),
+  schoolId: z.string(),
+  fromClassId: z.string(),
+  toClassId: z.string(),
   academicYearFrom: z.string(),
   academicYearTo: z.string(),
-  promotedBy: z.string().uuid(),
+  promotedBy: z.string().optional(),
   notes: z.string().optional(),
 });
 
@@ -27,7 +27,7 @@ export async function promoteStudents(formData: FormData): Promise<PromoteResult
     toClassId: formData.get("toClassId"),
     academicYearFrom: formData.get("academicYearFrom"),
     academicYearTo: formData.get("academicYearTo"),
-    promotedBy: formData.get("promotedBy"),
+    promotedBy: formData.get("promotedBy") || undefined,
     notes: formData.get("notes") || undefined,
   });
 
@@ -35,7 +35,15 @@ export async function promoteStudents(formData: FormData): Promise<PromoteResult
     return { success: false, error: parsed.error.issues[0].message };
   }
 
-  const { schoolId, fromClassId, toClassId, academicYearFrom, academicYearTo, promotedBy, notes } = parsed.data;
+  const { schoolId, fromClassId, toClassId, academicYearFrom, academicYearTo, notes } = parsed.data;
+  let promotedBy = parsed.data.promotedBy;
+
+  if (!promotedBy) {
+    const { createClient } = await import("@/lib/supabase/server");
+    const userClient = await createClient();
+    const { data: { user } } = await userClient.auth.getUser();
+    promotedBy = user?.id || undefined;
+  }
 
   // Handle "passed_out" — students who graduate leave school
   const passingOut = toClassId === "passed_out";

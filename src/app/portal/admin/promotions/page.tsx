@@ -5,7 +5,20 @@ import Link from "next/link";
 import PromoteClassButton from "./PromoteClassButton";
 import { redirect } from "next/navigation";
 
-export const metadata = { title: `Year-End Promotions " ${SCHOOL.name}` };
+export const metadata = { title: `Year-End Promotions · ${SCHOOL.name}` };
+
+function getNextGrade(currentGrade: string): string | null {
+  const g = currentGrade.trim().toLowerCase();
+  if (g === "play" || g === "playschool") return "LKG";
+  if (g === "lkg") return "UKG";
+  if (g === "ukg") return "1";
+  const num = parseInt(currentGrade);
+  if (!isNaN(num)) {
+    if (num >= 10) return "passed_out";
+    return String(num + 1);
+  }
+  return null;
+}
 
 export default async function PromotionsPage() {
   const profile = await getProfile();
@@ -53,31 +66,36 @@ export default async function PromotionsPage() {
     recentPromotions = data || [];
   } catch {}
 
-  // Fallback
-  if (classes.length === 0) {
-    classes = [
-      { id: "c1a00000-0000-0000-0000-000000000001", name: "10", section: "A", academic_year: "2026-2027" },
-      { id: "c9a00000-0000-0000-0000-000000000003", name: "9",  section: "A", academic_year: "2026-2027" },
-      { id: "c8a00000-0000-0000-0000-000000000005", name: "8",  section: "A", academic_year: "2026-2027" },
-    ];
-    studentCounts.set("c1a00000-0000-0000-0000-000000000001", 5);
-    studentCounts.set("c9a00000-0000-0000-0000-000000000003", 3);
-    studentCounts.set("c8a00000-0000-0000-0000-000000000005", 4);
-  }
-
   // Build "promote to" options for each class
-  // Class 10 &rarr; Passed Out, all others &rarr; next class (name+1)
-  const classNameToId = new Map(classes.map((c) => [`${c.name}-${c.section}`, c.id]));
+  const classNameToId = new Map(classes.map((c) => [`${c.name.trim()}-${c.section.trim()}`, c.id]));
 
   const classRows = classes.map((cls) => {
-    const nextName = String(parseInt(cls.name) + 1);
-    const nextId = classNameToId.get(`${nextName}-${cls.section}`) || null;
-    const isTopClass = parseInt(cls.name) >= 10; // customize for your school
+    const nextGrade = getNextGrade(cls.name);
+    const isTopClass = nextGrade === "passed_out";
+
+    let nextId: string | null = null;
+    let nextClassLabel = "";
+
+    if (isTopClass) {
+      nextId = "passed_out";
+      nextClassLabel = "Passed Out / Graduated";
+    } else if (nextGrade) {
+      nextId = classNameToId.get(`${nextGrade}-${cls.section}`) || classNameToId.get(`${nextGrade}-A`) || null;
+      if (nextId) {
+        const target = classes.find((c) => c.id === nextId);
+        nextClassLabel = target ? `Class ${target.name}-${target.section}` : `Class ${nextGrade}`;
+      } else {
+        nextClassLabel = `Class ${nextGrade}`;
+      }
+    } else {
+      nextClassLabel = "No next class found";
+    }
+
     return {
       ...cls,
       studentCount: studentCounts.get(cls.id) || 0,
-      promoteTo: isTopClass ? "passed_out" : nextId,
-      promoteToLabel: isTopClass ? "Passed Out / Graduated" : nextId ? `Class ${nextName}-${cls.section}` : "No next class found",
+      promoteTo: nextId,
+      promoteToLabel: nextClassLabel,
     };
   });
 
@@ -97,7 +115,7 @@ export default async function PromotionsPage() {
             Admin Control Panel &middot; {SCHOOL.name}
           </div>
           <h1 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>
-             Year-End Promotions
+            🎓 Year-End Promotions
           </h1>
           <p className="text-white/60 text-sm">
             Promote all students to next class &middot; {SCHOOL.academicYear} &rarr; {nextAcYear}
@@ -141,7 +159,7 @@ export default async function PromotionsPage() {
               {classRows.map((cls) => (
                 <tr key={cls.id}>
                   <td>
-                    <span className="font-black text-slate-900">Class {cls.name} " Section {cls.section}</span>
+                    <span className="font-black text-slate-900">Class {cls.name} &middot; Section {cls.section}</span>
                     <div className="text-[11px] text-slate-400">{cls.academic_year}</div>
                   </td>
                   <td>
@@ -154,11 +172,11 @@ export default async function PromotionsPage() {
                   </td>
                   <td>
                     {cls.promoteTo === "passed_out" ? (
-                      <span className="badge badge-amber"> Passed Out / Graduated</span>
+                      <span className="badge badge-amber">🎓 Passed Out / Graduated</span>
                     ) : cls.promoteTo ? (
-                      <span className="badge badge-blue">&rarr; {cls.promoteToLabel}</span>
+                      <span className="badge badge-blue">→ {cls.promoteToLabel}</span>
                     ) : (
-                      <span className="text-xs text-rose-600">(!) {cls.promoteToLabel}</span>
+                      <span className="text-xs text-rose-600">⚠️ {cls.promoteToLabel}</span>
                     )}
                   </td>
                   <td>

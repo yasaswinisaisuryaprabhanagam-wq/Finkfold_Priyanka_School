@@ -6,13 +6,14 @@ export const SCHOOL = {
   primaryColor: "#123B6D",
   accentColor: "#F59E0B",
   logoUrl: "/logo.png",
-  address: "Rasapūdipalem, Andhra Pradesh, India",
+  address: "Fathekhan Pet Main Road, Santhi Nagar, Nellore - 524003, Andhra Pradesh",
+  code: "28192500843",
   phone: "+91 9440266743",
   supportPhone: "7090476291", // Meta WhatsApp number
   email: "info@priyankaem.school",
   admissionsEmail: "admissions@priyankaem.school",
   academicYear: "2026-2027",
-  affiliation: "English Medium • State Board Recognized",
+  affiliation: "English Medium • State Board Recognized • Code: 28192500843",
   workingHours: "Mon – Sat: 8:30 AM – 4:00 PM",
   navLinks: [
     { label: "Home", href: "/" },

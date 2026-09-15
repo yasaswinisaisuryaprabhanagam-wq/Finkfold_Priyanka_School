@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     default: `${SCHOOL.name} – Official Website & Attendance Portal`,
     template: `%s | ${SCHOOL.name}`,
   },
-  description: `Official website and attendance portal of ${SCHOOL.name}, Rasapūdipalem, Andhra Pradesh. Empowering students through quality education and active parent communication.`,
+  description: `Official website and attendance portal of ${SCHOOL.name}, Nellore, Andhra Pradesh. Empowering students through quality education and active parent communication.`,
   icons: {
     icon: "/logo.png",
     apple: "/logo.png",

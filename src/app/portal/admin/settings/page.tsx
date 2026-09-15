@@ -65,6 +65,7 @@ export default async function AdminSettingsPage() {
         <div className="space-y-3">
           {[
             { label: "School Name",     value: SCHOOL.name },
+            { label: "School Code",     value: SCHOOL.code },
             { label: "Address",         value: SCHOOL.address },
             { label: "Phone",           value: SCHOOL.phone },
             { label: "Email",           value: SCHOOL.email },

@@ -51,9 +51,17 @@ export async function addTeacher(formData: FormData): Promise<AddTeacherResult> 
   });
 
   if (authErr || !authData?.user) {
+    let msg = authErr?.message || "Failed to create auth account";
+    if (
+      msg.toLowerCase().includes("already registered") ||
+      msg.toLowerCase().includes("already exists") ||
+      msg.toLowerCase().includes("user with this email")
+    ) {
+      msg = "A staff member with this email address already exists. Please use a different email or update their existing account.";
+    }
     return {
       success: false,
-      error: authErr?.message || "Failed to create auth account",
+      error: msg,
     };
   }
 
@@ -73,7 +81,13 @@ export async function addTeacher(formData: FormData): Promise<AddTeacherResult> 
   if (profileErr) {
     // Rollback: delete the auth user since profile creation failed
     await adminClient.auth.admin.deleteUser(userId);
-    return { success: false, error: profileErr.message };
+    let msg = profileErr.message;
+    if (msg.includes("employee_code") || profileErr.code === "23505") {
+      msg = `A staff member with Employee Code "${employee_code}" already exists. Please provide a unique Employee Code.`;
+    } else if (msg.includes("phone")) {
+      msg = `A staff member with Phone Number "${phone}" is already registered. Please check the staff directory.`;
+    }
+    return { success: false, error: msg };
   }
 
   revalidatePath("/portal/admin/staff");

@@ -33,6 +33,9 @@ export async function getProfile() {
     .maybeSingle();
 
   if (profile) {
+    if (profile.school_id !== SCHOOL.id && profile.school_id === "b30d9655-1701-4cc0-9c59-8812324eb396") {
+      profile.school_id = SCHOOL.id;
+    }
     // If the profile is a teacher, verify they have at least one class assigned
     if (profile.role === "teacher") {
       const { data: existingAssignment } = await adminClient

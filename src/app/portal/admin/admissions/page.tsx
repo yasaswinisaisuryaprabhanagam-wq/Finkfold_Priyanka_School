@@ -2,10 +2,11 @@ import { getProfile } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/server";
 import { SCHOOL } from "@/lib/school-config";
 import AdmissionReviewClient from "./AdmissionReviewClient";
+import AdmissionShareBox from "./AdmissionShareBox";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-export const metadata = { title: `Pending Admissions "“ ${SCHOOL.name}` };
+export const metadata = { title: `Pending Admissions · ${SCHOOL.name}` };
 
 export default async function AdminAdmissionsPage() {
   const profile = await getProfile();
@@ -53,8 +54,6 @@ export default async function AdminAdmissionsPage() {
     classes = data || [];
   } catch {}
 
-  const admissionLink = `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3005"}/admissions/${SCHOOL.slug}`;
-
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -65,7 +64,7 @@ export default async function AdminAdmissionsPage() {
             Admin Control Panel &middot; {SCHOOL.name}
           </div>
           <h1 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>
-             Pending Admissions
+            📋 Pending Admissions
           </h1>
           <div className="flex items-center gap-3 flex-wrap">
             <span className="text-white/60 text-sm">
@@ -81,36 +80,7 @@ export default async function AdminAdmissionsPage() {
       </div>
 
       {/* Admission link share card */}
-      <div className="card p-5">
-        <div className="text-sm font-bold text-slate-800 mb-2" style={{ fontFamily: "Outfit, sans-serif" }}>
-           Share Admission Form with Parents
-        </div>
-        <div className="flex items-center gap-3 flex-wrap">
-          <div className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 font-mono text-xs text-slate-600 break-all">
-            {admissionLink}
-          </div>
-          <button
-            onClick={undefined}
-            id="copy-admission-link"
-            data-link={admissionLink}
-            className="btn btn-primary btn-sm"
-            title="Copy link"
-          >
-             Copy Link
-          </button>
-          <a
-            href={admissionLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-ghost btn-sm border border-slate-200"
-          >
-             Preview
-          </a>
-        </div>
-        <div className="text-[11px] text-slate-400 mt-2">
-          Share this link or QR code in your school WhatsApp group. Parents fill the form on their phones – no app download needed.
-        </div>
-      </div>
+      <AdmissionShareBox schoolSlug={SCHOOL.slug} />
 
       {/* Pending review */}
       {pending.length === 0 ? (

@@ -73,9 +73,9 @@ const ApproveSchema = z.object({
   admissionId: z.string(),
   schoolId: z.string(),
   classId: z.string(),
-  admissionNo: z.string().min(1),
-  rollNo: z.coerce.number().int().positive(),
-  approvedBy: z.string().uuid(),
+  admissionNo: z.string().min(1, "Admission number required"),
+  rollNo: z.coerce.number().int().positive("Roll number must be positive"),
+  approvedBy: z.string().optional(),
 });
 
 export type ApproveResult = { success: boolean; studentId?: string; error?: string };
@@ -87,15 +87,24 @@ export async function approveAdmission(formData: FormData): Promise<ApproveResul
     classId: formData.get("classId"),
     admissionNo: formData.get("admissionNo"),
     rollNo: formData.get("rollNo"),
-    approvedBy: formData.get("approvedBy"),
+    approvedBy: formData.get("approvedBy") || undefined,
   });
 
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues[0].message };
   }
 
-  const { admissionId, schoolId, classId, admissionNo, rollNo, approvedBy } = parsed.data;
+  const { admissionId, schoolId, classId, admissionNo, rollNo } = parsed.data;
+  let approvedBy = parsed.data.approvedBy;
+
   const adminClient = await createAdminClient();
+
+  if (!approvedBy) {
+    const { createClient } = await import("@/lib/supabase/server");
+    const userClient = await createClient();
+    const { data: { user } } = await userClient.auth.getUser();
+    approvedBy = user?.id || undefined;
+  }
 
   // Fetch the pending admission record
   const { data: adm, error: fetchErr } = await adminClient
@@ -139,11 +148,18 @@ export async function approveAdmission(formData: FormData): Promise<ApproveResul
 }
 
 // ── Reject admission ───────────────────────────────────────────
-export async function rejectAdmission(admissionId: string, approvedBy: string) {
+export async function rejectAdmission(admissionId: string, approvedBy?: string) {
   const adminClient = await createAdminClient();
+  let reviewerId = approvedBy;
+  if (!reviewerId) {
+    const { createClient } = await import("@/lib/supabase/server");
+    const userClient = await createClient();
+    const { data: { user } } = await userClient.auth.getUser();
+    reviewerId = user?.id || undefined;
+  }
   await adminClient
     .from("pending_admissions")
-    .update({ status: "rejected", reviewed_by: approvedBy, reviewed_at: new Date().toISOString() })
+    .update({ status: "rejected", reviewed_by: reviewerId, reviewed_at: new Date().toISOString() })
     .eq("id", admissionId);
   revalidatePath("/portal/admin/admissions");
   return { success: true };

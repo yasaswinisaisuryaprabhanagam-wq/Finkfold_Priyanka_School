@@ -5,7 +5,7 @@ import { SCHOOL } from "@/lib/school-config";
 
 export const metadata = {
   title: `Admissions 2026–2027 – ${SCHOOL.name}`,
-  description: `Admissions process, eligibility, documents required, and enquiry form for ${SCHOOL.name}, Rasapūdipalem.`,
+  description: `Admissions process, eligibility, documents required, and enquiry form for ${SCHOOL.name}, Nellore.`,
 };
 
 export default function AdmissionsPage() {
@@ -68,7 +68,7 @@ export default function AdmissionsPage() {
               Admissions Open at {SCHOOL.name}
             </h1>
             <p className="text-slate-300 text-base sm:text-lg max-w-3xl leading-relaxed">
-              We welcome applications for students seeking a values-driven, academically stimulating, and parent-friendly learning environment in Rasapūdipalem.
+              We welcome applications for students seeking a values-driven, academically stimulating, and parent-friendly learning environment in Nellore.
             </p>
           </div>
         </section>

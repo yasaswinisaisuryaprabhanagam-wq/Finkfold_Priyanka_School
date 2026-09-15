@@ -6,7 +6,7 @@ import MarkLeftButton from "./MarkLeftButton";
 import { redirect } from "next/navigation";
 
 export const metadata = {
-  title: `Student Registry " ${SCHOOL.name}`,
+  title: `Student Registry · ${SCHOOL.name}`,
 };
 
 export default async function AdminStudentsPage() {
@@ -87,9 +87,9 @@ export default async function AdminStudentsPage() {
             Admin Control Panel &middot; {SCHOOL.name}
           </div>
           <h1 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>
-             Student Registry
+            👥 Student Registry
           </h1>
-          <p className="text-white/60 text-sm">{activeCount} active students enrolled " {SCHOOL.academicYear}</p>
+          <p className="text-white/60 text-sm">{activeCount} active students enrolled · {SCHOOL.academicYear}</p>
         </div>
       </div>
 
@@ -121,7 +121,7 @@ export default async function AdminStudentsPage() {
           </h2>
           <div className="flex items-center gap-2">
             <Link href="/portal/admin/students/import" className="btn btn-primary btn-sm">
-               Import CSV
+              📥 Import CSV
             </Link>
             <span className="badge badge-blue">{activeCount} Active</span>
           </div>
@@ -166,7 +166,7 @@ export default async function AdminStudentsPage() {
                     <td className="font-mono text-xs text-slate-500">{s.parent_phone}</td>
                     <td>
                       <span className={`badge ${s.consent_whatsapp ? "badge-green" : "badge-slate"}`}>
-                        {s.consent_whatsapp ? "âœ" : "âœ-"}
+                        {s.consent_whatsapp ? "✓ Enabled" : "— Disabled"}
                       </span>
                     </td>
                     <td>
@@ -175,7 +175,7 @@ export default async function AdminStudentsPage() {
                           {pct}%
                         </span>
                       ) : (
-                        <span className="text-xs text-slate-400">"</span>
+                        <span className="text-xs text-slate-400">—</span>
                       )}
                     </td>
                     <td>

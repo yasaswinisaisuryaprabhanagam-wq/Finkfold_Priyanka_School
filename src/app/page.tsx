@@ -5,7 +5,7 @@ import { SCHOOL } from "@/lib/school-config";
 
 export const metadata = {
   title: `${SCHOOL.name} – Excellence in English Medium Education`,
-  description: `Welcome to ${SCHOOL.name}, Rasapūdipalem. A progressive English-medium school providing quality education, dedicated faculty, and automated parent communication.`,
+  description: `Welcome to ${SCHOOL.name}, Nellore. A progressive English-medium school providing quality education, dedicated faculty, and automated parent communication.`,
 };
 
 export default function HomePage() {
@@ -273,7 +273,7 @@ export default function HomePage() {
                 Give Your Child the Advantage of Purposeful Learning.
               </h2>
               <p className="text-slate-300 text-base sm:text-lg">
-                Admissions are now open across primary and secondary grades. Speak directly with our admissions counselor or visit our Rasapūdipalem campus.
+                Admissions are now open across primary and secondary grades. Speak directly with our admissions counselor or visit our Nellore campus.
               </p>
               <div className="pt-4 flex flex-wrap gap-4">
                 <Link

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { markStudentLeft } from "@/actions/markStudentLeft";
 
 const REASONS = [
@@ -18,10 +19,15 @@ export default function MarkLeftButton({
   studentId: string;
   studentName: string;
 }) {
+  const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -53,9 +59,9 @@ export default function MarkLeftButton({
         Mark Left
       </button>
 
-      {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 space-y-4">
+      {mounted && open && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 space-y-4 animate-scale-in">
             <div>
               <div className="text-base font-black text-slate-900" style={{ fontFamily: "Outfit, sans-serif" }}>
                 Mark Student as Left
@@ -113,7 +119,8 @@ export default function MarkLeftButton({
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
