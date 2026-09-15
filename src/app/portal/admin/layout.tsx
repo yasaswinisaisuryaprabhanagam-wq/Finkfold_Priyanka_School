@@ -32,6 +32,8 @@ export default async function AdminPortalLayout({
 
   const navItems = [
     { href: "/portal/admin",                       label: "Executive Overview",     icon: "📊", exact: true },
+    { href: "/portal/admin/circulars",             label: "School Circulars",       icon: "📢" },
+    { href: "/portal/admin/homework",              label: "Homework Hub",           icon: "📝" },
     { href: "/portal/admin/analytics",             label: "AI Analytics",           icon: "🤖" },
     { href: "/portal/admin/classes",               label: "Classes & Sections",     icon: "🏫" },
     { href: "/portal/admin/students",              label: "Student Registry",       icon: "👥" },

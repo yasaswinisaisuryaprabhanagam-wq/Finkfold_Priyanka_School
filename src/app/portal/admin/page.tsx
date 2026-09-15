@@ -171,6 +171,38 @@ export default async function AdminPortalPage() {
         </div>
       </div>
 
+      {/* Quick Access Action Hub */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Link href="/portal/admin/circulars" className="card card-hover p-4 flex items-center gap-3.5 cursor-pointer border-l-4 border-amber-500">
+          <div className="h-11 w-11 rounded-xl bg-amber-50 flex items-center justify-center text-2xl flex-shrink-0">📢</div>
+          <div>
+            <div className="font-bold text-slate-900 text-sm">School Circulars</div>
+            <div className="text-[11px] text-slate-500">Publish notices &amp; alerts</div>
+          </div>
+        </Link>
+        <Link href="/portal/admin/homework" className="card card-hover p-4 flex items-center gap-3.5 cursor-pointer border-l-4 border-blue-500">
+          <div className="h-11 w-11 rounded-xl bg-blue-50 flex items-center justify-center text-2xl flex-shrink-0">📝</div>
+          <div>
+            <div className="font-bold text-slate-900 text-sm">Homework Hub</div>
+            <div className="text-[11px] text-slate-500">Oversight across all classes</div>
+          </div>
+        </Link>
+        <Link href="/portal/admin/admissions" className="card card-hover p-4 flex items-center gap-3.5 cursor-pointer border-l-4 border-purple-500">
+          <div className="h-11 w-11 rounded-xl bg-purple-50 flex items-center justify-center text-2xl flex-shrink-0">📋</div>
+          <div>
+            <div className="font-bold text-slate-900 text-sm">Admissions</div>
+            <div className="text-[11px] text-slate-500">Process student applications</div>
+          </div>
+        </Link>
+        <Link href="/portal/admin/whatsapp" className="card card-hover p-4 flex items-center gap-3.5 cursor-pointer border-l-4 border-emerald-500">
+          <div className="h-11 w-11 rounded-xl bg-emerald-50 flex items-center justify-center text-2xl flex-shrink-0">📲</div>
+          <div>
+            <div className="font-bold text-slate-900 text-sm">WhatsApp Audit</div>
+            <div className="text-[11px] text-slate-500">Live delivery logs</div>
+          </div>
+        </Link>
+      </div>
+
       {/* Classes Overview + WhatsApp Log */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
 

@@ -1,0 +1,57 @@
+[
+  {
+    "id": "circ-seed-001",
+    "school_id": "s1701001-0000-4000-a000-000000000001",
+    "title": "Annual Day Celebrations 2026",
+    "category": "Event",
+    "urgent": true,
+    "description": "Annual Day is scheduled for 25th October 2026. All students must participate in at least one cultural activity. Practice sessions begin from 1st October. Parents are cordially invited.",
+    "publish_date": "2026-09-15",
+    "posted_by": null,
+    "created_at": "2026-09-15T08:00:00.000Z"
+  },
+  {
+    "id": "circ-seed-002",
+    "school_id": "s1701001-0000-4000-a000-000000000001",
+    "title": "Unit Test Schedule – October 2026",
+    "category": "Exam",
+    "urgent": true,
+    "description": "Unit tests will be held from 10th–15th October. Prepare chapters 1–5 for all subjects. Students must bring their own stationery. No leave will be granted during test days.",
+    "publish_date": "2026-09-15",
+    "posted_by": null,
+    "created_at": "2026-09-15T08:00:00.000Z"
+  },
+  {
+    "id": "circ-seed-003",
+    "school_id": "s1701001-0000-4000-a000-000000000001",
+    "title": "Library Books Return Notice",
+    "category": "Library",
+    "urgent": false,
+    "description": "All borrowed library books must be returned by Friday, September 19. Late returns will attract a fine of ₹5 per day per book.",
+    "publish_date": "2026-09-15",
+    "posted_by": null,
+    "created_at": "2026-09-15T08:00:00.000Z"
+  },
+  {
+    "id": "circ-seed-004",
+    "school_id": "s1701001-0000-4000-a000-000000000001",
+    "title": "Sports Day Registration",
+    "category": "Sports",
+    "urgent": false,
+    "description": "Sports Day registration is open until September 20. Students can register for Track & Field, Cricket, Kabaddi, Chess, and Carrom. Register with your class teacher.",
+    "publish_date": "2026-09-15",
+    "posted_by": null,
+    "created_at": "2026-09-15T08:00:00.000Z"
+  },
+  {
+    "id": "circ-seed-005",
+    "school_id": "s1701001-0000-4000-a000-000000000001",
+    "title": "Fee Payment Reminder",
+    "category": "Finance",
+    "urgent": false,
+    "description": "Second term fee payment is due by September 30. Late payments attract a fine. Contact the school office for any payment assistance queries.",
+    "publish_date": "2026-09-15",
+    "posted_by": null,
+    "created_at": "2026-09-15T08:00:00.000Z"
+  }
+]

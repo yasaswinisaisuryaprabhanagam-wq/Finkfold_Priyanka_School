@@ -167,13 +167,23 @@ export default async function FacultyPortalPage() {
                     )}
                   </div>
 
-                  <Link
-                    href={`/dashboard/attendance/${classId}`}
-                    className={`btn w-full ${isTodayMarked ? "btn-secondary text-emerald-800 border-emerald-300 hover:bg-emerald-50" : "btn-primary"}`}
-                    style={{ justifyContent: "center" }}
-                  >
-                    {isTodayMarked ? "✓ Completed — View / Edit Roll" : "Mark Roll Call →"}
-                  </Link>
+                  <div className="flex flex-col sm:flex-row items-center gap-2">
+                    <Link
+                      href={`/dashboard/attendance/${classId}`}
+                      className={`btn flex-1 w-full text-xs ${isTodayMarked ? "btn-secondary text-emerald-800 border-emerald-300 hover:bg-emerald-50" : "btn-primary"}`}
+                      style={{ justifyContent: "center" }}
+                    >
+                      {isTodayMarked ? "✓ Completed — View / Edit Roll" : "Mark Roll Call →"}
+                    </Link>
+                    <Link
+                      href={`/portal/faculty/homework`}
+                      className="btn btn-secondary text-xs px-3 py-2 flex items-center gap-1 text-slate-700 hover:text-blue-900 w-full sm:w-auto"
+                      style={{ justifyContent: "center" }}
+                      title="Assign Homework for this class"
+                    >
+                      <span>📝 Homework</span>
+                    </Link>
+                  </div>
                 </div>
               );
             })}
@@ -182,26 +192,33 @@ export default async function FacultyPortalPage() {
       </div>
 
       {/* Quick Links */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Link href="/portal/faculty/homework" className="card card-hover p-5 flex items-center gap-4 cursor-pointer">
+          <div className="h-12 w-12 rounded-xl bg-blue-50 flex items-center justify-center text-2xl flex-shrink-0">📝</div>
+          <div>
+            <div className="font-bold text-slate-900 text-sm">Assign Homework</div>
+            <div className="text-xs text-slate-500">Post daily assignments</div>
+          </div>
+        </Link>
+        <Link href="/portal/faculty/circulars" className="card card-hover p-5 flex items-center gap-4 cursor-pointer">
+          <div className="h-12 w-12 rounded-xl bg-purple-50 flex items-center justify-center text-2xl flex-shrink-0">📢</div>
+          <div>
+            <div className="font-bold text-slate-900 text-sm">School Circulars</div>
+            <div className="text-xs text-slate-500">Official notices &amp; alerts</div>
+          </div>
+        </Link>
         <Link href="/portal/faculty/messages" className="card card-hover p-5 flex items-center gap-4 cursor-pointer">
-          <div className="h-12 w-12 rounded-xl bg-blue-50 flex items-center justify-center text-2xl flex-shrink-0">&#128172;</div>
+          <div className="h-12 w-12 rounded-xl bg-emerald-50 flex items-center justify-center text-2xl flex-shrink-0">💬</div>
           <div>
             <div className="font-bold text-slate-900 text-sm">Parent Replies</div>
             <div className="text-xs text-slate-500">{parentRepliesCount} unread messages</div>
           </div>
         </Link>
         <Link href="/portal/faculty/students" className="card card-hover p-5 flex items-center gap-4 cursor-pointer">
-          <div className="h-12 w-12 rounded-xl bg-purple-50 flex items-center justify-center text-2xl flex-shrink-0">&#128101;</div>
+          <div className="h-12 w-12 rounded-xl bg-amber-50 flex items-center justify-center text-2xl flex-shrink-0">👥</div>
           <div>
             <div className="font-bold text-slate-900 text-sm">Student Roster</div>
             <div className="text-xs text-slate-500">View &amp; search students</div>
-          </div>
-        </Link>
-        <Link href="/portal/faculty/schedule" className="card card-hover p-5 flex items-center gap-4 cursor-pointer">
-          <div className="h-12 w-12 rounded-xl bg-amber-50 flex items-center justify-center text-2xl flex-shrink-0">&#128197;</div>
-          <div>
-            <div className="font-bold text-slate-900 text-sm">Today's Schedule</div>
-            <div className="text-xs text-slate-500">View timetable</div>
           </div>
         </Link>
       </div>

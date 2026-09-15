@@ -43,6 +43,8 @@ export default async function FacultyPortalLayout({
 
   const navItems = [
     { href: "/portal/faculty",          label: "My Classes",        icon: "📋", exact: true },
+    { href: "/portal/faculty/homework", label: "Assign Homework",   icon: "📝" },
+    { href: "/portal/faculty/circulars",label: "School Circulars",  icon: "📢" },
     { href: "/portal/faculty/schedule", label: "Teaching Schedule", icon: "🗓️" },
     { href: "/portal/faculty/messages", label: "Parent Messages",   icon: "💬", badge: unhandledReplies > 0 ? unhandledReplies : undefined },
     { href: "/portal/faculty/students", label: "Student Roster",    icon: "👥" },

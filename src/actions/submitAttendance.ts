@@ -171,14 +171,36 @@ export async function submitAttendance(input: unknown) {
     }
 
     // 3. Determine notifications to send:
-    // - Absent students: event_type = "absent"
+    // Check existing whatsapp_notifications for today to prevent duplicate alerts
+    const { data: existingNotifs } = await adminClient
+      .from("whatsapp_notifications")
+      .select("student_id, status, event_type")
+      .eq("attendance_date", data.date)
+      .eq("event_type", "absent");
+
+    const alreadyNotifiedAbsent = new Set(
+      (existingNotifs || [])
+        .filter((n) => ["sent", "delivered", "read", "pending"].includes(n.status))
+        .map((n) => n.student_id)
+    );
+
+    // - Absent students: ONLY dispatch if student was NOT already marked absent previously
+    //   AND has not already received an absent alert today!
     // - Corrected students (was previously absent, now marked present): event_type = "correction_to_present"
     const eventsToDispatch: { studentId: string; eventType: "absent" | "correction_to_present" }[] = [];
 
     data.records.forEach((r) => {
       const prevStatus = previousRecordsMap[r.studentId];
       if (r.status === "absent") {
-        eventsToDispatch.push({ studentId: r.studentId, eventType: "absent" });
+        const wasAlreadyAbsent = prevStatus === "absent";
+        const wasAlreadyNotified = alreadyNotifiedAbsent.has(r.studentId);
+        if (!wasAlreadyAbsent && !wasAlreadyNotified) {
+          eventsToDispatch.push({ studentId: r.studentId, eventType: "absent" });
+        } else {
+          console.log(
+            `[submitAttendance] Skipping duplicate absent notification for student ${r.studentId} (already marked absent/notified today)`
+          );
+        }
       } else if (r.status === "present" && prevStatus === "absent") {
         eventsToDispatch.push({ studentId: r.studentId, eventType: "correction_to_present" });
       }
@@ -308,6 +330,37 @@ export async function submitAttendance(input: unknown) {
 
               if (metaToken && metaPhoneId) {
                 try {
+                  const messagePayload =
+                    event.eventType === "absent"
+                      ? {
+                          messaging_product: "whatsapp",
+                          recipient_type: "individual",
+                          to: formattedPhone,
+                          type: "template",
+                          template: {
+                            name: "finkfold_priyanka",
+                            language: { code: "en" },
+                            components: [
+                              {
+                                type: "body",
+                                parameters: [
+                                  { type: "text", text: student.full_name },
+                                  { type: "text", text: data.date },
+                                ],
+                              },
+                            ],
+                          },
+                        }
+                      : {
+                          messaging_product: "whatsapp",
+                          recipient_type: "individual",
+                          to: formattedPhone,
+                          type: "text",
+                          text: {
+                            body: `Dear Parent, attendance for ${student.full_name} has been updated to PRESENT on ${data.date} (Late arrival).`,
+                          },
+                        };
+
                   const metaRes = await fetch(
                     `https://graph.facebook.com/v19.0/${metaPhoneId}/messages`,
                     {
@@ -316,25 +369,7 @@ export async function submitAttendance(input: unknown) {
                         Authorization: `Bearer ${metaToken}`,
                         "Content-Type": "application/json",
                       },
-                      body: JSON.stringify({
-                        messaging_product: "whatsapp",
-                        recipient_type: "individual",
-                        to: formattedPhone,
-                        type: "template",
-                        template: {
-                          name: "finkfold_priyanka",
-                          language: { code: "en" },
-                          components: [
-                            {
-                              type: "body",
-                              parameters: [
-                                { type: "text", text: student.full_name },
-                                { type: "text", text: data.date },
-                              ],
-                            },
-                          ],
-                        },
-                      }),
+                      body: JSON.stringify(messagePayload),
                     }
                   );
 
