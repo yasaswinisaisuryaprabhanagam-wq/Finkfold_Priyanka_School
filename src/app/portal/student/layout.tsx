@@ -31,28 +31,38 @@ export default async function StudentPortalLayout({
 
   const navSections = [
     {
-      title: "Academics",
+      title: "Academics & Analytics",
       items: [
         { href: "/portal/student", label: "Attendance Record", icon: "📊" },
+        { href: "/portal/student/academics", label: "Exams & AI Skill Gaps", icon: "📈" },
         { href: "/portal/student/timetable", label: "Class Timetable", icon: "🗓️" },
         { href: "/portal/student/homework", label: "Daily Homework", icon: "📝" },
         { href: "/portal/student/circulars", label: "Official Circulars", icon: "📢" },
       ],
     },
     {
-      title: "Self-Service Hub",
+      title: "Communication & Safety",
+      items: [
+        { href: "/portal/student/ptm-messages", label: "Teacher Chat & PTM", icon: "💬" },
+        { href: "/portal/student/safespace", label: "Safe Space & Conduct", icon: "🛡️" },
+        { href: "/portal/student/lost-found", label: "Digital Lost & Found", icon: "🎒" },
+      ],
+    },
+    {
+      title: "Self-Service Logistics",
       items: [
         { href: "/portal/student/transport", label: "Transport & Commute", icon: "🚌" },
-        { href: "/portal/student/store", label: "Campus Store & Kits", icon: "🛍️" },
+        { href: "/portal/student/leaves", label: "Leaves & On-Duty (OD)", icon: "📅" },
+        { href: "/portal/student/store", label: "Campus Store & Uniforms", icon: "🛍️" },
         { href: "/portal/student/electives", label: "Electives & Club Bidding", icon: "🎯" },
         { href: "/portal/student/outpass", label: "Out-Pass & Mess Menu", icon: "🚪" },
       ],
     },
     {
-      title: "Services & Wellness",
+      title: "Services & Vault",
       items: [
-        { href: "/portal/student/fees", label: "Fee Receipts & Dues", icon: "🧾" },
-        { href: "/portal/student/documents", label: "Document Vault & Help", icon: "🏛️" },
+        { href: "/portal/student/fees", label: "Fee Receipts & Refunds", icon: "🧾" },
+        { href: "/portal/student/documents", label: "Document Vault & E-Certs", icon: "🏛️" },
         { href: "/portal/student/health", label: "Health & Infirmary", icon: "🩺" },
         { href: "/portal/student/settings", label: "Account Settings", icon: "👤" },
       ],
