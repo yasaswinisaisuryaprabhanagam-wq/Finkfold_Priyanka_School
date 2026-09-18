@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useEffect, useTransition } from "react";
 import {
   INITIAL_TICKETS,
   SupportTicket,
+  getSupportTicketsData,
   createTicketAction,
 } from "@/actions/helpdesk";
 import { SCHOOL } from "@/lib/school-config";
@@ -20,6 +21,14 @@ export default function StudentDocumentsPage() {
   const [priority, setPriority] = useState<SupportTicket["priority"]>("medium");
   const [notification, setNotification] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    getSupportTicketsData().then((res) => {
+      if (res && res.length > 0) {
+        setTickets(res);
+      }
+    });
+  }, []);
 
   function handleCreateTicket(e: React.FormEvent) {
     e.preventDefault();

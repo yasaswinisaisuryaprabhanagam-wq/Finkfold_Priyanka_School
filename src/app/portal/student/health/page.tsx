@@ -1,22 +1,39 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useEffect, useTransition } from "react";
 import {
   INITIAL_MEDICAL_PROFILE,
   INITIAL_INFIRMARY_LOGS,
   StudentMedicalProfile,
+  getHealthData,
   updateMedicalProfileAction,
 } from "@/actions/health";
 
 export default function StudentHealthPage() {
   const [profile, setProfile] = useState<StudentMedicalProfile>(INITIAL_MEDICAL_PROFILE);
-  const [logs] = useState(INITIAL_INFIRMARY_LOGS);
+  const [logs, setLogs] = useState(INITIAL_INFIRMARY_LOGS);
   const [isEditing, setIsEditing] = useState(false);
   const [allergyInput, setAllergyInput] = useState(profile.knownAllergies.join(", "));
   const [conditionsInput, setConditionsInput] = useState(profile.chronicConditions.join(", "));
   const [pediatricianPhone, setPediatricianPhone] = useState(profile.pediatricianPhone);
   const [notification, setNotification] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    getHealthData().then((res) => {
+      if (res) {
+        if (res.profile) {
+          setProfile(res.profile);
+          setAllergyInput(res.profile.knownAllergies.join(", "));
+          setConditionsInput(res.profile.chronicConditions.join(", "));
+          setPediatricianPhone(res.profile.pediatricianPhone);
+        }
+        if (res.logs && res.logs.length > 0) {
+          setLogs(res.logs);
+        }
+      }
+    });
+  }, []);
 
   function handleSaveMedicalProfile(e: React.FormEvent) {
     e.preventDefault();

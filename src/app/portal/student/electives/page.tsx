@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useEffect, useTransition } from "react";
 import {
   INITIAL_CLUBS,
   INITIAL_EVENTS,
+  getElectivesData,
   saveLanguageRankingAction,
   bidForClubAction,
   registerForEventAction,
@@ -23,6 +24,16 @@ export default function StudentElectivesPage() {
   });
   const [notification, setNotification] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    getElectivesData().then((res) => {
+      if (res) {
+        if (res.languageRanking) setLanguageRanking(res.languageRanking);
+        if (res.enrolledClubs) setEnrolledClubs(res.enrolledClubs);
+        if (res.eventRegistrations) setEventRegistrations(res.eventRegistrations);
+      }
+    });
+  }, []);
 
   function handleSaveLanguages(e: React.FormEvent) {
     e.preventDefault();

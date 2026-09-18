@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useEffect, useTransition } from "react";
 import {
   INITIAL_OUTPASSES,
   INITIAL_MESS_MENU,
   OutPassRequest,
+  getOutPassesData,
   submitOutPassAction,
   submitMessFeedbackAction,
 } from "@/actions/outpass";
@@ -21,6 +22,14 @@ export default function StudentOutPassPage() {
   const [selectedSpecialVote, setSelectedSpecialVote] = useState("Hyderabadi Dum Biryani");
   const [notification, setNotification] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    getOutPassesData().then((res) => {
+      if (res && res.length > 0) {
+        setPasses(res);
+      }
+    });
+  }, []);
 
   function handleSubmitPass(e: React.FormEvent) {
     e.preventDefault();

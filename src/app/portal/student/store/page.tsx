@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useEffect, useTransition } from "react";
 import {
   INITIAL_STORE_ITEMS,
   INITIAL_ORDERS,
   StoreItem,
   StoreOrder,
+  getStoreData,
   placeStoreOrderAction,
 } from "@/actions/store";
 
@@ -29,6 +30,14 @@ export default function StudentStorePage() {
   const [redeemPoints, setRedeemPoints] = useState(false);
   const [notification, setNotification] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    getStoreData().then((res) => {
+      if (res?.orders && res.orders.length > 0) {
+        setOrders(res.orders);
+      }
+    });
+  }, []);
 
   function addToCart(item: StoreItem) {
     const size = item.availableSizes ? selectedSizes[item.id] || item.availableSizes[0] : undefined;

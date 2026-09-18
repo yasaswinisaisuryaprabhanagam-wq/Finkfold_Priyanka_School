@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useEffect, useTransition } from "react";
 import {
   INITIAL_ROUTES,
+  getTransportData,
   subscribeRouteAction,
   toggleBusOptOutAction,
   simulateBoardingScanAction,
@@ -16,6 +17,17 @@ export default function StudentTransportPage() {
   const [lastBoarded, setLastBoarded] = useState("08:04 AM Today");
   const [notification, setNotification] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    getTransportData().then((data) => {
+      if (data) {
+        if (data.activeRouteId) setSelectedRouteId(data.activeRouteId);
+        if (data.activeStopId) setSelectedStopId(data.activeStopId);
+        if (typeof data.optedOutToday === "boolean") setOptedOut(data.optedOutToday);
+        if (data.lastBoardedAt) setLastBoarded(data.lastBoardedAt);
+      }
+    });
+  }, []);
 
   const activeRoute = routes.find((r) => r.id === selectedRouteId) || routes[0];
   const activeStop = activeRoute.stops.find((s) => s.id === selectedStopId) || activeRoute.stops[0];
