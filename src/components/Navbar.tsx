@@ -73,16 +73,21 @@ export default function Navbar() {
             })}
           </nav>
 
-          {/* School Portal CTA */}
-          <div className="hidden sm:flex items-center gap-3">
+          {/* Institutional Portal CTAs */}
+          <div className="hidden sm:flex items-center gap-2.5">
             <Link
-              href="/login"
-              className="inline-flex items-center gap-2 rounded-xl bg-blue-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-800 transition-all active:scale-[0.98]"
+              href="/faculty/login"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-700 hover:text-blue-900 rounded-lg hover:bg-slate-100 transition-all"
             >
-              <svg className="w-4 h-4 text-blue-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-              </svg>
-              <span>School Portal</span>
+              <span>👨‍🏫</span>
+              <span>Staff Login</span>
+            </Link>
+            <Link
+              href="/student/login"
+              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-900 to-indigo-900 px-4 py-2.5 text-sm font-bold text-white shadow-md hover:from-blue-800 hover:to-indigo-800 transition-all active:scale-[0.98]"
+            >
+              <span>🎓</span>
+              <span>Student Portal</span>
             </Link>
           </div>
 
@@ -124,13 +129,22 @@ export default function Navbar() {
                 </Link>
               );
             })}
-            <div className="pt-3 border-t border-slate-100">
+            <div className="pt-3 border-t border-slate-100 space-y-2">
               <Link
-                href="/login"
+                href="/student/login"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-center gap-2 w-full rounded-xl bg-blue-900 px-4 py-3 text-base font-semibold text-white shadow-sm hover:bg-blue-800"
+                className="flex items-center justify-center gap-2 w-full rounded-xl bg-blue-900 px-4 py-3 text-base font-bold text-white shadow-sm hover:bg-blue-800"
               >
-                School Portal (Faculty / Admin / Student)
+                <span>🎓</span>
+                <span>Student & Parent Portal</span>
+              </Link>
+              <Link
+                href="/faculty/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-center gap-2 w-full rounded-xl bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-200"
+              >
+                <span>👨‍🏫</span>
+                <span>Faculty & Staff Workspace</span>
               </Link>
             </div>
           </div>

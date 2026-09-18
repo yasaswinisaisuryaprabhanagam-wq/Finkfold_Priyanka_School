@@ -49,21 +49,20 @@ export default function HomePage() {
                   </Link>
 
                   <Link
-                    href="/login"
-                    className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white font-semibold text-base transition-all active:scale-95"
-                  >
-                    <svg className="w-5 h-5 text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-                    </svg>
-                    School Portal
-                  </Link>
-
-                  <Link
-                    href="/portal/student"
-                    className="inline-flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/40 text-emerald-200 font-semibold text-sm transition-all active:scale-95"
+                    href="/student/login"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-base shadow-lg transition-all active:scale-95"
                   >
                     <span>🎓</span>
                     <span>Student Portal</span>
+                    <span>→</span>
+                  </Link>
+
+                  <Link
+                    href="/faculty/login"
+                    className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white font-semibold text-sm transition-all active:scale-95"
+                  >
+                    <span>👨‍🏫</span>
+                    <span>Staff Login</span>
                   </Link>
                 </div>
 

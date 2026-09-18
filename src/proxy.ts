@@ -4,9 +4,10 @@ import { SCHOOL } from "@/lib/school-config";
 
 // Next.js 16+ uses proxy.ts instead of middleware.ts
 // Handles session synchronization, Campus Context header propagation,
-// and role-based portal routing.
+// institutional subdomain routing, and role-based portal routing.
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+  const hostname = request.headers.get("host") || "";
 
   // 1. Fast-path: Skip webhooks, WhatsApp callbacks, static assets
   if (
@@ -18,26 +19,62 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 2. Auth cookie detection
+  // 2. Subdomain Routing (SRM AP style student.*, faculty.*, admin.*)
+  if (hostname.startsWith("student.") && (pathname === "/" || pathname === "/login")) {
+    return NextResponse.redirect(new URL("/student/login", request.url));
+  }
+  if (hostname.startsWith("faculty.") && (pathname === "/" || pathname === "/login")) {
+    return NextResponse.redirect(new URL("/faculty/login", request.url));
+  }
+  if (hostname.startsWith("admin.") && (pathname === "/" || pathname === "/login")) {
+    return NextResponse.redirect(new URL("/admin/login", request.url));
+  }
+
+  // 3. Auth cookie detection
   const allCookies = request.cookies.getAll();
   const hasAuthCookie = allCookies.some(
     (c) => c.name.startsWith("sb-") || c.name.includes("auth-token")
   );
 
-  // 3. Unauthenticated access guard for protected portal & dashboard routes
-  const isProtectedPath = pathname.startsWith("/portal") || pathname.startsWith("/dashboard");
-  if (!hasAuthCookie && isProtectedPath) {
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("redirectTo", pathname);
-    return NextResponse.redirect(loginUrl);
+  // Helper for targeted portal login routing
+  function getTargetLoginUrl(path: string): URL {
+    let targetPath = "/login";
+    if (path.startsWith("/portal/student")) {
+      targetPath = "/student/login";
+    } else if (path.startsWith("/portal/faculty")) {
+      targetPath = "/faculty/login";
+    } else if (path.startsWith("/portal/admin")) {
+      targetPath = "/admin/login";
+    }
+    const loginUrl = new URL(targetPath, request.url);
+    loginUrl.searchParams.set("redirectTo", path);
+    return loginUrl;
   }
 
-  // If public page and no auth cookie, return immediately without network latency
-  if (!hasAuthCookie && (pathname === "/login" || pathname === "/" || pathname === "/reset-password")) {
+  // 4. Unauthenticated access guard for protected portal & dashboard routes
+  const isProtectedPath = pathname.startsWith("/portal") || pathname.startsWith("/dashboard");
+  if (!hasAuthCookie && isProtectedPath) {
+    return NextResponse.redirect(getTargetLoginUrl(pathname));
+  }
+
+  // Public unauthenticated pages return immediately
+  const isPublicAuthPage =
+    pathname === "/login" ||
+    pathname === "/student/login" ||
+    pathname === "/faculty/login" ||
+    pathname === "/admin/login" ||
+    pathname === "/" ||
+    pathname === "/reset-password" ||
+    pathname.startsWith("/about") ||
+    pathname.startsWith("/academics") ||
+    pathname.startsWith("/admissions") ||
+    pathname.startsWith("/contact");
+
+  if (!hasAuthCookie && isPublicAuthPage) {
     return NextResponse.next();
   }
 
-  // 4. Resolve Active Campus Context from cookie or default school
+  // 5. Resolve Active Campus Context from cookie or default school
   const activeBranchCookie = request.cookies.get("finkfold_active_school")?.value;
   const activeSchoolId = activeBranchCookie || SCHOOL.id;
 
@@ -52,7 +89,7 @@ export async function proxy(request: NextRequest) {
     },
   });
 
-  // 5. Supabase session synchronization & role-based routing
+  // 6. Supabase session synchronization & role-based routing
   try {
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -85,9 +122,7 @@ export async function proxy(request: NextRequest) {
 
     // If protected path and user session is invalid/expired
     if (isProtectedPath && !user) {
-      const loginUrl = new URL("/login", request.url);
-      loginUrl.searchParams.set("redirectTo", pathname);
-      return NextResponse.redirect(loginUrl);
+      return NextResponse.redirect(getTargetLoginUrl(pathname));
     }
 
     // Role-based routing for root /portal or /dashboard paths

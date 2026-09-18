@@ -63,9 +63,22 @@ export default function Footer() {
                   Contact & Campus
                 </Link>
               </li>
+              <li className="pt-2 border-t border-slate-800">
+                <Link href="/student/login" className="text-amber-400 font-semibold hover:text-amber-300 transition-colors flex items-center gap-1.5">
+                  <span>🎓</span>
+                  <span>Student & Parent Portal</span>
+                </Link>
+              </li>
               <li>
-                <Link href="/login" className="hover:text-blue-400 transition-colors">
-                  Faculty Login
+                <Link href="/faculty/login" className="hover:text-white transition-colors flex items-center gap-1.5">
+                  <span>👨‍🏫</span>
+                  <span>Faculty Workspace</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/admin/login" className="text-xs text-slate-500 hover:text-slate-300 transition-colors flex items-center gap-1.5">
+                  <span>🛡️</span>
+                  <span>Admin Console</span>
                 </Link>
               </li>
             </ul>

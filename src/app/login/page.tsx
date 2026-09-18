@@ -1,25 +1,21 @@
 "use client";
 
-import { useState, useTransition, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
+import { resolveStudentIdentifier } from "@/actions/studentAuth";
 import { SCHOOL } from "@/lib/school-config";
 
-type Role = "teacher" | "student" | "admin";
-
-function LoginForm() {
-  const [selectedRole, setSelectedRole] = useState<Role>("teacher");
-  const [email, setEmail] = useState("");
+function UniversalLoginForm() {
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const searchParams = useSearchParams();
   const supabase = createClient();
 
-  // Show error from auth callback (e.g. expired password reset link)
   useEffect(() => {
     const urlError = searchParams.get("error");
     if (urlError === "auth_callback_failed") {
@@ -27,96 +23,89 @@ function LoginForm() {
     }
   }, [searchParams]);
 
-  const roles: { key: Role; label: string; icon: string; desc: string; color: string; bg: string; portal: string }[] = [
-    {
-      key: "teacher",
-      label: "Faculty / Teacher",
-      icon: "👨‍🏫",
-      desc: "Attendance, roll-call, parent messaging",
-      color: "text-blue-900",
-      bg: "bg-blue-50 border-blue-300",
-      portal: "/portal/faculty",
-    },
-    {
-      key: "student",
-      label: "Student",
-      icon: "🎓",
-      desc: "Attendance records, timetable, homework",
-      color: "text-violet-900",
-      bg: "bg-violet-50 border-violet-300",
-      portal: "/portal/student",
-    },
-    {
-      key: "admin",
-      label: "School Admin",
-      icon: "👑",
-      desc: "Executive dashboard, reports, settings",
-      color: "text-emerald-900",
-      bg: "bg-emerald-50 border-emerald-300",
-      portal: "/portal/admin",
-    },
-  ];
-
-  const rolePortalMap: Record<string, string> = {
-    teacher: "/portal/faculty",
-    school_admin: "/portal/admin",
-    super_admin: "/portal/admin",
-    parent: "/portal/student",
-    student: "/portal/student",
-  };
-
   async function handleSignIn(e: React.FormEvent) {
     e.preventDefault();
+    if (!identifier.trim() || !password) {
+      setError("Please enter your email or student ID and password.");
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
     try {
+      // 1. If student admission ID or shorthand provided, resolve to email
+      let targetEmail = identifier.trim().toLowerCase();
+      if (!targetEmail.includes("@")) {
+        const resolved = await resolveStudentIdentifier(identifier);
+        targetEmail = resolved.email;
+      }
+
+      // 2. Sign in
       const { data, error: signInError } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
+        email: targetEmail,
         password,
       });
 
       if (signInError) {
-        setError(signInError.message);
+        setError(
+          signInError.message.includes("Invalid login credentials")
+            ? "Invalid email/ID or password. Please verify your credentials."
+            : signInError.message
+        );
         setLoading(false);
         return;
       }
 
       if (!data.user) {
-        setError("Login failed. Please try again.");
+        setError("Sign-in failed. Please try again.");
         setLoading(false);
         return;
       }
 
-      // Fetch user profile to get role and redirect cleanly
-      let role = selectedRole === "teacher" ? "teacher" : selectedRole === "admin" ? "school_admin" : "student";
+      // 3. Inspect user profile and route to the corresponding portal
+      let destination = "/portal/faculty";
       try {
         const { data: profile } = await supabase
           .from("profiles")
-          .select("role, primary_role")
+          .select("role, primary_role, roles")
           .eq("id", data.user.id)
           .maybeSingle();
-        if (profile?.primary_role) role = profile.primary_role;
-        else if (profile?.role) role = profile.role;
+
+        const role = profile?.primary_role || profile?.role || "teacher";
+        if (
+          role === "super_admin" ||
+          role === "school_admin" ||
+          role === "branch_admin" ||
+          profile?.roles?.includes("super_admin") ||
+          profile?.roles?.includes("school_admin")
+        ) {
+          destination = "/portal/admin";
+        } else if (role === "student" || role === "parent") {
+          destination = "/portal/student";
+        } else {
+          destination = "/portal/faculty";
+        }
       } catch {
-        // Fallback to selected role
+        // Default destination
       }
 
-      const destination = rolePortalMap[role] || "/portal/faculty";
       window.location.href = destination;
-    } catch (err) {
-      setError("An unexpected error occurred. Please try again.");
+    } catch (err: any) {
+      setError(err?.message || "An unexpected error occurred. Please try again.");
       setLoading(false);
     }
   }
 
-  const selected = roles.find((r) => r.key === selectedRole)!;
-
   return (
-    <div className="min-h-screen flex" style={{ background: "linear-gradient(135deg, #0c2d5a 0%, #123b6d 50%, #1a4d8f 100%)" }}>
-      {/* ── Left Panel (brand) ── */}
-      <div className="hidden lg:flex flex-col justify-between w-[420px] p-10 border-r border-white/10">
-        {/* Logo */}
+    <div
+      className="min-h-screen flex"
+      style={{
+        background: "linear-gradient(135deg, #0c2d5a 0%, #123b6d 50%, #1a4d8f 100%)",
+      }}
+    >
+      {/* ── Left Brand Panel ── */}
+      <div className="hidden lg:flex flex-col justify-between w-[440px] p-10 border-r border-white/10">
         <Link href="/" className="flex items-center gap-3">
           {SCHOOL.logoUrl && (
             <div className="h-11 w-11 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center overflow-hidden">
@@ -124,114 +113,166 @@ function LoginForm() {
             </div>
           )}
           <div>
-            <div className="text-white font-bold text-base leading-tight" style={{ fontFamily: "Outfit, sans-serif" }}>
+            <div
+              className="text-white font-bold text-base leading-tight"
+              style={{ fontFamily: "Outfit, sans-serif" }}
+            >
               {SCHOOL.name}
             </div>
-            <div className="text-white/40 text-xs">School Management System</div>
+            <div className="text-white/50 text-xs">Educational Operating System</div>
           </div>
         </Link>
 
-        {/* Illustration / features */}
+        {/* Feature List */}
         <div className="space-y-6">
           <div>
-            <h2 className="text-3xl font-bold text-white leading-snug" style={{ fontFamily: "Outfit, sans-serif" }}>
-              Finkfold School<br />
-              <span className="text-amber-300">ERP Platform</span>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-amber-300 text-xs font-semibold mb-3">
+              <span>⚡</span>
+              <span>Unified Gateway</span>
+            </div>
+            <h2
+              className="text-3xl font-bold text-white leading-snug"
+              style={{ fontFamily: "Outfit, sans-serif" }}
+            >
+              Finkfold EdOS<br />
+              <span className="text-amber-300">Institutional Portals</span>
             </h2>
-            <p className="text-white/60 text-sm mt-3 leading-relaxed">
-              India's most affordable school management system with real-time WhatsApp parent communication and AI-powered attendance analytics.
+            <p className="text-white/70 text-sm mt-3 leading-relaxed">
+              Enterprise role-based routing. The system automatically verifies your identity and launches your specialized workspace.
             </p>
           </div>
-          <div className="space-y-3">
-            {[
-              { icon: "✅", text: "Instant WhatsApp absence alerts to parents" },
-              { icon: "📊", text: "Real-time attendance tracking & analytics" },
-              { icon: "🤖", text: "AI-powered anomaly detection & reports" },
-              { icon: "🔒", text: "Role-based secure access for all users" },
-            ].map((f, i) => (
-              <div key={i} className="flex items-center gap-3 text-sm text-white/70">
-                <span className="text-base flex-shrink-0">{f.icon}</span>
-                <span>{f.text}</span>
+
+          <div className="space-y-2.5">
+            <Link
+              href="/student/login"
+              className="flex items-center justify-between p-3.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 transition-all text-white group"
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">🎓</span>
+                <div>
+                  <div className="text-sm font-bold text-white group-hover:text-amber-300 transition-colors">
+                    Student & Parent Portal
+                  </div>
+                  <div className="text-xs text-white/60">
+                    Attendance, fee receipts & report cards
+                  </div>
+                </div>
               </div>
-            ))}
+              <span className="text-white/40 group-hover:text-white transition-colors">→</span>
+            </Link>
+
+            <Link
+              href="/faculty/login"
+              className="flex items-center justify-between p-3.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 transition-all text-white group"
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">👨‍🏫</span>
+                <div>
+                  <div className="text-sm font-bold text-white group-hover:text-amber-300 transition-colors">
+                    Faculty Workspace
+                  </div>
+                  <div className="text-xs text-white/60">
+                    Class roll-call & academic analytics
+                  </div>
+                </div>
+              </div>
+              <span className="text-white/40 group-hover:text-white transition-colors">→</span>
+            </Link>
+
+            <Link
+              href="/admin/login"
+              className="flex items-center justify-between p-3.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 transition-all text-white group"
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">🛡️</span>
+                <div>
+                  <div className="text-sm font-bold text-white group-hover:text-amber-300 transition-colors">
+                    Executive Admin Console
+                  </div>
+                  <div className="text-xs text-white/60">
+                    Multi-campus treasury & branch controls
+                  </div>
+                </div>
+              </div>
+              <span className="text-white/40 group-hover:text-white transition-colors">→</span>
+            </Link>
           </div>
         </div>
 
         {/* School info */}
-        <div className="text-white/30 text-xs space-y-1">
+        <div className="text-white/40 text-xs space-y-1">
           <div>📍 {SCHOOL.address}</div>
           <div>📞 {SCHOOL.phone}</div>
         </div>
       </div>
 
-      {/* ── Right Panel (form) ── */}
+      {/* ── Right Panel (Universal Smart Form) ── */}
       <div className="flex-1 flex items-center justify-center p-6 lg:p-10">
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-md space-y-6">
           {/* Mobile logo */}
-          <div className="lg:hidden text-center mb-8">
+          <div className="lg:hidden text-center">
             <Link href="/" className="inline-flex items-center gap-3">
               {SCHOOL.logoUrl && (
                 <div className="h-10 w-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center overflow-hidden">
                   <img src={SCHOOL.logoUrl} alt="Logo" className="h-8 w-8 object-contain" />
                 </div>
               )}
-              <span className="text-white font-bold text-lg" style={{ fontFamily: "Outfit, sans-serif" }}>{SCHOOL.name}</span>
+              <span
+                className="text-white font-bold text-lg"
+                style={{ fontFamily: "Outfit, sans-serif" }}
+              >
+                {SCHOOL.name}
+              </span>
             </Link>
           </div>
 
-          {/* Card */}
-          <div className="bg-white rounded-3xl shadow-2xl p-8 space-y-6">
+          {/* Form Card */}
+          <div className="bg-white rounded-3xl shadow-2xl p-8 sm:p-10 space-y-6">
             <div>
-              <h1 className="text-2xl font-bold text-slate-900" style={{ fontFamily: "Outfit, sans-serif" }}>
-                Welcome back
+              <h1
+                className="text-2xl font-extrabold text-slate-900"
+                style={{ fontFamily: "Outfit, sans-serif" }}
+              >
+                Sign In
               </h1>
-              <p className="text-sm text-slate-500 mt-1">Sign in to your school portal</p>
+              <p className="text-sm text-slate-500 mt-1">
+                Enter your credentials to access your designated portal
+              </p>
             </div>
 
-            {/* Role Selector */}
-            <div>
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">I am a...</p>
-              <div className="grid grid-cols-3 gap-2">
-                {roles.map((role) => (
-                  <button
-                    key={role.key}
-                    type="button"
-                    onClick={() => setSelectedRole(role.key)}
-                    className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all ${
-                      selectedRole === role.key
-                        ? role.bg + " shadow-sm"
-                        : "border-transparent bg-slate-50 hover:bg-slate-100"
-                    }`}
-                  >
-                    <span className="text-2xl">{role.icon}</span>
-                    <span className={`text-[10px] font-bold leading-tight text-center ${
-                      selectedRole === role.key ? role.color : "text-slate-600"
-                    }`}>
-                      {role.label}
-                    </span>
-                  </button>
-                ))}
+            {error && (
+              <div className="rounded-xl bg-rose-50 border border-rose-200 p-3.5 text-xs text-rose-700 flex items-start gap-2.5">
+                <span className="text-rose-500 flex-shrink-0 text-sm mt-0.5">⚠️</span>
+                <span>{error}</span>
               </div>
-            </div>
+            )}
 
-            {/* Login Form */}
             <form onSubmit={handleSignIn} className="space-y-4">
               <div>
-                <label className="form-label">Email Address</label>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                  Email Address or Student ID
+                </label>
                 <input
-                  type="email"
+                  type="text"
                   required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder={selectedRole === "teacher" ? "teacher@school.edu" : selectedRole === "admin" ? "admin@school.edu" : "student@school.edu"}
-                  className="form-input"
-                  autoComplete="email"
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
+                  placeholder="e.g. your@school.edu or PRIY-2026-001"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all text-sm font-medium"
+                  autoComplete="username"
+                  autoFocus
                 />
               </div>
+
               <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="form-label" style={{ marginBottom: 0 }}>Password</label>
-                  <Link href="/reset-password" className="text-xs text-blue-700 hover:text-blue-900 font-medium">
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                    Password
+                  </label>
+                  <Link
+                    href="/reset-password"
+                    className="text-xs text-blue-700 hover:text-blue-900 font-medium transition-colors"
+                  >
                     Forgot password?
                   </Link>
                 </div>
@@ -241,46 +282,61 @@ function LoginForm() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="form-input"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all text-sm"
                   autoComplete="current-password"
                 />
               </div>
 
-              {error && (
-                <div className="rounded-xl bg-rose-50 border border-rose-200 p-3 text-xs text-rose-700 flex items-start gap-2">
-                  <span className="text-rose-500 flex-shrink-0">⚠️</span>
-                  <span>{error}</span>
-                </div>
-              )}
-
               <button
                 type="submit"
-                disabled={loading || isPending}
-                className="btn btn-primary btn-lg w-full"
-                style={{ justifyContent: "center" }}
+                disabled={loading}
+                className="w-full py-3.5 px-4 rounded-xl bg-blue-900 hover:bg-blue-800 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
               >
-                {loading || isPending ? (
+                {loading ? (
                   <span className="flex items-center gap-2">
                     <span className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     Signing in...
                   </span>
                 ) : (
-                  `Sign in as ${selected.label} →`
+                  <span>Sign in to Portal →</span>
                 )}
               </button>
             </form>
 
-            {/* Contact Admin */}
-            <div className="border-t border-slate-100 pt-4 text-center">
-              <p className="text-xs text-slate-400">
-                New user? Contact your school admin for credentials.
+            {/* Quick Links to Dedicated Portals */}
+            <div className="border-t border-slate-100 pt-5 space-y-2">
+              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 text-center">
+                Dedicated Portals
               </p>
+              <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                <Link
+                  href="/student/login"
+                  className="p-2.5 rounded-xl bg-slate-50 hover:bg-blue-50 border border-slate-100 hover:border-blue-200 text-slate-700 hover:text-blue-900 font-medium transition-all"
+                >
+                  <div className="text-base mb-0.5">🎓</div>
+                  <div className="text-[11px] font-semibold">Student</div>
+                </Link>
+                <Link
+                  href="/faculty/login"
+                  className="p-2.5 rounded-xl bg-slate-50 hover:bg-emerald-50 border border-slate-100 hover:border-emerald-200 text-slate-700 hover:text-emerald-900 font-medium transition-all"
+                >
+                  <div className="text-base mb-0.5">👨‍🏫</div>
+                  <div className="text-[11px] font-semibold">Faculty</div>
+                </Link>
+                <Link
+                  href="/admin/login"
+                  className="p-2.5 rounded-xl bg-slate-50 hover:bg-amber-50 border border-slate-100 hover:border-amber-200 text-slate-700 hover:text-amber-900 font-medium transition-all"
+                >
+                  <div className="text-base mb-0.5">🛡️</div>
+                  <div className="text-[11px] font-semibold">Admin</div>
+                </Link>
+              </div>
             </div>
           </div>
 
           {/* Footer */}
-          <p className="text-center text-white/40 text-xs mt-6">
-            {SCHOOL.name} · Powered by Finkfold ERP
+          <p className="text-center text-white/50 text-xs">
+            {SCHOOL.name} • Finkfold EdOS Platform
           </p>
         </div>
       </div>
@@ -290,12 +346,19 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "linear-gradient(135deg, #0c2d5a 0%, #123b6d 50%, #1a4d8f 100%)" }}>
-        <div className="text-white text-sm opacity-60">Loading...</div>
-      </div>
-    }>
-      <LoginForm />
+    <Suspense
+      fallback={
+        <div
+          className="min-h-screen flex items-center justify-center"
+          style={{
+            background: "linear-gradient(135deg, #0c2d5a 0%, #123b6d 50%, #1a4d8f 100%)",
+          }}
+        >
+          <div className="text-white text-sm opacity-60">Loading...</div>
+        </div>
+      }
+    >
+      <UniversalLoginForm />
     </Suspense>
   );
 }
