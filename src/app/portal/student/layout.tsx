@@ -29,13 +29,34 @@ export default async function StudentPortalLayout({
 
   const profile = userProfile;
 
-  const navItems = [
-    { href: "/portal/student",                label: "Attendance",      icon: "📊", exact: true },
-    { href: "/portal/student/fees",           label: "Fee Receipts & Dues", icon: "🧾" },
-    { href: "/portal/student/timetable",      label: "Timetable",       icon: "🗓️" },
-    { href: "/portal/student/homework",       label: "Homework",        icon: "📝" },
-    { href: "/portal/student/circulars",      label: "Circulars",       icon: "📢" },
-    { href: "/portal/student/settings",       label: "My Account",      icon: "👤" },
+  const navSections = [
+    {
+      title: "Academics",
+      items: [
+        { href: "/portal/student", label: "Attendance Record", icon: "📊" },
+        { href: "/portal/student/timetable", label: "Class Timetable", icon: "🗓️" },
+        { href: "/portal/student/homework", label: "Daily Homework", icon: "📝" },
+        { href: "/portal/student/circulars", label: "Official Circulars", icon: "📢" },
+      ],
+    },
+    {
+      title: "Self-Service Hub",
+      items: [
+        { href: "/portal/student/transport", label: "Transport & Commute", icon: "🚌" },
+        { href: "/portal/student/store", label: "Campus Store & Kits", icon: "🛍️" },
+        { href: "/portal/student/electives", label: "Electives & Club Bidding", icon: "🎯" },
+        { href: "/portal/student/outpass", label: "Out-Pass & Mess Menu", icon: "🚪" },
+      ],
+    },
+    {
+      title: "Services & Wellness",
+      items: [
+        { href: "/portal/student/fees", label: "Fee Receipts & Dues", icon: "🧾" },
+        { href: "/portal/student/documents", label: "Document Vault & Help", icon: "🏛️" },
+        { href: "/portal/student/health", label: "Health & Infirmary", icon: "🩺" },
+        { href: "/portal/student/settings", label: "Account Settings", icon: "👤" },
+      ],
+    },
   ];
 
   return (
@@ -56,13 +77,13 @@ export default async function StudentPortalLayout({
               <div className="text-white font-bold text-sm leading-tight truncate" style={{ fontFamily: "Outfit, sans-serif" }}>
                 {SCHOOL.name}
               </div>
-              <div className="text-white/50 text-[10px] font-medium mt-0.5">Student / Parent Portal</div>
+              <div className="text-white/50 text-[10px] font-medium mt-0.5">Enterprise Self-Service Hub</div>
             </div>
           </Link>
         </div>
 
-        {/* Student info */}
-        <div className="px-4 py-3.5 border-b border-white/10 flex-shrink-0">
+        {/* Student info & Points Chip */}
+        <div className="px-4 py-3.5 border-b border-white/10 flex-shrink-0 space-y-2">
           <div className="flex items-center gap-2.5">
             <div className="h-8 w-8 rounded-full bg-violet-400 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
               {profile.full_name.charAt(0).toUpperCase()}
@@ -75,15 +96,27 @@ export default async function StudentPortalLayout({
               </div>
             </div>
           </div>
+
+          <div className="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-white/10 border border-white/10 text-[11px] text-amber-300 font-semibold">
+            <span>⭐ Reward Points</span>
+            <span className="font-bold">150 Pts</span>
+          </div>
         </div>
 
-        {/* Navigation — STUDENT/PARENT ONLY links */}
-        <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
-          {navItems.map((item) => (
-            <Link key={item.href} href={item.href} className="sidebar-nav-item">
-              <span className="text-base w-5 flex-shrink-0 text-center">{item.icon}</span>
-              <span>{item.label}</span>
-            </Link>
+        {/* Navigation — Categorized Self-Service Sections */}
+        <nav className="flex-1 p-3 space-y-4 overflow-y-auto">
+          {navSections.map((sec, sIdx) => (
+            <div key={sIdx} className="space-y-1">
+              <div className="px-3 text-[10px] font-bold uppercase tracking-wider text-white/40">
+                {sec.title}
+              </div>
+              {sec.items.map((item) => (
+                <Link key={item.href} href={item.href} className="sidebar-nav-item">
+                  <span className="text-base w-5 flex-shrink-0 text-center">{item.icon}</span>
+                  <span className="truncate">{item.label}</span>
+                </Link>
+              ))}
+            </div>
           ))}
         </nav>
 
