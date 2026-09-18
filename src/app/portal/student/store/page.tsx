@@ -1,14 +1,9 @@
 "use client";
 
 import { useState, useEffect, useTransition } from "react";
-import {
-  INITIAL_STORE_ITEMS,
-  INITIAL_ORDERS,
-  StoreItem,
-  StoreOrder,
-  getStoreData,
-  placeStoreOrderAction,
-} from "@/actions/store";
+import type { StoreItem, StoreOrder } from "@/types/self-service";
+import { INITIAL_STORE_ITEMS, INITIAL_ORDERS } from "@/types/self-service";
+import { getStoreData, placeStoreOrderAction } from "@/actions/store";
 
 interface CartItem {
   item: StoreItem;

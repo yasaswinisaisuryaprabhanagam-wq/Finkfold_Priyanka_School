@@ -1,9 +1,8 @@
 "use client";
 
 import { useState, useEffect, useTransition } from "react";
+import { INITIAL_CLUBS, INITIAL_EVENTS } from "@/types/self-service";
 import {
-  INITIAL_CLUBS,
-  INITIAL_EVENTS,
   getElectivesData,
   saveLanguageRankingAction,
   bidForClubAction,

@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect, useTransition } from "react";
+import type { SupportTicket } from "@/types/self-service";
+import { INITIAL_TICKETS } from "@/types/self-service";
 import {
-  INITIAL_TICKETS,
-  SupportTicket,
   getSupportTicketsData,
   createTicketAction,
 } from "@/actions/helpdesk";

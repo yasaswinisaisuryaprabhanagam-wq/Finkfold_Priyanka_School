@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect, useTransition } from "react";
+import { INITIAL_ROUTES } from "@/types/self-service";
 import {
-  INITIAL_ROUTES,
   getTransportData,
   subscribeRouteAction,
   toggleBusOptOutAction,

@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useEffect, useTransition } from "react";
+import type { StudentMedicalProfile } from "@/types/self-service";
+import { INITIAL_MEDICAL_PROFILE, INITIAL_INFIRMARY_LOGS } from "@/types/self-service";
 import {
-  INITIAL_MEDICAL_PROFILE,
-  INITIAL_INFIRMARY_LOGS,
-  StudentMedicalProfile,
   getHealthData,
   updateMedicalProfileAction,
 } from "@/actions/health";

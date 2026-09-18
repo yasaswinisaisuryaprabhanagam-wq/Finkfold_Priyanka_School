@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useEffect, useTransition } from "react";
+import type { OutPassRequest } from "@/types/self-service";
+import { INITIAL_OUTPASSES, INITIAL_MESS_MENU } from "@/types/self-service";
 import {
-  INITIAL_OUTPASSES,
-  INITIAL_MESS_MENU,
-  OutPassRequest,
   getOutPassesData,
   submitOutPassAction,
   submitMessFeedbackAction,
