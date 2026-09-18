@@ -93,10 +93,11 @@ function LoginForm() {
       try {
         const { data: profile } = await supabase
           .from("profiles")
-          .select("role")
+          .select("role, primary_role")
           .eq("id", data.user.id)
           .maybeSingle();
-        if (profile?.role) role = profile.role;
+        if (profile?.primary_role) role = profile.primary_role;
+        else if (profile?.role) role = profile.role;
       } catch {
         // Fallback to selected role
       }

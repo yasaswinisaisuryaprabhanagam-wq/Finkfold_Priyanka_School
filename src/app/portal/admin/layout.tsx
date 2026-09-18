@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { getProfile } from "@/lib/auth";
+import { getProfile, getAllCampuses } from "@/lib/auth";
 import { SCHOOL } from "@/lib/school-config";
 import SignOutButton from "@/components/SignOutButton";
+import BranchSwitcher from "@/components/BranchSwitcher";
 import { redirect } from "next/navigation";
 
 export default async function AdminPortalLayout({
@@ -28,17 +29,25 @@ export default async function AdminPortalLayout({
   // ───────────────────────────────────────────────────────────
 
   const profile = userProfile;
-  const isAdmin = profile.role === "school_admin" || profile.role === "super_admin";
+  const isSuperAdmin =
+    profile.role === "super_admin" ||
+    profile.primary_role === "super_admin" ||
+    (profile.roles && profile.roles.includes("super_admin"));
+
+  const campuses = await getAllCampuses();
 
   const navItems = [
     { href: "/portal/admin",                       label: "Executive Overview",     icon: "📊", exact: true },
-    { href: "/portal/admin/circulars",             label: "School Circulars",       icon: "📢" },
-    { href: "/portal/admin/homework",              label: "Homework Hub",           icon: "📝" },
-    { href: "/portal/admin/analytics",             label: "AI Analytics",           icon: "🤖" },
+    { href: "/portal/admin/treasury",              label: "Centralized Treasury (HQ)", icon: "🏛️" },
+    { href: "/portal/admin/fees",                  label: "Fee Counter & Cash POS", icon: "💳" },
+    { href: "/portal/admin/academics",             label: "Academic Setup",         icon: "📚" },
     { href: "/portal/admin/classes",               label: "Classes & Sections",     icon: "🏫" },
     { href: "/portal/admin/students",              label: "Student Registry",       icon: "👥" },
     { href: "/portal/admin/admissions",            label: "Admissions",             icon: "📋" },
     { href: "/portal/admin/staff",                 label: "Staff Management",       icon: "👨‍🏫" },
+    { href: "/portal/admin/circulars",             label: "School Circulars",       icon: "📢" },
+    { href: "/portal/admin/homework",              label: "Homework Hub",           icon: "📝" },
+    { href: "/portal/admin/analytics",             label: "AI Analytics",           icon: "🤖" },
     { href: "/portal/admin/promotions",            label: "Year-End Promotions",    icon: "🎓" },
     { href: "/portal/admin/whatsapp",              label: "WhatsApp Audit Log",     icon: "💬" },
     { href: "/portal/admin/whatsapp/setup",        label: "WhatsApp Setup",         icon: "📲" },
@@ -76,7 +85,7 @@ export default async function AdminPortalLayout({
             <div className="overflow-hidden">
               <div className="text-white text-xs font-semibold truncate">{profile.full_name}</div>
               <div className="text-white/50 text-[10px]">
-                {profile.role === "super_admin" ? "Super Admin" : "School Admin"}
+                {profile.role === "super_admin" ? "Super Admin (Trust HQ)" : "Branch Admin"}
               </div>
             </div>
           </div>
@@ -102,8 +111,8 @@ export default async function AdminPortalLayout({
 
       {/* ── Main ── */}
       <div className="portal-main">
-        <header className="portal-topbar gap-4">
-          <div className="flex-1">
+        <header className="portal-topbar gap-4 flex-wrap">
+          <div className="flex-1 min-w-[200px]">
             <h2 className="text-sm font-bold text-slate-800" style={{ fontFamily: "Outfit, sans-serif" }}>
               Admin Control Panel
             </h2>
@@ -112,6 +121,12 @@ export default async function AdminPortalLayout({
             </p>
           </div>
           <div className="flex items-center gap-3">
+            {/* Multi-Branch Switcher */}
+            <BranchSwitcher
+              currentSchoolId={profile.school_id}
+              campuses={campuses}
+              isSuperAdmin={!!isSuperAdmin}
+            />
             <span className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 font-medium text-xs border border-emerald-200">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
               All Systems Operational

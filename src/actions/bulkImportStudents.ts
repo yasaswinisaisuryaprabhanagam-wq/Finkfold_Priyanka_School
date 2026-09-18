@@ -137,10 +137,10 @@ export async function commitBulkImport(
   }
 
   // Single batch transaction
-  const { error } = await adminClient
+  const { data: insertedStudents, error } = await adminClient
     .from("students")
     .insert(toInsert)
-    .select("id");
+    .select("id, school_id, class_id, roll_no");
 
   if (error) {
     return {
@@ -149,6 +149,38 @@ export async function commitBulkImport(
       skipped: rows.length,
       dbError: error.message,
     };
+  }
+
+  // Also record enrollments for the active academic session
+  if (insertedStudents && insertedStudents.length > 0) {
+    try {
+      const { data: currentYear } = await adminClient
+        .from("academic_years")
+        .select("id, name")
+        .eq("school_id", schoolId)
+        .eq("is_current", true)
+        .maybeSingle();
+
+      const yearName = currentYear?.name || "2026-2027";
+      const yearId = currentYear?.id || null;
+
+      const enrollments = insertedStudents.map((s: any) => ({
+        school_id: s.school_id,
+        student_id: s.id,
+        class_id: s.class_id,
+        academic_year_id: yearId,
+        academic_year: yearName,
+        roll_no: s.roll_no,
+        status: "active",
+        enrolled_on: new Date().toISOString().slice(0, 10),
+      }));
+
+      await adminClient
+        .from("student_enrollments")
+        .upsert(enrollments, { onConflict: "student_id,academic_year" });
+    } catch (enrollErr) {
+      console.warn("Could not record initial student_enrollments:", enrollErr);
+    }
   }
 
   revalidatePath("/portal/admin/students");

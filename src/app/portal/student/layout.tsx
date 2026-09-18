@@ -31,6 +31,7 @@ export default async function StudentPortalLayout({
 
   const navItems = [
     { href: "/portal/student",                label: "Attendance",      icon: "📊", exact: true },
+    { href: "/portal/student/fees",           label: "Fee Receipts & Dues", icon: "🧾" },
     { href: "/portal/student/timetable",      label: "Timetable",       icon: "🗓️" },
     { href: "/portal/student/homework",       label: "Homework",        icon: "📝" },
     { href: "/portal/student/circulars",      label: "Circulars",       icon: "📢" },

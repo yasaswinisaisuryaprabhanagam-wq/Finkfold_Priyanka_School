@@ -13,16 +13,18 @@ export default async function DashboardPage(props: {
   const initialView = (searchParams.view as "faculty" | "admin" | "student") || undefined;
   const initialStudentId = searchParams.studentId || undefined;
 
-  let profile = await getProfile();
-  if (!profile) {
-    profile = {
-      id: "preview-user-id",
-      school_id: SCHOOL.id,
-      full_name: initialView === "student" ? "Kiran (Student)" : initialView === "admin" ? "School Administrator" : "Kiran Sir (Faculty)",
-      role: (initialView === "admin" ? "school_admin" : initialView === "student" ? "student" : "teacher") as any,
-      phone: null,
-    };
-  }
+  const rawProfile = await getProfile();
+  const profile = rawProfile || {
+    id: "preview-user-id",
+    organization_id: null,
+    school_id: SCHOOL.id,
+    full_name: initialView === "student" ? "Kiran (Student)" : initialView === "admin" ? "School Administrator" : "Kiran Sir (Faculty)",
+    role: (initialView === "admin" ? "school_admin" : initialView === "student" ? "student" : "teacher") as any,
+    roles: [(initialView === "admin" ? "school_admin" : initialView === "student" ? "student" : "teacher")],
+    primary_role: (initialView === "admin" ? "school_admin" : initialView === "student" ? "student" : "teacher"),
+    phone: null,
+    avatar_url: null,
+  };
 
   const adminClient = await createAdminClient();
 
