@@ -197,15 +197,45 @@ Unlike legacy portals that force all users onto a single generic login page with
 1. **Easy Sign-in without Email**:
    - Enter your **Admission Number** (e.g., `PRIY-2026-001` or `001`) found on your school ID card or fee receipt.
    - Enter your password.
-2. **Fee Portal & Dynamic UPI Payment (`/portal/student/fees`)**:
-   - View itemized fee dues for the term (Tuition, Transport, Examination, Books).
-   - Scan the **Dynamic UPI QR Code**: Opens Google Pay, PhonePe, or Paytm with the exact amount and account pre-filled.
-   - Download official school digital fee receipts instantly after payment verification.
-3. **Attendance & Academic Progress**:
-   - View full month-by-month attendance calendar (Present/Absent/Holiday).
-   - Track overall attendance percentage to ensure state board compliance (75%+).
-4. **School Circulars & Timetable**:
-   - View weekly timetable schedule and download exam circulars.
+2. **Smart Transport & Commute Management (`/portal/student/transport`)**:
+   - **Dynamic Route Subscription**: Browse bus routes and nearest stops with real-time pickup/drop times and term fee calculation (e.g. ₹4,800/term for Santhi Nagar Circle).
+   - **Live Safe-Ride GPS Tracking**: Interactive map visualization displaying live vehicle speed (e.g. 34 km/h), distance, upcoming stop, and dynamic 7-minute ETA countdown.
+   - **Digital Transit Boarding Pass**: High-visibility dynamic QR pass (`QR-BUS-PRIY-2026-001`). Scanning upon entering the bus logs ingress and triggers automated "Safe Boarding" WhatsApp notification.
+   - **Daily Manifest Opt-Out ("Not taking bus today")**: Parents toggle when picking up personally, immediately updating the driver's manifest so the bus does not wait.
+
+3. **Campus E-Commerce: Uniforms, Books & Supplies (`/portal/student/store`)**:
+   - **Class Academic Kits**: Complete curriculum bundles (e.g. Class 10 kit: 14 textbooks, 10 notebooks, geometry instruments).
+   - **Interactive Sizing Matrix**: Select chest sizes (28, 30, 32, 34, 36) and shoe sizes (4 to 9) with visual fit guide.
+   - **Finkfold Reward Points Engine**: Students earn reward points for on-time tuition fee payments (150 Pts). Points can be redeemed at checkout for instant discounts.
+   - **Zero-Queue Lunch-Break Pickup**: Generates digital QR voucher (`QR-STORE-ORD-xxx`). Once packed by the school storekeeper, students simply present the QR pass during lunch break to collect their ready-to-go kit.
+
+4. **Academic Electives & Extracurricular Bidding (`/portal/student/electives`)**:
+   - **Second Language Choice Filling**: Rank 1st, 2nd, and 3rd preferences (Sanskrit, Hindi, French) for automated capacity allocation.
+   - **Capacity-Driven Club Bidding**: Live seat gauges (e.g. Robotics Lab 28/30 seats filled; Debate Club 25/25 seats filled with automated digital waitlist).
+   - **Annual Event Registrations**: 1-click registration for Annual Sports Day (100m sprint, Relay, Long Jump) and District Science Olympiad.
+
+5. **Digital Out-Pass & Mess Management (`/portal/student/outpass`)**:
+   - **Out-Pass Request Engine**: Submit weekend or day leave with exit/return date, companion name, and reason.
+   - **Multi-Tier Digital Approval Workflow**: Parent WhatsApp consent -> Hostel Warden sign-off -> Temporary Security Gate Exit QR Code (`QR-GATE-OP-xxx`).
+   - **Weekly Nutri-Balanced Cafeteria Menu**: Full Monday to Sunday meal breakdown (Breakfast, Lunch, Evening Snacks, Dinner) with dietary tags.
+   - **Dining Feedback & Special Poll**: Rate daily lunch hygiene/taste and cast votes for Friday's feast.
+
+6. **AI-Driven Document Vault & Helpdesk ("Zero-Visit" Front Office) (`/portal/student/documents`)**:
+   - **1-Click Auto-Generated Certificates**:
+     - *Bonafide Student Certificate*: Complete with institutional crest, serial number, Principal's digital signature, and verification QR code.
+     - *Section 80C Fee Paid Tax Exemption Certificate*: Itemized tuition breakdown with Trust PAN & TAN for parent Income Tax filing.
+     - *Attendance Compliance Certificate*: Certified 94.2% attendance record for passports, visas, or scholarship applications.
+   - **Structured Support Helpdesk**: Raise tickets across Transport, Accounts, Academics, and ID Card Correction with live SLA response countdown timers (e.g. 14h SLA remaining).
+
+7. **Health, Diet & Medical Vault (`/portal/student/health`)**:
+   - **Emergency Medical Card**: Blood group (B +ve), height, weight, chronic conditions, and emergency pediatrician contacts.
+   - **Instant Faculty Allergy Warning**: Updating allergies immediately flags the student's profile on the faculty roll-call roster and infirmary records.
+   - **Infirmary & Medication Log**: Real-time chronological timeline of nurse visits (symptoms, body temperature, medications administered like Paracetamol syrup, rest duration, and WhatsApp alert status).
+
+8. **Fee Portal & Dynamic UPI Payment (`/portal/student/fees`)**:
+   - Itemized fee dues for the term (Tuition, Transport, Examination, Books).
+   - Scan **Dynamic UPI QR Code**: Opens Google Pay, PhonePe, or Paytm with the exact amount and branch bank account pre-filled.
+   - Instant digital fee receipts download.
 
 ---
 
