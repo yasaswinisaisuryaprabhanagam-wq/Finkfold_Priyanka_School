@@ -24,6 +24,26 @@ import {
   INITIAL_RELIEF_REQUESTS,
   FieldTripManifestRecord,
   INITIAL_FIELD_TRIP_MANIFEST,
+  UnitPlan,
+  INITIAL_UNIT_PLANS,
+  SubjectiveSubmission,
+  INITIAL_ESSAY_SUBMISSIONS,
+  ProjectTeam,
+  INITIAL_GROUP_PROJECTS,
+  SeatingDesk,
+  INITIAL_SEATING_DESKS,
+  BehavioralPairingWarning,
+  INITIAL_PAIRING_WARNINGS,
+  DeviceLockState,
+  SenAccommodationProfile,
+  INITIAL_SEN_PROFILES,
+  INITIAL_TEACHER_HR,
+  StoreInventoryItem,
+  INITIAL_STORE_ITEMS,
+  StoreRequisitionOrder,
+  INITIAL_STORE_ORDERS,
+  MaintenanceTicket,
+  INITIAL_MAINTENANCE_TICKETS,
 } from "@/types/faculty";
 import {
   StudentLeave,
@@ -49,6 +69,27 @@ let fieldTripManifest = { ...INITIAL_FIELD_TRIP_MANIFEST };
 let leavesData = [...INITIAL_LEAVES];
 let isOfficeHoursActive = true;
 let lostFoundCatalog = [...INITIAL_LOST_FOUND_ITEMS];
+
+// Features 15–23 State
+let unitPlans = [...INITIAL_UNIT_PLANS];
+let essaySubmissions = [...INITIAL_ESSAY_SUBMISSIONS];
+let groupProjects = [...INITIAL_GROUP_PROJECTS];
+let seatingDesks = [...INITIAL_SEATING_DESKS];
+let pairingWarnings = [...INITIAL_PAIRING_WARNINGS];
+let deviceLockState: DeviceLockState = {
+  isLocked: false,
+  lockMessage: "Please look at the teacher. Screen locked by Mrs. Priyanka.",
+  totalLockedDevices: 42,
+};
+let senProfiles = [...INITIAL_SEN_PROFILES];
+let teacherHrData = {
+  leaveBalance: { ...INITIAL_TEACHER_HR.leaveBalance },
+  payslips: [...INITIAL_TEACHER_HR.payslips],
+  biometrics: [...INITIAL_TEACHER_HR.biometrics],
+};
+let storeItems = [...INITIAL_STORE_ITEMS];
+let storeOrders = [...INITIAL_STORE_ORDERS];
+let maintenanceTickets = [...INITIAL_MAINTENANCE_TICKETS];
 
 // ── 1. Dashboard Aggregator ──────────────────────────────────────────────────
 export async function getFacultyDashboardDataAction() {
@@ -524,9 +565,364 @@ export async function exportFieldTripManifestAction() {
     ]),
   ];
 
-  return {
+    return {
     success: true,
     csv: csvRows.map((r) => r.join(",")).join("\n"),
     message: "Official passenger manifest generated with 100% verified payment and parent permission records.",
   };
 }
+
+// ── 11. Collaborative Unit Planner & OBE Tracker Actions (Feature 15) ─────────
+export async function getFacultyCurriculumDataAction() {
+  const nepAttainmentAvg = Math.round(
+    unitPlans[0]?.learningOutcomes.reduce((acc, lo) => acc + lo.attainedPercent, 0) /
+      (unitPlans[0]?.learningOutcomes.length || 1)
+  );
+
+  return {
+    unitPlans,
+    nepAttainmentAvg,
+    coTeachersSyncedCount: unitPlans[0]?.coTeachers.length || 0,
+    totalOutcomesMapped: unitPlans[0]?.learningOutcomes.length || 0,
+  };
+}
+
+export async function syncUnitPlanAction(payload: {
+  unitId: string;
+  newResourceTitle: string;
+  newResourceUrl: string;
+  resourceType: "video" | "simulation" | "worksheet" | "slide_deck";
+}) {
+  unitPlans = unitPlans.map((u) => {
+    if (u.id === payload.unitId) {
+      return {
+        ...u,
+        digitalResources: [
+          ...u.digitalResources,
+          {
+            title: payload.newResourceTitle,
+            url: payload.newResourceUrl,
+            type: payload.resourceType,
+          },
+        ],
+        coTeachers: u.coTeachers.map((ct) => ({
+          ...ct,
+          lastSyncedAt: "Just now (Synced)",
+        })),
+      };
+    }
+    return u;
+  });
+
+  revalidatePath("/portal/faculty/curriculum");
+  return {
+    success: true,
+    message: "Unit plan synchronized across all Grade 10 sections (10-A and 10-B) successfully!",
+  };
+}
+
+// ── 12. Voice-Note Feedback & AI Rubric Grader Actions (Feature 16) ────────────
+export async function getFacultyVoiceGraderDataAction() {
+  return {
+    submissions: essaySubmissions,
+  };
+}
+
+export async function evaluateEssayWithAiRubricAction(submissionId: string) {
+  const sub = essaySubmissions.find((s) => s.id === submissionId);
+  if (!sub) throw new Error("Submission not found");
+
+  // Re-calculate AI suggested score based on rubric
+  const total = sub.rubric.reduce((acc, r) => acc + r.score, 0);
+
+  return {
+    success: true,
+    suggestedScore: total,
+    rubric: sub.rubric,
+    message: `AI Rubric analyzed! Suggested Score: ${total}/${sub.maxScore} based on syntax coherence and evidence depth.`,
+  };
+}
+
+export async function dispatchVoiceFeedbackAction(payload: {
+  submissionId: string;
+  score: number;
+  voiceDurationSec: number;
+  writtenRemark: string;
+}) {
+  essaySubmissions = essaySubmissions.map((s) =>
+    s.id === payload.submissionId
+      ? {
+          ...s,
+          status: "graded",
+          aiSuggestedScore: payload.score,
+          teacherVoiceDurationSec: payload.voiceDurationSec,
+          teacherVoiceNoteUrl: "/mock-voice-notes/voice-note-feedback.mp3",
+          teacherWrittenRemark: payload.writtenRemark,
+        }
+      : s
+  );
+
+  revalidatePath("/portal/faculty/voice-grader");
+  revalidatePath("/portal/student/academics");
+
+  return {
+    success: true,
+    message: "Voice note and rubric feedback dispatched! Student portal notified immediately.",
+  };
+}
+
+// ── 13. Group Project & Peer-Review Hub Actions (Feature 17) ──────────────────
+export async function getFacultyGroupProjectsDataAction() {
+  return {
+    projects: groupProjects,
+  };
+}
+
+export async function submitPeerReviewAction(payload: {
+  teamId: string;
+  targetStudentId: string;
+  score: number;
+}) {
+  groupProjects = groupProjects.map((team) => {
+    if (team.teamId === payload.teamId) {
+      return {
+        ...team,
+        members: team.members.map((m) =>
+          m.studentId === payload.targetStudentId
+            ? { ...m, peerScoreAvg: Number(((m.peerScoreAvg + payload.score) / 2).toFixed(1)) }
+            : m
+        ),
+      };
+    }
+    return team;
+  });
+
+  revalidatePath("/portal/faculty/group-projects");
+  return {
+    success: true,
+    message: "Peer review contribution registered! Contribution heatmap recalculated.",
+  };
+}
+
+// ── 14. Smart Seating Chart & "Eyes on Me" Device Lock Actions (Features 18 & 19)
+export async function getFacultySeatingChartDataAction() {
+  return {
+    desks: seatingDesks,
+    warnings: pairingWarnings,
+    deviceLock: deviceLockState,
+  };
+}
+
+export async function swapSeatingDesksAction(deskIdA: string, deskIdB: string) {
+  const deskA = seatingDesks.find((d) => d.deskId === deskIdA);
+  const deskB = seatingDesks.find((d) => d.deskId === deskIdB);
+
+  if (!deskA || !deskB) throw new Error("Desks not found");
+
+  const tempStudentId = deskA.studentId;
+  const tempStudentName = deskA.studentName;
+  const tempRollNo = deskA.rollNo;
+  const tempGender = deskA.gender;
+  const tempInitials = deskA.photoInitials;
+  const tempBehavior = deskA.behaviorNote;
+  const tempConflict = deskA.hasConflictRisk;
+
+  deskA.studentId = deskB.studentId;
+  deskA.studentName = deskB.studentName;
+  deskA.rollNo = deskB.rollNo;
+  deskA.gender = deskB.gender;
+  deskA.photoInitials = deskB.photoInitials;
+  deskA.behaviorNote = deskB.behaviorNote;
+  deskA.hasConflictRisk = deskB.hasConflictRisk;
+
+  deskB.studentId = tempStudentId;
+  deskB.studentName = tempStudentName;
+  deskB.rollNo = tempRollNo;
+  deskB.gender = tempGender;
+  deskB.photoInitials = tempInitials;
+  deskB.behaviorNote = tempBehavior;
+  deskB.hasConflictRisk = tempConflict;
+
+  seatingDesks = [...seatingDesks];
+  revalidatePath("/portal/faculty/seating-chart");
+
+  return {
+    success: true,
+    desks: seatingDesks,
+    message: "Desk assignments swapped! Seating map updated for all substitute and classroom teachers.",
+  };
+}
+
+export async function toggleDeviceLockAction(payload?: { message?: string }) {
+  deviceLockState.isLocked = !deviceLockState.isLocked;
+  deviceLockState.lockedAt = deviceLockState.isLocked ? new Date().toLocaleTimeString() : undefined;
+  if (payload?.message) {
+    deviceLockState.lockMessage = payload.message;
+  }
+
+  revalidatePath("/portal/faculty/seating-chart");
+  revalidatePath("/portal/student");
+
+  return {
+    success: true,
+    isLocked: deviceLockState.isLocked,
+    message: deviceLockState.isLocked
+      ? `🚨 "Eyes on Me" Screen Lock Activated! All 42 student devices on school network frozen.`
+      : `Screen lock released. Student devices unlocked.`,
+  };
+}
+
+// ── 15. Inclusive Education & SEN Accommodations Vault Actions (Feature 20) ────
+export async function getFacultySenDataAction() {
+  return {
+    profiles: senProfiles,
+    totalSenStudents: senProfiles.length,
+  };
+}
+
+export async function updateSenAccommodationAction(payload: {
+  studentId: string;
+  newAccommodation: string;
+}) {
+  senProfiles = senProfiles.map((p) =>
+    p.studentId === payload.studentId
+      ? { ...p, actionableAccommodations: [...p.actionableAccommodations, payload.newAccommodation] }
+      : p
+  );
+
+  revalidatePath("/portal/faculty/sen");
+  revalidatePath("/portal/faculty");
+
+  return {
+    success: true,
+    message: "Confidential accommodation saved! Updated in teacher roster confidential view.",
+  };
+}
+
+// ── 16. Faculty Self-Service HR, Payroll & Biometrics Actions (Feature 21) ─────
+export async function getFacultyHrDataAction() {
+  return {
+    ...teacherHrData,
+  };
+}
+
+export async function applyTeacherLeaveAction(payload: {
+  leaveType: "casualLeave" | "sickLeave" | "earnedLeave";
+  startDate: string;
+  endDate: string;
+  reason: string;
+}) {
+  const current = teacherHrData.leaveBalance[payload.leaveType];
+  if (current.remaining <= 0) {
+    return {
+      success: false,
+      message: `Cannot apply: Insufficient balance in ${payload.leaveType}. Remaining: 0 days.`,
+    };
+  }
+
+  teacherHrData.leaveBalance[payload.leaveType] = {
+    ...current,
+    used: current.used + 1,
+    remaining: current.remaining - 1,
+  };
+
+  revalidatePath("/portal/faculty/hr");
+  return {
+    success: true,
+    leaveBalance: teacherHrData.leaveBalance,
+    message: `Leave application submitted to Principal's desk! 1 day deducted from ${payload.leaveType} balance.`,
+  };
+}
+
+export async function regularizeBiometricAttendanceAction(payload: {
+  logId: string;
+  reason: string;
+}) {
+  teacherHrData.biometrics = teacherHrData.biometrics.map((b) =>
+    b.id === payload.logId
+      ? { ...b, status: "regularized", regularizationReason: payload.reason }
+      : b
+  );
+
+  revalidatePath("/portal/faculty/hr");
+  return {
+    success: true,
+    message: "Regularization request submitted to HR! Attendance record marked pending approval.",
+  };
+}
+
+// ── 17. Digital Store Indent / Inventory Requisition Actions (Feature 22) ──────
+export async function getFacultyStoreIndentDataAction() {
+  return {
+    catalog: storeItems,
+    orders: storeOrders,
+  };
+}
+
+export async function submitStoreIndentAction(payload: {
+  items: { itemId: string; itemName: string; quantity: number }[];
+  deliveryRoom: string;
+}) {
+  const newOrder: StoreRequisitionOrder = {
+    id: "indent-" + Math.floor(100 + Math.random() * 900),
+    requestedBy: "Mrs. Priyanka Devi",
+    requestedAt: "Just now",
+    items: payload.items,
+    deliveryRoom: payload.deliveryRoom,
+    status: "pending_approval",
+  };
+
+  storeOrders = [newOrder, ...storeOrders];
+
+  // Deduct stock
+  payload.items.forEach((reqItem) => {
+    storeItems = storeItems.map((item) =>
+      item.id === reqItem.itemId
+        ? { ...item, stockAvailable: Math.max(0, item.stockAvailable - reqItem.quantity) }
+        : item
+    );
+  });
+
+  revalidatePath("/portal/faculty/store-indent");
+  return {
+    success: true,
+    order: newOrder,
+    message: `Requisition order #${newOrder.id} submitted! Store manager alerted for classroom delivery.`,
+  };
+}
+
+// ── 18. Campus Maintenance Helpdesk Ticketing Actions (Feature 23) ─────────────
+export async function getFacultyMaintenanceDataAction() {
+  return {
+    tickets: maintenanceTickets,
+  };
+}
+
+export async function createMaintenanceTicketAction(payload: {
+  title: string;
+  location: string;
+  category: MaintenanceTicket["category"];
+  severity: MaintenanceTicket["severity"];
+  description: string;
+}) {
+  const newTicket: MaintenanceTicket = {
+    id: "maint-" + Math.floor(100 + Math.random() * 900),
+    title: payload.title,
+    location: payload.location,
+    category: payload.category,
+    severity: payload.severity,
+    reportedAt: "Just now",
+    status: "pending",
+    description: payload.description,
+  };
+
+  maintenanceTickets = [newTicket, ...maintenanceTickets];
+
+  revalidatePath("/portal/faculty/maintenance");
+  return {
+    success: true,
+    ticket: newTicket,
+    message: `Maintenance ticket #${newTicket.id} logged! Dispatched to Estate/Facility Manager.`,
+  };
+}
+

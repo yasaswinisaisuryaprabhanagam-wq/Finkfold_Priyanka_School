@@ -479,3 +479,418 @@ export const INITIAL_FIELD_TRIP_MANIFEST: FieldTripManifestRecord = {
     { studentId: "s-10a-05", studentName: "Rahul Varma", rollNo: 5, parentPhone: "+91 94901 88421", emergencyContact: "+91 94901 88421", feePaid: true, parentPermissionGranted: true, busSeatNumber: 7, checkedInAtBus: true },
   ],
 };
+
+// ── 9. Collaborative Unit Planner & OBE Tracker Types (Feature 15) ─────────────
+export type BloomLevel = "Remembering" | "Understanding" | "Applying" | "Analyzing" | "Evaluating" | "Creating";
+
+export interface LearningOutcomeItem {
+  id: string;
+  code: string; // e.g. "LO-MATH-10.4"
+  description: string;
+  bloomLevel: BloomLevel;
+  nep2020Pillar: "Critical Thinking" | "Foundational Numeracy" | "Experiential Learning" | "Scientific Inquiry";
+  attainedPercent: number;
+}
+
+export interface UnitPlan {
+  id: string;
+  subject: string;
+  grade: string;
+  title: string;
+  targetDurationWeeks: number;
+  coTeachers: {
+    teacherName: string;
+    section: string;
+    lastSyncedAt: string;
+  }[];
+  objectives: string[];
+  learningOutcomes: LearningOutcomeItem[];
+  digitalResources: {
+    title: string;
+    url: string;
+    type: "video" | "simulation" | "worksheet" | "slide_deck";
+  }[];
+  assessmentPlan: string;
+  nepCompliant: boolean;
+}
+
+export const INITIAL_UNIT_PLANS: UnitPlan[] = [
+  {
+    id: "unit-math-10-quad",
+    subject: "Mathematics",
+    grade: "Grade 10",
+    title: "Unit 4: Quadratic Equations & Parabolic Optimization",
+    targetDurationWeeks: 3,
+    coTeachers: [
+      { teacherName: "Mrs. Priyanka Devi", section: "10-A", lastSyncedAt: "Today, 10:45 AM" },
+      { teacherName: "Mr. Satish Kumar", section: "10-B", lastSyncedAt: "Today, 10:45 AM" },
+    ],
+    objectives: [
+      "Formulate real-world financial and spatial projectile models using quadratic polynomials.",
+      "Evaluate roots using factorisation, completing the square, and discriminant analysis.",
+      "Analyse real vs complex discriminant boundaries in projectile trajectories.",
+    ],
+    learningOutcomes: [
+      { id: "lo-1", code: "LO-M10.4.1", description: "Identify quadratic standard form ax² + bx + c = 0", bloomLevel: "Remembering", nep2020Pillar: "Foundational Numeracy", attainedPercent: 94 },
+      { id: "lo-2", code: "LO-M10.4.2", description: "Solve contextual projectile problems using quadratic formula", bloomLevel: "Applying", nep2020Pillar: "Experiential Learning", attainedPercent: 82 },
+      { id: "lo-3", code: "LO-M10.4.3", description: "Analyse roots nature using discriminant (D > 0, D = 0, D < 0)", bloomLevel: "Analyzing", nep2020Pillar: "Critical Thinking", attainedPercent: 76 },
+    ],
+    digitalResources: [
+      { title: "Geogebra Parabola Simulator (Interactive)", url: "https://geogebra.org/m/parabola", type: "simulation" },
+      { title: "Khan Academy: Deriving Quadratic Formula", url: "https://khanacademy.org/math/algebra", type: "video" },
+      { title: "CBSE Exemplar Problem Set PDF", url: "https://cbseacademic.nic.in/exemplar", type: "worksheet" },
+    ],
+    assessmentPlan: "1 Formative diagnostic drill (OMR 15-Q) + 1 peer collaborative bridge project + 1 summative term paper.",
+    nepCompliant: true,
+  },
+];
+
+// ── 10. Voice-Note Feedback & AI Rubric Grader Types (Feature 16) ─────────────
+export interface RubricCriterion {
+  category: "Structure & Coherence" | "Vocabulary & Language" | "Depth of Argument" | "Grammar & Mechanics";
+  score: number;
+  maxScore: number;
+  rationale: string;
+}
+
+export interface SubjectiveSubmission {
+  id: string;
+  studentId: string;
+  studentName: string;
+  rollNo: number;
+  assignmentTitle: string;
+  submittedAt: string;
+  essayContent: string;
+  status: "pending_review" | "graded";
+  aiSuggestedScore?: number;
+  maxScore: number;
+  rubric: RubricCriterion[];
+  teacherVoiceNoteUrl?: string;
+  teacherVoiceDurationSec?: number;
+  teacherWrittenRemark?: string;
+}
+
+export const INITIAL_ESSAY_SUBMISSIONS: SubjectiveSubmission[] = [
+  {
+    id: "sub-eng-10a-01",
+    studentId: "s-10a-01",
+    studentName: "Arjun Reddy",
+    rollNo: 1,
+    assignmentTitle: "Reflective Essay: Ethical Implications of Artificial Intelligence in Healthcare",
+    submittedAt: "Yesterday, 04:30 PM",
+    essayContent:
+      "Artificial Intelligence has transformed modern diagnostics by analyzing radiological scans faster than human clinicians. However, the ethical liability in cases of algorithmic misdiagnosis remains unaddressed in Indian health jurisprudence. Diagnostic autonomy cannot replace empathetic physician care...",
+    status: "pending_review",
+    aiSuggestedScore: 17,
+    maxScore: 20,
+    rubric: [
+      { category: "Structure & Coherence", score: 4, maxScore: 5, rationale: "Strong thesis statement and fluid paragraph transitions with clear intro and conclusion." },
+      { category: "Vocabulary & Language", score: 5, maxScore: 5, rationale: "Sophisticated vocabulary usage ('jurisprudence', 'algorithmic liability', 'autonomous triage')." },
+      { category: "Depth of Argument", score: 4, maxScore: 5, rationale: "Presents balanced view of algorithmic efficiency vs humane care; could cite 1 more statutory act." },
+      { category: "Grammar & Mechanics", score: 4, maxScore: 5, rationale: "Minor punctuation slip in paragraph 3; overall clean syntax." },
+    ],
+  },
+  {
+    id: "sub-eng-10a-05",
+    studentId: "s-10a-05",
+    studentName: "Rahul Varma",
+    rollNo: 5,
+    assignmentTitle: "Reflective Essay: Ethical Implications of Artificial Intelligence in Healthcare",
+    submittedAt: "Yesterday, 06:12 PM",
+    essayContent:
+      "AI is very good because computers dont get tired and can check xray easily. But what if computer makes mistake? Doctor is responsible. We must teach computers better.",
+    status: "pending_review",
+    aiSuggestedScore: 11,
+    maxScore: 20,
+    rubric: [
+      { category: "Structure & Coherence", score: 3, maxScore: 5, rationale: "Brief paragraphs without formal connective transitions." },
+      { category: "Vocabulary & Language", score: 2, maxScore: 5, rationale: "Colloquial diction ('dont get tired', 'xray easily'). Needs academic terminology." },
+      { category: "Depth of Argument", score: 3, maxScore: 5, rationale: "Core ethical point identified but lacks elaboration or evidence." },
+      { category: "Grammar & Mechanics", score: 3, maxScore: 5, rationale: "Missing apostrophes ('dont') and capitalization." },
+    ],
+  },
+];
+
+// ── 11. Group Project & Peer-Review Hub Types (Feature 17) ───────────────────
+export interface PeerRating {
+  evaluatorStudentId: string;
+  targetStudentId: string;
+  ratingScore: number; // 1 to 5
+  feedbackComment: string;
+}
+
+export interface ProjectTeam {
+  teamId: string;
+  teamName: string;
+  projectTitle: string;
+  members: {
+    studentId: string;
+    studentName: string;
+    rollNo: number;
+    assignedRole: string;
+    contributionPercentage: number; // e.g. 75 vs 25
+    peerScoreAvg: number; // out of 5
+  }[];
+  milestonesCompleted: number;
+  totalMilestones: number;
+  peerEvaluationsCompleted: boolean;
+}
+
+export const INITIAL_GROUP_PROJECTS: ProjectTeam[] = [
+  {
+    teamId: "team-eco-10a-01",
+    teamName: "EcoTurbine Alpha",
+    projectTitle: "Designing Low-Cost Wind Kinetic Turbines for Rural Schools",
+    members: [
+      { studentId: "s-10a-01", studentName: "Arjun Reddy", rollNo: 1, assignedRole: "Hardware Prototype & 3D Blades", contributionPercentage: 65, peerScoreAvg: 4.8 },
+      { studentId: "s-10a-02", studentName: "Yasaswini Prabha", rollNo: 2, assignedRole: "Mathematical Modeling & Circuit Design", contributionPercentage: 30, peerScoreAvg: 4.6 },
+      { studentId: "s-10a-05", studentName: "Rahul Varma", rollNo: 5, assignedRole: "Poster & Slide Presentation", contributionPercentage: 5, peerScoreAvg: 2.1 },
+    ],
+    milestonesCompleted: 3,
+    totalMilestones: 4,
+    peerEvaluationsCompleted: true,
+  },
+];
+
+// ── 12. Smart Seating Chart & "Eyes on Me" Lock Types (Features 18 & 19) ───────
+export interface SeatingDesk {
+  deskId: string;
+  row: number;
+  col: number;
+  studentId: string | null;
+  studentName?: string;
+  rollNo?: number;
+  gender?: "M" | "F";
+  photoInitials?: string;
+  behaviorNote?: string;
+  hasConflictRisk?: boolean;
+}
+
+export interface BehavioralPairingWarning {
+  studentA: string;
+  studentB: string;
+  reason: string;
+  severity: "low" | "medium" | "high";
+}
+
+export interface DeviceLockState {
+  isLocked: boolean;
+  lockMessage: string;
+  lockedAt?: string;
+  totalLockedDevices: number;
+}
+
+export const INITIAL_SEATING_DESKS: SeatingDesk[] = [
+  { deskId: "d-r1-c1", row: 1, col: 1, studentId: "s-10a-01", studentName: "Arjun Reddy", rollNo: 1, gender: "M", photoInitials: "AR" },
+  { deskId: "d-r1-c2", row: 1, col: 2, studentId: "s-10a-02", studentName: "Yasaswini Prabha", rollNo: 2, gender: "F", photoInitials: "YP" },
+  { deskId: "d-r1-c3", row: 1, col: 3, studentId: "s-10a-03", studentName: "Kiran Kumar", rollNo: 3, gender: "M", photoInitials: "KK" },
+  { deskId: "d-r2-c1", row: 2, col: 1, studentId: "s-10a-04", studentName: "Priya Varma", rollNo: 4, gender: "F", photoInitials: "PV" },
+  { deskId: "d-r2-c2", row: 2, col: 2, studentId: "s-10a-05", studentName: "Rahul Varma", rollNo: 5, gender: "M", photoInitials: "RV", hasConflictRisk: true, behaviorNote: "Chatty when seated next to Arjun" },
+  { deskId: "d-r2-c3", row: 2, col: 3, studentId: null },
+];
+
+export const INITIAL_PAIRING_WARNINGS: BehavioralPairingWarning[] = [
+  { studentA: "Arjun Reddy", studentB: "Rahul Varma", reason: "Repeated classroom disruption & cross-talk logged on Conduct Ledger.", severity: "medium" },
+];
+
+// ── 13. Inclusive Education & SEN Accommodations Vault Types (Feature 20) ──────
+export interface SenAccommodationProfile {
+  studentId: string;
+  studentName: string;
+  rollNo: number;
+  primaryDiagnosis: "Dyslexia (Specific Learning Disability)" | "ADHD (Inattentive Type)" | "Sensory Processing Disorder" | "Generalized Academic Anxiety";
+  confidentialStarTag: boolean;
+  counselorName: string;
+  actionableAccommodations: string[];
+  examAccommodations: string[];
+  safePassGranted: boolean;
+}
+
+export const INITIAL_SEN_PROFILES: SenAccommodationProfile[] = [
+  {
+    studentId: "s-10a-03",
+    studentName: "Kiran Kumar",
+    rollNo: 3,
+    primaryDiagnosis: "Dyslexia (Specific Learning Disability)",
+    confidentialStarTag: true,
+    counselorName: "Dr. Sumathi (Licensed Clinical Child Psychologist)",
+    actionableAccommodations: [
+      "DO NOT force student to read aloud in front of the classroom without voluntary hand-raise.",
+      "Allow audio recordings of complex lectures or provide companion slide handouts.",
+      "Give verbal instructions in concise 2-step chunks.",
+    ],
+    examAccommodations: [
+      "Grant 15 minutes extra time per 1 hour of written examination.",
+      "Font size on exam papers should be minimum 14pt Arial or OpenDyslexic.",
+      "Ignore minor phonetic spelling slips in non-language subjects (Science, Social Studies).",
+    ],
+    safePassGranted: true,
+  },
+  {
+    studentId: "s-10a-05",
+    studentName: "Rahul Varma",
+    rollNo: 5,
+    primaryDiagnosis: "ADHD (Inattentive Type)",
+    confidentialStarTag: true,
+    counselorName: "Mrs. Meenakshi (School Counselor)",
+    actionableAccommodations: [
+      "Seat near the teacher front desk away from windows or noisy corridor doors.",
+      "Allow discreet 2-minute movement/sensory break every 30 minutes.",
+      "Break long multi-part assignments into sequential milestones.",
+    ],
+    examAccommodations: [
+      "Provide noise-dampening ear defenders or quiet side-room seating.",
+      "Allow water sip breaks during exam.",
+    ],
+    safePassGranted: false,
+  },
+];
+
+// ── 14. Faculty Self-Service HR, Payroll & Biometrics Types (Feature 21) ───────
+export interface TeacherLeaveBalance {
+  casualLeave: { total: number; used: number; remaining: number };
+  sickLeave: { total: number; used: number; remaining: number };
+  earnedLeave: { total: number; used: number; remaining: number };
+}
+
+export interface StaffPayslip {
+  id: string;
+  monthYear: string;
+  grossSalaryInr: number;
+  deductions: {
+    epf: number;
+    professionalTax: number;
+    tdsIncomeTax: number;
+    totalDeductions: number;
+  };
+  netPayInr: number;
+  disbursedDate: string;
+  downloadPdfUrl: string;
+}
+
+export interface BiometricLogEntry {
+  id: string;
+  date: string;
+  inTime: string;
+  outTime: string;
+  status: "on_time" | "late" | "missing_punch" | "regularized";
+  regularizationReason?: string;
+}
+
+export const INITIAL_TEACHER_HR: {
+  leaveBalance: TeacherLeaveBalance;
+  payslips: StaffPayslip[];
+  biometrics: BiometricLogEntry[];
+} = {
+  leaveBalance: {
+    casualLeave: { total: 12, used: 3, remaining: 9 },
+    sickLeave: { total: 10, used: 2, remaining: 8 },
+    earnedLeave: { total: 15, used: 0, remaining: 15 },
+  },
+  payslips: [
+    {
+      id: "pay-2026-08",
+      monthYear: "August 2026",
+      grossSalaryInr: 58000,
+      deductions: { epf: 1800, professionalTax: 200, tdsIncomeTax: 2500, totalDeductions: 4500 },
+      netPayInr: 53500,
+      disbursedDate: "01 September 2026",
+      downloadPdfUrl: "#payslip-aug-2026",
+    },
+    {
+      id: "pay-2026-07",
+      monthYear: "July 2026",
+      grossSalaryInr: 58000,
+      deductions: { epf: 1800, professionalTax: 200, tdsIncomeTax: 2500, totalDeductions: 4500 },
+      netPayInr: 53500,
+      disbursedDate: "01 August 2026",
+      downloadPdfUrl: "#payslip-jul-2026",
+    },
+  ],
+  biometrics: [
+    { id: "bio-1", date: "Today (18 Sep)", inTime: "08:14 AM", outTime: "Active", status: "on_time" },
+    { id: "bio-2", date: "Yesterday (17 Sep)", inTime: "08:18 AM", outTime: "04:45 PM", status: "on_time" },
+    { id: "bio-3", date: "Monday (15 Sep)", inTime: "08:42 AM", outTime: "04:50 PM", status: "missing_punch", regularizationReason: "Scanner failed to register thumb at Gate 2" },
+  ],
+};
+
+// ── 15. Digital Store Indent / Inventory Requisition Types (Feature 22) ────────
+export interface StoreInventoryItem {
+  id: string;
+  itemName: string;
+  category: "Stationery" | "Lab Chemicals" | "Classroom Electronics" | "Registers & Printing";
+  unit: string;
+  stockAvailable: number;
+}
+
+export interface StoreRequisitionOrder {
+  id: string;
+  requestedBy: string;
+  requestedAt: string;
+  items: { itemId: string; itemName: string; quantity: number }[];
+  deliveryRoom: string;
+  status: "pending_approval" | "packed_dispatched" | "delivered";
+}
+
+export const INITIAL_STORE_ITEMS: StoreInventoryItem[] = [
+  { id: "st-01", itemName: "Whiteboard Dry Erase Markers (Blue/Black Pack of 4)", category: "Stationery", unit: "pack", stockAvailable: 85 },
+  { id: "st-02", itemName: "Whiteboard Duster / Felt Eraser", category: "Stationery", unit: "piece", stockAvailable: 40 },
+  { id: "st-03", itemName: "A4 Printing & Exam Ream (75 GSM - 500 Sheets)", category: "Registers & Printing", unit: "ream", stockAvailable: 120 },
+  { id: "st-04", itemName: "Red Gel Valuation Pens (Box of 10)", category: "Stationery", unit: "box", stockAvailable: 65 },
+  { id: "st-05", itemName: "Hydrochloric Acid HCl 0.1M (500ml Laboratory Grade)", category: "Lab Chemicals", unit: "bottle", stockAvailable: 18 },
+  { id: "st-06", itemName: "HDMI to USB-C Projector Display Cable (3m)", category: "Classroom Electronics", unit: "piece", stockAvailable: 12 },
+];
+
+export const INITIAL_STORE_ORDERS: StoreRequisitionOrder[] = [
+  {
+    id: "indent-881",
+    requestedBy: "Mrs. Priyanka Devi",
+    requestedAt: "Today, 09:20 AM",
+    items: [
+      { itemId: "st-01", itemName: "Whiteboard Dry Erase Markers (Blue/Black Pack of 4)", quantity: 2 },
+      { itemId: "st-04", itemName: "Red Gel Valuation Pens (Box of 10)", quantity: 1 },
+    ],
+    deliveryRoom: "Staff Room Locker #4 (Class 10-A)",
+    status: "packed_dispatched",
+  },
+];
+
+// ── 16. Campus Maintenance Helpdesk Ticketing Types (Feature 23) ───────────────
+export interface MaintenanceTicket {
+  id: string;
+  title: string;
+  location: string;
+  category: "HVAC / Air Conditioning" | "Electrical & Projector" | "Plumbing" | "Carpentry & Desks";
+  severity: "low" | "medium" | "high" | "emergency";
+  reportedAt: string;
+  status: "pending" | "assigned" | "technician_in_progress" | "resolved";
+  assignedTechnician?: string;
+  description: string;
+  photoUrl?: string;
+}
+
+export const INITIAL_MAINTENANCE_TICKETS: MaintenanceTicket[] = [
+  {
+    id: "maint-104",
+    title: "Split AC Water Leaking on Front Row Desks",
+    location: "Room 204 (Grade 10-A)",
+    category: "HVAC / Air Conditioning",
+    severity: "high",
+    reportedAt: "Today, 08:30 AM",
+    status: "assigned",
+    assignedTechnician: "Ramu (Campus HVAC Technician)",
+    description: "Water condensation dripping continuously directly onto Student Desk Row 1 during 1st period.",
+  },
+  {
+    id: "maint-098",
+    title: "Overhead Projector HDMI Port Glitch (Screen Flickering)",
+    location: "Physics Lab 2",
+    category: "Electrical & Projector",
+    severity: "medium",
+    reportedAt: "Yesterday, 02:15 PM",
+    status: "resolved",
+    assignedTechnician: "Suresh (AV Engineer)",
+    description: "Display loses connection every 5 minutes when moving cable. Replaced wall plate connector.",
+  },
+];
+

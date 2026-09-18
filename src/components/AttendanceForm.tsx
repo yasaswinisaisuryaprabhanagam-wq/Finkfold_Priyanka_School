@@ -72,6 +72,11 @@ export default function AttendanceForm({
     chronic: string[];
     emergency: string;
   } | null>(null);
+  const [activeSenModal, setActiveSenModal] = useState<{
+    name: string;
+    diagnosis: string;
+    accommodations: string[];
+  } | null>(null);
 
   // Student metadata lookup for medical vault, transport & approved leaves
   const studentMetaLookup: Record<
@@ -82,6 +87,10 @@ export default function AttendanceForm({
       emergency: string;
       transport: string;
       approvedLeave?: { type: string; label: string };
+      senProfile?: {
+        diagnosis: string;
+        accommodations: string[];
+      };
     }
   > = {
     "1": {
@@ -102,6 +111,14 @@ export default function AttendanceForm({
       emergency: "+91 7981067780 (Father)",
       transport: "Bus 04 (AP 26 TE 4821 • Santhi Nagar)",
       approvedLeave: { type: "on_duty", label: "On Duty (District STEM Hackathon)" },
+      senProfile: {
+        diagnosis: "Dyslexia (Specific Learning Disability)",
+        accommodations: [
+          "DO NOT force student to read aloud in front of class without voluntary hand-raise.",
+          "Allow audio recordings of complex lectures or provide companion slide handouts.",
+          "Grant 15 minutes extra time per 1 hour of written examination.",
+        ],
+      },
     },
     "4": {
       allergies: ["Lactose sensitivity"],
@@ -114,6 +131,14 @@ export default function AttendanceForm({
       chronic: ["Low BP tendencies during peak afternoon sun"],
       emergency: "+91 94901 88421 (Father)",
       transport: "Bus 07 (AP 26 TE 9104 • Trunk Road)",
+      senProfile: {
+        diagnosis: "ADHD (Inattentive Type)",
+        accommodations: [
+          "Seat near teacher front desk away from windows or noisy doors.",
+          "Allow discreet 2-minute movement break every 30 minutes.",
+          "Provide noise-dampening ear defenders or quiet side-room seating during exams.",
+        ],
+      },
     },
   };
 
@@ -471,6 +496,25 @@ export default function AttendanceForm({
                           </button>
                         )}
 
+                        {/* Confidential SEN / IEP Yellow Star Badge */}
+                        {meta.senProfile && (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setActiveSenModal({
+                                name: s.full_name,
+                                diagnosis: meta.senProfile!.diagnosis,
+                                accommodations: meta.senProfile!.accommodations,
+                              })
+                            }
+                            className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-900 bg-amber-100 hover:bg-amber-200 border border-amber-300 px-2 py-0.5 rounded-full cursor-pointer transition-colors shadow-2xs"
+                            title="Confidential Special Educational Needs (IEP) Accommodation"
+                          >
+                            <span>⭐</span>
+                            <span>IEP: {meta.senProfile.diagnosis.split(" ")[0]}</span>
+                          </button>
+                        )}
+
                         {/* Approved Leave / On-Duty Badge */}
                         {hasApprovedLeave && (
                           <span className="inline-flex items-center gap-1 text-[10px] font-bold text-purple-800 bg-purple-100 border border-purple-300 px-2 py-0.5 rounded-full">
@@ -661,6 +705,62 @@ export default function AttendanceForm({
                   className="btn btn-primary text-xs px-4 py-2"
                 >
                   Close Alert
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── CONFIDENTIAL SEN & IEP DETAIL MODAL ── */}
+        {activeSenModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 animate-fade-in backdrop-blur-xs">
+            <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">⭐</span>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900">
+                      Confidential SEN &amp; IEP Accommodations
+                    </h3>
+                    <p className="text-xs text-amber-700 font-semibold">{activeSenModal.name} — {activeSenModal.diagnosis}</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setActiveSenModal(null)}
+                  className="text-slate-400 hover:text-slate-700 font-bold p-1 rounded-lg hover:bg-slate-100 cursor-pointer"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="space-y-3 text-xs">
+                <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-950 font-medium">
+                  🔒 <strong>Strict Faculty Confidentiality:</strong> These accommodations are certified by the School Counselor. Do not discuss in front of peers.
+                </div>
+
+                <div>
+                  <div className="font-bold text-slate-800 mb-1.5 uppercase tracking-wide text-[11px]">
+                    Actionable Classroom Accommodations:
+                  </div>
+                  <ul className="space-y-1.5">
+                    {activeSenModal.accommodations.map((acc, idx) => (
+                      <li key={idx} className="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-800 flex items-start gap-2">
+                        <span className="text-amber-500 font-bold mt-0.5">✓</span>
+                        <span className="leading-relaxed">{acc}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <div className="pt-2 flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => setActiveSenModal(null)}
+                  className="btn btn-primary text-xs px-4 py-2"
+                >
+                  Understood &amp; Close
                 </button>
               </div>
             </div>

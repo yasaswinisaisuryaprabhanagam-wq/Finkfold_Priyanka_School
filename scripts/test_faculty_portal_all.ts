@@ -59,6 +59,25 @@ import {
   getFacultyFieldTripDataAction,
   updateFieldTripCheckInAction,
   exportFieldTripManifestAction,
+  getFacultyCurriculumDataAction,
+  syncUnitPlanAction,
+  getFacultyVoiceGraderDataAction,
+  evaluateEssayWithAiRubricAction,
+  dispatchVoiceFeedbackAction,
+  getFacultyGroupProjectsDataAction,
+  submitPeerReviewAction,
+  getFacultySeatingChartDataAction,
+  swapSeatingDesksAction,
+  toggleDeviceLockAction,
+  getFacultySenDataAction,
+  updateSenAccommodationAction,
+  getFacultyHrDataAction,
+  applyTeacherLeaveAction,
+  regularizeBiometricAttendanceAction,
+  getFacultyStoreIndentDataAction,
+  submitStoreIndentAction,
+  getFacultyMaintenanceDataAction,
+  createMaintenanceTicketAction,
 } from "../src/actions/faculty";
 
 interface TestResult {
@@ -266,18 +285,164 @@ async function runAllFacultyTests() {
     }
   });
 
-  // ── 11. HTTP Route Availability Tests ──
+  // ── 11. Collaborative Unit Planner & OBE Tracker (Feature 15) ──
+  await testCase("Unit Planner & OBE", "getFacultyCurriculumDataAction returns unit plans and NEP metrics", async () => {
+    const data = await getFacultyCurriculumDataAction();
+    if (!data.unitPlans || data.unitPlans.length === 0) throw new Error("Unit plans missing");
+    if (typeof data.nepAttainmentAvg !== "number") throw new Error("NEP attainment average missing");
+  });
+
+  await testCase("Unit Planner & OBE", "syncUnitPlanAction synchronizes resource across sections 10-A and 10-B", async () => {
+    const res = await syncUnitPlanAction({
+      unitId: "unit-math-10-quad",
+      newResourceTitle: "Khan Academy Discriminant Derivation",
+      newResourceUrl: "https://khanacademy.org",
+      resourceType: "video",
+    });
+    if (!res.success) throw new Error("Unit plan sync failed");
+  });
+
+  // ── 12. Voice-Note Feedback & AI Rubric Grader (Feature 16) ──
+  await testCase("Voice Grader & AI", "getFacultyVoiceGraderDataAction returns essay submissions", async () => {
+    const data = await getFacultyVoiceGraderDataAction();
+    if (!data.submissions || data.submissions.length === 0) throw new Error("Submissions missing");
+  });
+
+  await testCase("Voice Grader & AI", "evaluateEssayWithAiRubricAction calculates rubric score", async () => {
+    const res = await evaluateEssayWithAiRubricAction("sub-eng-10a-01");
+    if (!res.success || typeof res.suggestedScore !== "number") throw new Error("AI rubric evaluation failed");
+  });
+
+  await testCase("Voice Grader & AI", "dispatchVoiceFeedbackAction dispatches audio note and marks graded", async () => {
+    const res = await dispatchVoiceFeedbackAction({
+      submissionId: "sub-eng-10a-01",
+      score: 17,
+      voiceDurationSec: 14,
+      writtenRemark: "Great thesis statement and ethical arguments.",
+    });
+    if (!res.success) throw new Error("Voice feedback dispatch failed");
+  });
+
+  // ── 13. Group Project & Peer-Review Hub (Feature 17) ──
+  await testCase("Group Projects", "getFacultyGroupProjectsDataAction returns team rosters and contributions", async () => {
+    const data = await getFacultyGroupProjectsDataAction();
+    if (!data.projects || data.projects.length === 0) throw new Error("Group projects missing");
+  });
+
+  await testCase("Group Projects", "submitPeerReviewAction records anonymous peer rating and recalculates heatmap", async () => {
+    const res = await submitPeerReviewAction({
+      teamId: "team-eco-10a-01",
+      targetStudentId: "s-10a-01",
+      score: 5,
+    });
+    if (!res.success) throw new Error("Peer review submission failed");
+  });
+
+  // ── 14. Smart Seating Chart & Eyes on Me Device Lock (Features 18 & 19) ──
+  await testCase("Seating & Device Lock", "getFacultySeatingChartDataAction returns desks and conflict warnings", async () => {
+    const data = await getFacultySeatingChartDataAction();
+    if (!data.desks || data.desks.length === 0) throw new Error("Seating desks missing");
+  });
+
+  await testCase("Seating & Device Lock", "swapSeatingDesksAction updates desk layout", async () => {
+    const res = await swapSeatingDesksAction("d-r1-c1", "d-r1-c2");
+    if (!res.success || !res.desks) throw new Error("Desk swap failed");
+  });
+
+  await testCase("Seating & Device Lock", "toggleDeviceLockAction toggles Eyes on Me device freeze", async () => {
+    const res = await toggleDeviceLockAction();
+    if (!res.success || typeof res.isLocked !== "boolean") throw new Error("Device lock toggle failed");
+  });
+
+  // ── 15. SEN & Accommodations Vault (Feature 20) ──
+  await testCase("SEN Vault", "getFacultySenDataAction returns confidential IEP profiles", async () => {
+    const data = await getFacultySenDataAction();
+    if (!data.profiles || data.profiles.length === 0) throw new Error("SEN profiles missing");
+  });
+
+  await testCase("SEN Vault", "updateSenAccommodationAction adds counselor approved adjustment", async () => {
+    const res = await updateSenAccommodationAction({
+      studentId: "s-10a-03",
+      newAccommodation: "Allow sensory pause when reading fatigue occurs.",
+    });
+    if (!res.success) throw new Error("SEN accommodation update failed");
+  });
+
+  // ── 16. Staff Self-Service HR Hub (Feature 21) ──
+  await testCase("Staff HR Hub", "getFacultyHrDataAction returns leave quotas, payslips, and biometrics", async () => {
+    const data = await getFacultyHrDataAction();
+    if (!data.leaveBalance || !data.payslips || !data.biometrics) throw new Error("HR data missing");
+  });
+
+  await testCase("Staff HR Hub", "applyTeacherLeaveAction submits leave and deducts balance", async () => {
+    const res = await applyTeacherLeaveAction({
+      leaveType: "casualLeave",
+      startDate: "2026-09-25",
+      endDate: "2026-09-25",
+      reason: "Family event",
+    });
+    if (!res.success) throw new Error("Staff leave application failed");
+  });
+
+  await testCase("Staff HR Hub", "regularizeBiometricAttendanceAction submits punch regularization to HR", async () => {
+    const res = await regularizeBiometricAttendanceAction({
+      logId: "bio-3",
+      reason: "Gate 2 scanner thumb sensor timed out.",
+    });
+    if (!res.success) throw new Error("Biometric regularization failed");
+  });
+
+  // ── 17. Digital Store Indent (Feature 22) ──
+  await testCase("Store Indent", "getFacultyStoreIndentDataAction returns catalog and orders", async () => {
+    const data = await getFacultyStoreIndentDataAction();
+    if (!data.catalog || data.catalog.length === 0) throw new Error("Store catalog missing");
+  });
+
+  await testCase("Store Indent", "submitStoreIndentAction places requisition order", async () => {
+    const res = await submitStoreIndentAction({
+      items: [{ itemId: "st-01", itemName: "Whiteboard Dry Erase Markers", quantity: 2 }],
+      deliveryRoom: "Room 204",
+    });
+    if (!res.success || !res.order) throw new Error("Store indent failed");
+  });
+
+  // ── 18. Campus Maintenance Helpdesk (Feature 23) ──
+  await testCase("Maintenance Helpdesk", "getFacultyMaintenanceDataAction returns active work orders", async () => {
+    const data = await getFacultyMaintenanceDataAction();
+    if (!data.tickets || data.tickets.length === 0) throw new Error("Maintenance tickets missing");
+  });
+
+  await testCase("Maintenance Helpdesk", "createMaintenanceTicketAction logs facility repair issue", async () => {
+    const res = await createMaintenanceTicketAction({
+      title: "Science Lab 1 Ceiling Fan Squeaking",
+      location: "Science Lab 1",
+      category: "Electrical & Projector",
+      severity: "low",
+      description: "Ceiling fan #3 emits loud bearing squeak during class.",
+    });
+    if (!res.success || !res.ticket) throw new Error("Maintenance ticket creation failed");
+  });
+
+  // ── 19. HTTP Route Availability Tests ──
   console.log("\n--- Testing HTTP Route Availability (Next.js Local Server) ---");
   const facultyRoutes = [
     "/portal/faculty",
     "/portal/faculty/academics",
     "/portal/faculty/conduct",
+    "/portal/faculty/curriculum",
+    "/portal/faculty/voice-grader",
+    "/portal/faculty/group-projects",
+    "/portal/faculty/seating-chart",
+    "/portal/faculty/sen",
     "/portal/faculty/messages",
     "/portal/faculty/infirmary",
     "/portal/faculty/lost-found",
     "/portal/faculty/clubs",
     "/portal/faculty/relief",
     "/portal/faculty/field-trips",
+    "/portal/faculty/hr",
+    "/portal/faculty/store-indent",
+    "/portal/faculty/maintenance",
     "/portal/faculty/homework",
     "/portal/faculty/circulars",
     "/portal/faculty/schedule",

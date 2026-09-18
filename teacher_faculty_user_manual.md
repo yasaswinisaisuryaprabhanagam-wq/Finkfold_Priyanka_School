@@ -5,17 +5,25 @@
 ## 🍎 Welcome to Your Faculty Command Center!
 
 ### What is this Portal?
-Welcome to **Finkfold EdOS for Faculty**—your all-in-one digital classroom command center. 
+Welcome to **Finkfold EdOS for Faculty**—your autonomous, AI-augmented classroom and professional command center.
 
-As a teacher, your true superpower is teaching and inspiring children. Unfortunately, traditional schools bury teachers in hours of manual clerical work:
+As a teacher, your true superpower is teaching, mentoring, and inspiring children. Unfortunately, traditional schools bury teachers in hours of exhausting, manual clerical work:
 - Calling roll numbers one by one on paper registers.
 - Writing homework reminders manually in 40 student paper diaries.
 - Answering frantic WhatsApp calls from parents on your personal phone at 9:00 PM.
 - Rummaging through giant cardboard boxes at reception for lost water bottles.
 - Spending entire weekends preparing remedial worksheets by hand for students struggling with Math or Science.
 - Manually compiling bus lists and permission slips with folded cash envelopes for school field trips.
+- Guessing which student has dyslexia, anxiety, or ADHD and having no unified IEP guidelines.
+- Walking to administrative store rooms to beg for whiteboard markers, paper, or lab supplies.
+- Hand-grading 40 subjective essays with red pens late into the night.
 
-**Finkfold eliminates 90% of this manual paperwork.** Everything from morning roll call and bulk exam grading to parent-teacher conferences, injury logging, and remedial homework dispatches happens in 1 or 2 clicks from your smartphone, tablet, or classroom laptop.
+**Finkfold eliminates 90% of this manual paperwork.** Inspired by the best of premier global platforms like **Toddle, ManageBac, Canvas LMS, ClassDojo, Apple Classroom, PowerSchool IEP, Fedena, and Darwinbox**, Finkfold equips every teacher with corporate-grade tools right from their smartphone, tablet, or classroom laptop.
+
+---
+
+> ### 📢 The Executive Philosophy
+> *"A school is only as good as its teachers. Right now, your teachers are exhausted by clerical work, HR disputes, and grading paperwork. By implementing Finkfold's Advanced Faculty Hub, we treat your teachers like corporate executives. They request supplies from their phone, they use AI to grade papers, they collaborate on lesson plans digitally, and they never have to guess a student's special needs. When you make a teacher's life this frictionless, teacher attrition drops to zero, and teaching quality skyrockets."*
 
 ---
 
@@ -29,16 +37,20 @@ As a teacher, your true superpower is teaching and inspiring children. Unfortuna
 6. You will immediately land on your **Faculty Dashboard**!
 
 > [!NOTE]
-> **Privacy Shield**: The Faculty Portal is completely hidden from public search engines like Google and isolated from the student portal. Parents and students can never view your faculty screens, confidential notes, or personal contact numbers.
+> **Privacy Shield**: The Faculty Portal is completely hidden from public search engines like Google and isolated from the student portal. Parents and students can never view your faculty screens, confidential notes, salary slips, or personal contact numbers.
 
 ---
 
 # 🧭 Side Navigation Menu: Complete Component-by-Component Guide
 
-The left-hand sidebar is logically grouped into 3 core sections:
-1. **Daily Classroom** (Everything you need during teaching hours)
-2. **Student Care & Chat** (Health, communication, lost items, and safety)
-3. **School Operations** (Clubs, substitutions, field trips, schedule, and administrative records)
+The left-hand sidebar is logically grouped into 7 distinct sections:
+1. **Daily Classroom** (Roll Call, Homework, Academics & AI Radar, Conduct Ledger)
+2. **Advanced Pedagogy & Assessment** (Collaborative Unit Planner, Voice Grader & AI Rubric, Group Projects Hub)
+3. **Classroom Control & Spatial Analytics** (Smart Seating Chart & "Eyes on Me" Device Lock)
+4. **Inclusive Education & SEN Vault** (Special Needs Profiles & Counselor Accommodations)
+5. **Student Care & Chat** (Regulated Office Hours, Infirmary Trauma Logger, Lost & Found Snap)
+6. **School Operations** (Clubs, Relief Desk, Field Trip Manifests, Teaching Schedule, Circulars, Roster)
+7. **Faculty HR, Payroll & Campus Logistics** (Staff HR Hub, Store Indent Requisition, Maintenance Helpdesk)
 
 Below is an exhaustive, simple, step-by-step guide to every single feature on every page.
 
@@ -51,12 +63,12 @@ Below is an exhaustive, simple, step-by-step guide to every single feature on ev
 ### 1. 📋 My Classes & Roll Call (`/portal/faculty`)
 
 #### What is the purpose of this page?
-This is your morning command center. It replaces the old paper register, integrates morning roll call with approved leave slips, alerts you to child allergies, and manages safe bus dismissal at 3:45 PM.
+This is your morning command center. It replaces the old paper register, integrates morning roll call with approved leave slips, alerts you to child allergies and special learning needs, and manages safe bus dismissal at 3:45 PM.
 
 #### What are the 4 main tools on this screen?
 
 #### Tool A: Digital Leave & On-Duty (OD) Approval Inbox
-- **What it is**: When parents submit a doctor's medical note or an athlete requests on-duty leave for an inter-school tournament, their requests appear in this inbox.
+- **What it is**: When parents submit a doctor's medical note or an athlete requests on-duty leave for an inter-school tournament, their requests appear in this inbox on your homepage.
 - **How to use it**:
   1. Review the student's name, requested dates, and attached reason (e.g., *"Viral fever with medical prescription attached"*).
   2. Click **"Approve"** (Green button) or **"Reject"** (Red button with a reason).
@@ -65,15 +77,18 @@ This is your morning command center. It replaces the old paper register, integra
   - The parent instantly receives an automated WhatsApp confirmation: *"Your leave request for Rahul (Grade 10-A) has been approved by Class Teacher."*
   - **You never have to manually remember who brought a leave note!**
 
-#### Tool B: Morning Roll Call Register with Medical 🩺 Alerts
+#### Tool B: Morning Roll Call Register with Medical 🩺 & SEN ⭐ Alerts
 - **What it is**: The digital class roster for your assigned homeroom (e.g., Grade 10-A).
 - **How to use it**:
   - All students default to **"Present"** (Green).
   - Tap **"A" (Absent)** or **"L" (Late)** for missing students.
   - If a student had an approved leave or OD pass, their status is **locked in blue/yellow** so you cannot accidentally mark them unexcused absent.
 - **The Red Medical 🩺 Icon**:
-  - If a child has a registered allergy or chronic illness in the Health Vault (e.g., *"Severe Peanut Anaphylaxis - carries EpiPen"* or *"Asthma - Asthalin Inhaler in school bag"*), a pulsing red **🩺 alert badge** appears next to their name.
-  - **Click the badge**: A medical pop-up opens with doctor precautions, emergency steps, and parent contact numbers.
+  - If a child has a registered allergy or chronic illness in the Health Vault (e.g., *"Severe Peanut Anaphylaxis - carries EpiPen"*), a red **🩺 alert badge** appears next to their name.
+  - Click the badge to open doctor precautions and emergency instructions.
+- **The Confidential Yellow Star ⭐ IEP Badge**:
+  - If a child has a diagnosed Special Educational Need (Dyslexia, ADHD, Anxiety), a confidential **⭐ badge** appears.
+  - Click the star to view counselor-approved classroom instructions (e.g., *"Do not force to read aloud in front of class; grant 15 extra minutes for exams"*).
 - **Where does it update?**:
   - Click **"Submit Attendance & Send Instant WhatsApp Alerts"**.
   - Within 30 seconds, parents of all absent students receive a WhatsApp message in English and vernacular language asking them to confirm if their child is safe at home.
@@ -177,7 +192,111 @@ To encourage positive behavior and maintain discipline transparently without yel
 
 ---
 
-# SECTION 2: STUDENT CARE & CHAT
+# SECTION 2: ADVANCED PEDAGOGY & ASSESSMENT
+*Inspired by Toddle, ManageBac, and Canvas LMS.*
+
+---
+
+### 15. 🧠 Collaborative Unit Planner & OBE Tracker (`/portal/faculty/curriculum`)
+
+#### The Real-World Problem:
+Teachers currently just write *"Taught Chapter 4"* in their paper diary. There is no proof that the lesson aligned with required educational standards (Bloom’s Taxonomy) or that co-teachers in Section A and Section B are teaching the same content at the same pace.
+
+#### The Finkfold Solution:
+- **Co-Teacher Synchronization**: Teachers co-author Unit Plans digitally. If the Math teacher for 10-A adds a new interactive Geogebra simulator or YouTube video, it **instantly synchronizes** to the 10-B Math teacher’s portal in real time.
+- **Bloom’s Taxonomy Outcome Tagging**: Every unit outcome is mapped against Bloom’s hierarchy (*Remembering, Understanding, Applying, Analyzing, Evaluating, Creating*).
+- **NEP 2020 Compliance Dashboard**: Tracks school-wide outcome attainment across pillars like Foundational Numeracy, Experiential Learning, and Critical Thinking. The Principal gets automated compliance reports with zero teacher paperwork.
+
+#### How to use it:
+1. Open **/portal/faculty/curriculum**.
+2. View the current Unit Plan, objectives, and Bloom's outcome attainment bars.
+3. Click **"Sync New Resource"** to add a YouTube video, simulation, or worksheet.
+4. Click **"Sync Across All Sections"**—both sections are immediately synchronized!
+
+---
+
+### 16. 🎙️ Voice-Note Feedback & AI Rubric Grader (`/portal/faculty/voice-grader`)
+
+#### The Real-World Problem:
+Grading 40 subjective English or Social Studies essays takes a teacher 6 hours of exhausting manual red-pen writing late at night. Meanwhile, students barely read written comments.
+
+#### The Finkfold Solution:
+- **AI Rubric Assistant**: The student submits their essay digitally. The AI analyzes it in seconds against 4 standard rubric criteria:
+  1. *Structure & Coherence* (Thesis clarity, paragraph transitions)
+  2. *Vocabulary & Language* (Sophisticated academic diction)
+  3. *Depth of Argument* (Evidence and counter-arguments)
+  4. *Grammar & Mechanics* (Punctuation and syntax)
+- **Teacher Control**: The AI provides a suggested score (e.g. 17/20) and rationale. The teacher can review, adjust scores, or approve.
+- **1-Tap Audio Voice Note**: Instead of typing long paragraphs, the teacher holds down the microphone button on their phone: *"Arjun, great essay on algorithmic liability, but pay close attention to paragraph 3 transitions next time."*
+- **Instant Student Delivery**: This 15-second audio clip is dispatched straight to the child's portal. Students listen to their teacher's voice, creating a powerful, emotionally resonant connection.
+
+---
+
+### 17. 🧩 Group Project & Peer-Review Hub (`/portal/faculty/group-projects`)
+
+#### The Real-World Problem:
+Group projects are notoriously chaotic. One diligent student does 80% of the work, one student does 5%, but all members receive the exact same grade. This causes massive student and parent resentment.
+
+#### The Finkfold Solution:
+- **Team Management**: Teachers create projects (e.g. *EcoTurbine Alpha - Wind Kinetic Energy*) and assign roles.
+- **Blind Peer Evaluation**: At milestone completion, students anonymously rate their teammates' contributions (1 to 5 stars) via their student portal.
+- **Contribution Heatmap**: The teacher’s dashboard calculates an exact contribution percentage (e.g., *Arjun: 65%, Yasaswini: 30%, Rahul: 5%*).
+- **Fair Individualized Grading**: The teacher can award Grade A+ to the team leader and Grade C with a free-rider warning to the non-contributor with full statistical backing.
+
+---
+
+# SECTION 3: CLASSROOM CONTROL & SPATIAL ANALYTICS
+*Inspired by ClassDojo and Apple Classroom.*
+
+---
+
+### 18. 🗺️ Smart Seating Chart & Behavioral Heatmap (`/portal/faculty/seating-chart`)
+
+#### The Real-World Problem:
+Substitute teachers don't know who is who when entering an unfamiliar classroom. Class teachers struggle to remember which students disrupt each other when seated together.
+
+#### The Finkfold Solution:
+- **Visual Spatial Desk Grid**: A digital 2D map of physical classroom desks with blackboard orientation at the front.
+- **Student Avatars & Photos**: Desks display student names, roll numbers, photos, and conduct notes.
+- **Conflict Alerts (Conduct Sync)**: If two students with a history of classroom disruption on the Conduct Ledger are placed next to each other, the system flashes an amber alert: *"Incompatible pairing: Frequent disruption logged."*
+- **1-Click Seat Swapping**: Simply click Desk A and Desk B to swap seating assignments.
+- **Substitute Teacher View**: Relief teachers open this screen to immediately see student faces and seats, ensuring zero disciplinary disruptions.
+
+---
+
+### 19. 🤫 "Eyes on Me" Device Lock (`/portal/faculty/seating-chart`)
+
+#### The Real-World Problem:
+In smart classrooms where students use tablets or laptops, children get distracted, browse web games, or chat while the teacher is lecturing.
+
+#### The Finkfold Solution:
+- A prominent red **"Eyes on Me"** button on the teacher's portal.
+- **1-Click Network Freeze**: Clicking it instantly locks all 42 student devices connected to the classroom Wi-Fi network, displaying a polite full-screen banner: *"Please look at the teacher. Screen locked by Mrs. Priyanka."*
+- Clicking it again immediately releases the lock when the lecture concludes.
+
+---
+
+# SECTION 4: INCLUSIVE EDUCATION & SEN (Special Educational Needs)
+*Inspired by PowerSchool IEP Tracking.*
+
+---
+
+### 20. 🤝 SEN & Accommodations Vault (`/portal/faculty/sen`)
+
+#### The Real-World Problem:
+A student has Dyslexia, ADHD, or extreme anxiety. The class teacher knows, but the substitute teacher, Arts teacher, or exam invigilator doesn't, leading to unfair punishment for slow reading or lack of focus.
+
+#### The Finkfold Solution:
+- **Confidential Yellow Star ⭐ Badge**: Students with special needs have a discreet star badge next to their name on all rosters, visible **only to certified faculty and counselors**.
+- **Counselor-Approved Actionable Accommodations**: Clicking the star reveals specific, psychologist-certified classroom guidelines:
+  - *Dyslexia*: "DO NOT force student to read aloud in front of class without voluntary hand-raise. Provide slide handouts. Grant 15 extra minutes on written exams."
+  - *ADHD*: "Seat near teacher front desk away from windows. Allow discreet 2-minute movement breaks every 30 minutes."
+  - *Anxiety*: "Discreet safe exit pass authorized to visit counselor room when experiencing sensory overload."
+- **Institutional Value**: Elevates the school to global inclusive education benchmarks with zero social stigma for children.
+
+---
+
+# SECTION 5: STUDENT CARE & CHAT
 
 ---
 
@@ -186,198 +305,116 @@ To encourage positive behavior and maintain discipline transparently without yel
 #### What is the purpose of this page?
 To protect teachers' personal time and mental health while giving parents a professional, scheduled channel to communicate.
 
-#### What are the 3 features on this screen?
-
-#### Feature A: Regulated Office Hours Switch (3:45 PM – 5:00 PM)
-- **The Real Problem**: Parents message teachers at 10:00 PM on Sunday asking about tomorrow's lunch or notebooks.
-- **The Solution**:
-  - The portal features an active **"Office Hours" toggle**.
-  - During school consultation hours (3:45 PM to 5:00 PM on weekdays), chat is **Active**.
-  - At 5:01 PM, the switch automatically flips to **"Quiet Hours"**.
-  - If a parent sends a message outside office hours, the system politely auto-replies: *"Thank you for your message. Mrs. Priyanka is currently outside office hours. She will review your note tomorrow between 3:45 PM and 5:00 PM."*
-  - **Your personal mobile number is never exposed.**
-
-#### Feature B: Calendly-Style Parent-Teacher Meeting (PTM) Itinerary
-- **How it works**:
-  - Parents select available 15-minute consultation slots through their student portal.
-  - All booked slots appear on your screen in an organized itinerary with student name, parent name, discussion topic, and Google Meet video link.
-- **Confidential Teacher Meeting Notes**:
-  - After or during the meeting, type your observations in the **"Confidential Teacher Notes"** box (e.g., *"Parent agreed to monitor screen time at home; student needs extra support with fractions"*).
-  - Click **"Save Confidential Notes"**.
-  - **Security Guarantee**: These notes are strictly locked to faculty and school counselors—parents and students cannot see them.
-
-#### Feature C: Inbound WhatsApp Parent Replies
-- Read and respond to urgent parent inquiries sent via the school's WhatsApp gateway directly from your portal screen without opening personal WhatsApp.
+#### Features:
+- **Regulated Office Hours Switch (3:45 PM – 5:00 PM)**: During consultation hours, chat is active. At 5:01 PM, it automatically flips to Quiet Hours with an auto-responder protecting personal evenings.
+- **Calendly-Style PTM Consultation Slots**: Parents book 15-minute slots. Google Meet video links are generated automatically.
+- **Confidential Teacher Meeting Notes**: Type observations during consultations. These notes are strictly locked to faculty—parents and students cannot see them.
+- **Direct WhatsApp Replies**: Respond to parent inquiries via the school gateway without sharing personal phone numbers.
 
 ---
 
 ### 6. 🏥 Infirmary & Trauma Logger (`/portal/faculty/infirmary`)
 
 #### What is the purpose of this page?
-Accidents happen on the playground or in science laboratories (e.g., scraped knees, basketball sprains, fainting in morning assembly). This tool logs the incident instantly and triggers emergency medical protocols.
+Accidents happen on the playground or in science laboratories. This tool logs injuries instantly and triggers emergency medical protocols.
 
-#### How do you use it?
-1. Open **/portal/faculty/infirmary** on your mobile phone or tablet.
-2. Select the **Student Name** (e.g., *Rohan Verma*).
-3. Select **Incident Location** (e.g., *Playground Football Turf*, *Chemistry Lab*, *Staircase*).
-4. Pick **Severity Level**:
-   - 🟢 **Mild**: Scraped knee, minor paper cut, headache.
-   - 🟡 **Moderate**: Deep cut needing dressing, sprained wrist, nosebleed.
-   - 🔴 **Emergency**: Suspected fracture, severe head collision, acute asthma attack.
-5. Enter **Immediate Action Taken** (e.g., *"Applied ice pack; escorted to campus medical room"*).
-6. Click **"Dispatch Emergency Infirmary Report"**.
-
-#### Where does it update?
-- **Campus Nurse**: The school nurse's dashboard flashes an urgent red banner with the child's medical history and current location.
-- **Parent Phone**: An automated WhatsApp alert is sent to parents: *"Health Update: Rohan experienced a minor playground scrape at 11:15 AM. First aid has been administered by school medical staff. He is resting safely."*
-- **Permanent Medical Vault**: Automatically saved to the student's health history for future reference.
+#### How to use it:
+1. Select the **Student Name** and **Incident Location** (e.g. Playground Football Turf).
+2. Pick **Severity Level**: Mild, Moderate, or Emergency.
+3. Enter **Immediate Action Taken** (e.g., *"Applied ice pack; escorted to campus infirmary"*).
+4. Click **"Dispatch Emergency Infirmary Report"**.
+- **Where does it update?**: Campus nurse console flashes red; parents receive an automated emergency WhatsApp notification.
 
 ---
 
 ### 7. 🎒 Digital Lost & Found Snap & Upload (`/portal/faculty/lost-found`)
 
 #### What is the purpose of this page?
-Children constantly lose lunchboxes, expensive winter jackets, spectacles, and water bottles. Instead of dumping them into cardboard boxes at reception, teachers or staff snap a photo and post it to the digital board.
+Children constantly lose lunchboxes, blazers, and water bottles. Instead of dumping them into reception cardboard boxes, teachers snap a photo and post it to the digital board.
 
-#### How do you use it?
-1. Find a lost item in the classroom, hallway, or sports field.
-2. Open **/portal/faculty/lost-found**.
-3. Click **"Snap & Upload Photo"** using your phone camera.
-4. Enter:
-   - **Item Name**: e.g., *"Blue Milton 750ml Thermos Bottle"* or *"Size 32 Woolen School Blazer"*.
-   - **Category**: Bottle, Clothing, Book, Eyewear, Electronics.
-   - **Found Location**: e.g., *"3rd Floor Corridor near Library"*.
-   - **Pickup Location / Locker**: e.g., *"Staff Room Locker #4"* or *"Reception Lost Counter"*.
-5. Click **"Publish to Parents' Claim Board"**.
-
-#### Where does it update?
-- Instantly appears in the **Digital Lost & Found Board** on all student and parent portals.
-- When a parent recognizes the item, they click **"Claim Item"** with their child's roll number.
-- The item is sent to the child's homeroom teacher the next morning!
+#### How to use it:
+1. Snap a photo of the item using your phone camera.
+2. Tag item name, category, found location, and pickup locker.
+3. Click **"Publish to Parents' Claim Board"**.
+- **Where does it update?**: Instantly appears on all parent portals. When claimed, it is sent to the child's homeroom the next morning.
 
 ---
 
-# SECTION 3: SCHOOL OPERATIONS
+# SECTION 6: SCHOOL OPERATIONS
 
 ---
 
 ### 8. 🏆 Clubs & Dossier (`/portal/faculty/clubs`)
-
-#### What is the purpose of this page?
-For teachers who sponsor extracurricular clubs (Robotics, Model UN, Science Club, Debate, Eco Club) and teachers responsible for verifying student achievements.
-
-#### What are the 2 tools on this page?
-
-#### Tool A: Club Sponsor Command Hub
-- Manage your club roster (e.g., *Robotics Club - 24 Members*).
-- Track weekly meeting attendance with 1 click.
-- Post club announcements and update project milestones (e.g., *"Drone Prototype Test scheduled for Friday afternoon"*).
-
-#### Tool B: External Certificate Verification Queue
-- **The Problem**: Students submit fake or unverified certificates claiming they won external coding hackathons, karate championships, or national Olympiads.
-- **How to use it**:
-  1. Review pending certificates submitted by students.
-  2. Click **"View Document"** to inspect the scanned certificate, issuing authority, and date.
-  3. Click **"Verify & Approve"** (Green) or **"Reject"** (Red).
-- **Where does it update?**:
-  - Once verified, the achievement is stamped with an official green **"Verified by Faculty"** seal and added to the student's permanent **Holistic Profile Dossier** for college applications.
-
----
+- **Club Sponsor Hub**: Manage club rosters (Robotics, Science, Eco Club), attendance, and project milestones.
+- **Certificate Verification Queue**: Review and verify external hackathon awards and sports medals with 1 click before they appear on official student transcripts.
 
 ### 9. 🔄 Relief Desk (`/portal/faculty/relief`)
-
-#### What is the purpose of this page?
-When a fellow teacher is on sick leave or personal emergency, other faculty members need to cover their classes. This replaces chaotic handwritten notes with a fair, transparent substitution marketplace.
-
-#### How do you use it?
-1. Open **/portal/faculty/relief**.
-2. View available substitution requests for the day:
-   - Example: *"Period 3 (10:15 AM - 11:00 AM) - Grade 9-B English (Covering for Mrs. Anjali - Sick Leave)"*.
-3. Click **"Accept Period Coverage"**.
-4. The slot is confirmed in 1 click!
-
-#### Where does it update?
-- Added directly to your **Teaching Schedule** for today.
-- The Class 9-B monitor screen and students' timetable show: *"Period 3: English (Substituted by Mrs. Priyanka)"*.
-- **Recognition**: Awards you **+20 Faculty Relief Points** on the monthly faculty recognition leaderboard for being a cooperative team player.
-
----
+- Transparent substitution marketplace.
+- View periods needing coverage when fellow teachers are on leave.
+- 1-click acceptance updates your timetable, notifies class monitors, and awards **+20 Faculty Relief Points**.
 
 ### 10. 🚌 Field Trip Manifests (`/portal/faculty/field-trips`)
-
-#### What is the purpose of this page?
-Managing school excursions, museum trips, and industrial tours used to require tracking hundreds of paper consent slips and counting cash envelopes. This page manages permissions, payments, and bus boarding digitally.
-
-#### What can you do here?
-
-#### 1. Live Consent & Payment Tracker
-- View the active trip roster (e.g., *"Visakhapatnam Science City Excursion - Nov 14"*).
-- See in real time which students have:
-  - ✅ Digital parent consent signed.
-  - 💳 Excursion fee paid online via UPI/Card.
-  - ⏳ Consent or payment still pending.
-
-#### 2. Real-Time Bus Boarding Checklist
-- On the morning of the excursion, stand at the bus entrance with your phone.
-- Tap the student's name as they step onto the bus: **"Boarded"** (Green).
-- The top header shows live counts: e.g., **"42 / 45 Boarded - 3 Missing"**.
-- Tap any missing student's name to instantly call their parents from the screen.
-
-#### 3. 1-Click Passenger Manifest Export
-- Click **"Export Passenger Manifest (CSV)"**.
-- Generates a verified emergency passenger manifest with student names, emergency contact numbers, blood groups, and bus numbers for the school security gate, principal's office, and tour operators.
-
----
+- **Live Consent & UPI Fee Tracker**: Real-time permission slip and digital fee tallies.
+- **Real-Time Bus Boarding Checklist**: Tap student names as they board the bus; live missing student counter with 1-tap parent calling.
+- **1-Click Passenger Manifest CSV**: Export verified passenger manifest for security gates and tour operators.
 
 ### 11. 🗓️ Teaching Schedule (`/portal/faculty/schedule`)
-
-#### What is the purpose of this page?
-Your personalized weekly teaching timetable.
-
-#### What does it show?
-- Complete Monday-to-Saturday schedule broken down by periods (Period 1 to Period 8).
-- Classroom room numbers and section names (e.g., *Room 204 - Grade 10-A Math*).
-- Clearly highlights **Free / Preparation Periods** so you can plan lesson preparation or student mentoring.
-- Automatically highlights any **Relief Substitution Periods** you accepted for the day.
-
----
+- Master weekly timetable showing periods 1–8, room allocations, free preparation periods, and assigned relief slots.
 
 ### 12. 📢 School Circulars (`/portal/faculty/circulars`)
-
-#### What is the purpose of this page?
-Official memos, staff meeting notices, circulars, and exam duty schedules issued by the Principal and School Management.
-
-#### What can you do here?
-- Read high-priority announcements (e.g., *"Mid-Term Question Paper Submission Deadline: Oct 20"*, *"Staff Development Workshop on Saturday"*).
-- Download official PDF circulars with principal signatures.
-- Mark circulars as **"Acknowledged"** so school administration knows you have read them.
-
----
+- Official management memos, exam supervision rosters, and 1-click read acknowledgments.
 
 ### 13. 👥 Student Roster (`/portal/faculty/students`)
+- Homeroom directory with photos, parent phone numbers, emergency dial buttons, blood groups, and medical alerts.
 
-#### What is the purpose of this page?
-A complete directory of all students in your assigned classes.
-
-#### What information is available?
-- Student Full Name, Admission Number, Roll Number, and Photo.
-- Parent / Guardian Names.
-- Emergency Phone Numbers (with 1-tap dial buttons).
-- Blood Groups and known medical alerts.
-- Residential Address.
+### 14. ⚙️ Account Settings (`/portal/faculty/settings`)
+- Profile information, contact details, assigned subjects, and password security.
 
 ---
 
-### 14. ⚙️ Account Settings (`/portal/faculty/settings`)
+# SECTION 7: FACULTY HR, PAYROLL & LOGISTICS
+*Inspired by Fedena and Enterprise HRIS (Workday / Darwinbox).*
 
-#### What is the purpose of this page?
-Manage your faculty profile and security credentials.
+---
 
-#### What can you do here?
-- Update your contact phone number and communication preferences.
-- View assigned subjects, classes, and employee identification codes.
-- Change your account password securely.
-- Set up notification preferences for student leave submissions and PTM requests.
+### 21. 🌴 Staff Self-Service HR Hub (`/portal/faculty/hr`)
+
+#### The Real-World Problem:
+Teachers are professionals. They shouldn't have to walk to the Principal's office to beg for a leave form, wait weeks for salary slips, or get docked pay because a biometric machine misread their thumb.
+
+#### The Finkfold Solution:
+- **Live Leave Quotas**: View real-time balance for Casual Leave (CL), Medical/Sick Leave (SL), and Earned Leave (EL).
+- **1-Click Digital Leave Application**: Apply for leave on your phone with start date, end date, and reason. Automatically routes to the Principal's desk and updates leave balances upon approval.
+- **Payslip Vault & Tax Declarations**:
+  - Download official monthly salary slips (PDFs) with transparent breakdowns of Gross Pay, EPF deductions, Professional Tax, and TDS.
+  - Section 80C investment declarations (PPF, Life Insurance, Tuition Fees) with accounts verification status.
+- **Biometric Sync & Missing Punch Regularization**:
+  - View daily In/Out punch timestamps synced from campus biometric gates.
+  - If a scanner misreads your thumb, click **"Regularize"** and enter a reason for immediate HR sign-off.
+
+---
+
+### 22. 📦 Digital Store Indent & Inventory Requisition (`/portal/faculty/store-indent`)
+
+#### The Real-World Problem:
+A teacher runs out of whiteboard markers, red pens, or chemistry lab chemicals. They have to leave their class, walk to the administrative store, fill out a paper ledger, and wait in line.
+
+#### The Finkfold Solution:
+- **Digital Catalog**: Browse stationery, registers, paper reams, lab chemicals, and projector cables.
+- **Classroom Cart Checkout**: Select quantities and choose delivery destination (e.g., *"Room 204 Class 10-A"*).
+- **Desk Delivery by Logistics**: The store manager receives the digital requisition, items are packed, and the campus peon delivers them directly to your classroom. Inventory is deducted automatically.
+
+---
+
+### 23. 🛠️ Campus Maintenance Ticketing & Helpdesk (`/portal/faculty/maintenance`)
+
+#### The Real-World Problem:
+The split AC in Room 204 is leaking onto student desks, or the overhead projector is flickering. The teacher tells the janitor verbally, who forgets. The problem remains unfixed for two weeks.
+
+#### The Finkfold Solution:
+- **1-Minute Ticket Logging**: Open the maintenance tab, choose category (*HVAC, Electrical, Plumbing, Carpentry*), severity level, and describe the issue.
+- **Direct Dispatch to Estate Manager**: Work order is assigned to a campus technician (e.g. *Ramu - HVAC*).
+- **Live SLA Tracking**: Track progress in real time: *Pending → Technician Assigned → In Progress → Resolved*.
 
 ---
 
@@ -385,16 +422,17 @@ Manage your faculty profile and security credentials.
 
 | Action Taken by Faculty | What Gets Updated Immediately? | Who Receives a Notification? |
 | :--- | :--- | :--- |
-| **Approve Leave in Inbox** | Automatically marks student as "Approved Leave" on the morning roll-call register. | Parent gets an instant WhatsApp confirmation. |
-| **Submit Morning Roll Call** | Daily attendance ledger saves to database; school absenteeism rate updates. | Parents of absent students get instant WhatsApp alerts. |
-| **Dispatch AI Remedial Worksheet** | Custom 15-question practice worksheet is delivered to student portal. | Student receives worksheet notification; parent informed via portal. |
-| **Log Demerit with Parent E-Signature** | Locks student self-service portal actions until parent reviews and signs. | Parent receives a formal disciplinary alert on their phone. |
-| **Flip Office Hours Switch** | Turns on/off live parent chat; enables automated quiet-hours auto-responder. | Parents messaging outside hours receive polite automated notice. |
-| **Save Confidential PTM Notes** | Saved to student consultation vault (strictly hidden from parent view). | Principal & school counselors have secure review access. |
-| **Submit Emergency Injury Report** | Medical incident logged to student's permanent health record. | Campus Nurse dashboard flashes red; parent receives emergency WhatsApp. |
-| **Upload Lost & Found Item** | Item photo & location posted to digital claim catalog. | Parents and students browsing the board can claim it. |
-| **Accept Relief Substitution** | Substitution slot added to your daily schedule; period covered on class timetable. | Principal & class monitor notified; teacher receives +20 relief points. |
-| **Check-in Student on Field Trip Bus** | Bus boarding manifest updates live; missing student count decreases. | Transport coordinator and campus security gate see verified manifest. |
+| **Approve Leave in Inbox** | Student marked "Approved Leave" on roll-call register. | Parent gets instant WhatsApp confirmation. |
+| **Submit Morning Roll Call** | Daily attendance saved; school registry updated. | Parents of absent students get WhatsApp alerts. |
+| **Sync Unit Plan Resource** | Shared with co-teachers in Section 10-B in real time. | Co-teachers & classroom projector vault synced. |
+| **Dispatch AI Voice Feedback** | 15s voice note & rubric score delivered to student. | Student notified on portal; parent informed. |
+| **Submit Peer Review Rating** | Re-computes team contribution percentage heatmap. | Teacher gradebook updates individual marks. |
+| **Activate "Eyes on Me" Lock** | Freezes all classroom student tablet screens. | All 42 student devices display freeze banner. |
+| **Click Yellow Star ⭐ IEP** | Opens confidential psychologist-certified accommodations. | Strict faculty view only (hidden from students). |
+| **Log Demerit with Parent E-Sign** | Freezes student self-service portal actions. | Parent receives formal disciplinary alert on phone. |
+| **Apply for Staff Leave** | Deducts live leave balance; logs to HR register. | Principal receives digital approval request. |
+| **Submit Store Indent** | Deducts warehouse inventory; creates packing slip. | Store manager & logistics peon dispatched. |
+| **Log Maintenance Ticket** | Work order created with SLA tracking. | Estate/Facility Manager & assigned technician. |
 
 ---
 
@@ -404,17 +442,17 @@ Manage your faculty profile and security credentials.
 Simply open **/portal/faculty**, locate the student's name, change their status from **"A" (Absent)** to **"L" (Late)**, and click **"Save Attendance"**. The system will update the record and cancel any erroneous unexcused absence alert.
 
 ### Q2: Can parents see my personal mobile phone number?
-**No, never.** All messaging, PTM bookings, and automated notices flow through the Finkfold school server and official school WhatsApp gateway. Your personal phone number is strictly private.
+**No, never.** All messaging, PTM bookings, voice feedback, and automated notices flow through the Finkfold school server and official school WhatsApp gateway. Your personal phone number is strictly private.
 
-### Q3: What happens if a parent refuses to sign the Demerit E-Signature?
-The student's portal self-service permissions remain frozen, and the unresolved disciplinary flag is escalated to the Grade Coordinator or Principal's console for follow-up.
+### Q3: Who can see the SEN Yellow Star ⭐ and IEP accommodations?
+Only certified class teachers, counselors, and school leadership. Other students and parents can **never** see who has an IEP tag, eliminating any chance of social stigma.
 
-### Q4: Does the bulk OMR upload work with any scanner?
-Yes! As long as your school OMR software exports a standard spreadsheet or CSV with student admission numbers and marks, Finkfold will parse and ingest the entire file in seconds.
+### Q4: Does the "Eyes on Me" screen lock work on personal student phones?
+The screen lock applies to all school-managed Chromebooks, iPads, and classroom tablets connected to the school network MDM profile.
 
-### Q5: Can I access the Faculty Portal from my smartphone?
-**Yes!** The entire portal is 100% mobile-optimized. You can take attendance while walking between desks, snap lost-and-found items on the playground, and check students onto excursion buses directly from your smartphone browser.
+### Q5: How quickly do Store Indent items arrive at my classroom?
+Requisitions submitted before 10:00 AM are packed by the central store and delivered to your classroom desk before the 2nd period break by campus logistics staff.
 
 ---
 
-*Finkfold Educational Operating System (EdOS) — Empowering teachers, delighting parents, and elevating schools.*
+*Finkfold Educational Operating System (EdOS) — Empowering teachers, delighting parents, and elevating schools to world-class standards.*

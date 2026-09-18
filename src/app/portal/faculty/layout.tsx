@@ -52,6 +52,26 @@ export default async function FacultyPortalLayout({
       ],
     },
     {
+      title: "Advanced Pedagogy",
+      items: [
+        { href: "/portal/faculty/curriculum",    label: "Unit Planner & OBE",  icon: "🧠", badge: "NEP" },
+        { href: "/portal/faculty/voice-grader",   label: "Voice Grader & AI",   icon: "🎙️", badge: "New" },
+        { href: "/portal/faculty/group-projects", label: "Group Projects Hub",  icon: "🧩" },
+      ],
+    },
+    {
+      title: "Classroom Control",
+      items: [
+        { href: "/portal/faculty/seating-chart", label: "Seating Chart & Lock", icon: "🗺️", badge: "Live" },
+      ],
+    },
+    {
+      title: "Inclusive Education",
+      items: [
+        { href: "/portal/faculty/sen", label: "SEN & Accommodations", icon: "🤝", badge: "⭐" },
+      ],
+    },
+    {
       title: "Student Care & Chat",
       items: [
         { href: "/portal/faculty/messages",  label: "Office Hours & PTM",     icon: "💬", badge: unhandledReplies > 0 ? unhandledReplies : undefined },
@@ -68,7 +88,15 @@ export default async function FacultyPortalLayout({
         { href: "/portal/faculty/schedule",    label: "Teaching Schedule",    icon: "🗓️" },
         { href: "/portal/faculty/circulars",   label: "School Circulars",     icon: "📢" },
         { href: "/portal/faculty/students",    label: "Student Roster",       icon: "👥" },
-        { href: "/portal/faculty/settings",    label: "Account Settings",     icon: "⚙️" },
+      ],
+    },
+    {
+      title: "Faculty HR & Services",
+      items: [
+        { href: "/portal/faculty/hr",           label: "Staff HR & Payroll",   icon: "🌴" },
+        { href: "/portal/faculty/store-indent",  label: "Store Indent Requisition", icon: "📦" },
+        { href: "/portal/faculty/maintenance",   label: "Campus Helpdesk",      icon: "🛠️" },
+        { href: "/portal/faculty/settings",      label: "Account Settings",     icon: "⚙️" },
       ],
     },
   ];
