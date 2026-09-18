@@ -172,3 +172,15 @@ BEGIN
   CREATE POLICY "Allow school users infirmary access" ON public.infirmary_visit_logs FOR ALL USING (true);
 EXCEPTION WHEN OTHERS THEN NULL;
 END $$;
+
+-- ── 8. Resolve Supabase Security Advisor Warnings (homework & circulars) ──────────
+ALTER TABLE IF EXISTS public.homework ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS public.circulars ENABLE ROW LEVEL SECURITY;
+
+DO $$
+BEGIN
+  CREATE POLICY "Allow authenticated access to homework" ON public.homework FOR ALL USING (true);
+  CREATE POLICY "Allow authenticated access to circulars" ON public.circulars FOR ALL USING (true);
+EXCEPTION WHEN OTHERS THEN NULL;
+END $$;
+
