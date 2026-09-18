@@ -41,14 +41,36 @@ export default async function FacultyPortalLayout({
     unhandledReplies = count || 0;
   } catch {}
 
-  const navItems = [
-    { href: "/portal/faculty",          label: "My Classes",        icon: "📋", exact: true },
-    { href: "/portal/faculty/homework", label: "Assign Homework",   icon: "📝" },
-    { href: "/portal/faculty/circulars",label: "School Circulars",  icon: "📢" },
-    { href: "/portal/faculty/schedule", label: "Teaching Schedule", icon: "🗓️" },
-    { href: "/portal/faculty/messages", label: "Parent Messages",   icon: "💬", badge: unhandledReplies > 0 ? unhandledReplies : undefined },
-    { href: "/portal/faculty/students", label: "Student Roster",    icon: "👥" },
-    { href: "/portal/faculty/settings", label: "Account Settings",  icon: "⚙️" },
+  const navSections = [
+    {
+      title: "Daily Classroom",
+      items: [
+        { href: "/portal/faculty",           label: "My Classes & Roll Call", icon: "📋", exact: true },
+        { href: "/portal/faculty/homework",  label: "Assign Homework",        icon: "📝" },
+        { href: "/portal/faculty/academics", label: "Academics & AI Radar",   icon: "📈", badge: "AI" },
+        { href: "/portal/faculty/conduct",   label: "Conduct & Merits",       icon: "🛡️" },
+      ],
+    },
+    {
+      title: "Student Care & Chat",
+      items: [
+        { href: "/portal/faculty/messages",  label: "Office Hours & PTM",     icon: "💬", badge: unhandledReplies > 0 ? unhandledReplies : undefined },
+        { href: "/portal/faculty/infirmary", label: "Infirmary & Trauma",     icon: "🏥" },
+        { href: "/portal/faculty/lost-found",label: "Lost & Found Snap",      icon: "🎒" },
+      ],
+    },
+    {
+      title: "School Operations",
+      items: [
+        { href: "/portal/faculty/clubs",       label: "Clubs & Dossier",      icon: "🏆" },
+        { href: "/portal/faculty/relief",      label: "Relief Desk",          icon: "🔄", badge: "2" },
+        { href: "/portal/faculty/field-trips", label: "Field Trip Manifests", icon: "🚌" },
+        { href: "/portal/faculty/schedule",    label: "Teaching Schedule",    icon: "🗓️" },
+        { href: "/portal/faculty/circulars",   label: "School Circulars",     icon: "📢" },
+        { href: "/portal/faculty/students",    label: "Student Roster",       icon: "👥" },
+        { href: "/portal/faculty/settings",    label: "Account Settings",     icon: "⚙️" },
+      ],
+    },
   ];
 
   return (
@@ -67,7 +89,7 @@ export default async function FacultyPortalLayout({
               <div className="text-white font-bold text-sm leading-tight truncate" style={{ fontFamily: "Outfit, sans-serif" }}>
                 {SCHOOL.name}
               </div>
-              <div className="text-white/50 text-[10px] font-medium mt-0.5">Faculty Portal</div>
+              <div className="text-white/50 text-[10px] font-medium mt-0.5">Faculty Command Center</div>
             </div>
           </Link>
         </div>
@@ -89,20 +111,27 @@ export default async function FacultyPortalLayout({
           </div>
         </div>
 
-        {/* Navigation — TEACHER ONLY links */}
-        <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
-          {navItems.map((item) => (
-            <Link key={item.href} href={item.href} className="sidebar-nav-item flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <span className="text-base w-5 flex-shrink-0 text-center">{item.icon}</span>
-                <span>{item.label}</span>
+        {/* Navigation with Categories */}
+        <nav className="flex-1 p-3 space-y-4 overflow-y-auto">
+          {navSections.map((sec) => (
+            <div key={sec.title} className="space-y-1">
+              <div className="px-2 text-[10px] font-bold text-white/40 uppercase tracking-wider">
+                {sec.title}
               </div>
-              {item.badge && (
-                <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-500 text-white shadow-2xs">
-                  {item.badge}
-                </span>
-              )}
-            </Link>
+              {sec.items.map((item) => (
+                <Link key={item.href} href={item.href} className="sidebar-nav-item flex items-center justify-between py-1.5 px-2.5 rounded-lg text-xs hover:bg-white/10 transition-colors">
+                  <div className="flex items-center gap-2.5">
+                    <span className="text-sm w-4 flex-shrink-0 text-center">{item.icon}</span>
+                    <span className="truncate">{item.label}</span>
+                  </div>
+                  {item.badge && (
+                    <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-amber-400 text-slate-950 shadow-2xs">
+                      {item.badge}
+                    </span>
+                  )}
+                </Link>
+              ))}
+            </div>
           ))}
         </nav>
 

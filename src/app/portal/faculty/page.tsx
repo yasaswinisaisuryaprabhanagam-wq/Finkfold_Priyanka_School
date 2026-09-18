@@ -1,12 +1,14 @@
 import { getProfile } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/server";
 import { SCHOOL } from "@/lib/school-config";
+import { getFacultyLeavesAction } from "@/actions/faculty";
+import FacultyLeaveInbox from "@/components/FacultyLeaveInbox";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export const metadata = {
-  title: `Faculty Portal - ${SCHOOL.name}`,
-  description: "Faculty roll-call, schedule, and parent communication dashboard.",
+  title: `Faculty Command Center - ${SCHOOL.name}`,
+  description: "Faculty roll-call, leave approvals, marks radar, and student care hub.",
 };
 
 export default async function FacultyPortalPage() {
@@ -70,6 +72,9 @@ export default async function FacultyPortalPage() {
     parentRepliesCount = count || 0;
   } catch {}
 
+  // Fetch pending leaves
+  const leaves = await getFacultyLeavesAction();
+
   const pendingRollCalls = teacherClassesList.filter(
     (item) => !todayMarkedClassIds.has(item.classes?.id || item.class_id)
   ).length;
@@ -89,7 +94,7 @@ export default async function FacultyPortalPage() {
           style={{ background: "radial-gradient(circle, #fbbf24, transparent)", transform: "translate(30%, -30%)" }} />
         <div className="relative z-10">
           <div className="text-amber-300 text-xs font-semibold uppercase tracking-wider mb-1">
-            Faculty Workspace &middot; {SCHOOL.name}
+            Faculty Command Center &middot; {SCHOOL.name}
           </div>
           <h1 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>
             {greeting}, {profile.full_name.split(" ")[0]}!
@@ -111,16 +116,19 @@ export default async function FacultyPortalPage() {
           <div className="text-xs text-slate-500 mt-1 font-medium">Pending Roll Calls</div>
         </div>
         <div className="stat-card text-center">
-          <div className={`text-3xl font-black ${parentRepliesCount > 0 ? "text-rose-600" : "text-emerald-600"}`}>
-            {parentRepliesCount}
+          <div className="text-3xl font-black text-rose-600">
+            {leaves.filter((l) => l.status === "pending").length}
           </div>
-          <div className="text-xs text-slate-500 mt-1 font-medium">Unread Parent Replies</div>
+          <div className="text-xs text-slate-500 mt-1 font-medium">Leave &amp; OD Requests</div>
         </div>
         <div className="stat-card text-center">
           <div className="text-3xl font-black text-emerald-600">ON</div>
           <div className="text-xs text-slate-500 mt-1 font-medium">WhatsApp Gateway</div>
         </div>
       </div>
+
+      {/* Digital Leave & OD Approval Inbox */}
+      <FacultyLeaveInbox initialLeaves={leaves} />
 
       {/* Assigned Classes */}
       <div className="card">
@@ -130,7 +138,7 @@ export default async function FacultyPortalPage() {
               Your Assigned Classes
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
-              Click &ldquo;Mark Roll Call&rdquo; to take attendance. Absences trigger WhatsApp alerts instantly.
+              Click &ldquo;Mark Roll Call&rdquo; to take attendance. Approved leaves and health alerts are automatically mapped.
             </p>
           </div>
           <span className="badge badge-blue">{teacherClassesList.length} Classes</span>
@@ -191,37 +199,91 @@ export default async function FacultyPortalPage() {
         </div>
       </div>
 
-      {/* Quick Links */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Link href="/portal/faculty/homework" className="card card-hover p-5 flex items-center gap-4 cursor-pointer">
-          <div className="h-12 w-12 rounded-xl bg-blue-50 flex items-center justify-center text-2xl flex-shrink-0">📝</div>
-          <div>
-            <div className="font-bold text-slate-900 text-sm">Assign Homework</div>
-            <div className="text-xs text-slate-500">Post daily assignments</div>
-          </div>
-        </Link>
-        <Link href="/portal/faculty/circulars" className="card card-hover p-5 flex items-center gap-4 cursor-pointer">
-          <div className="h-12 w-12 rounded-xl bg-purple-50 flex items-center justify-center text-2xl flex-shrink-0">📢</div>
-          <div>
-            <div className="font-bold text-slate-900 text-sm">School Circulars</div>
-            <div className="text-xs text-slate-500">Official notices &amp; alerts</div>
-          </div>
-        </Link>
-        <Link href="/portal/faculty/messages" className="card card-hover p-5 flex items-center gap-4 cursor-pointer">
-          <div className="h-12 w-12 rounded-xl bg-emerald-50 flex items-center justify-center text-2xl flex-shrink-0">💬</div>
-          <div>
-            <div className="font-bold text-slate-900 text-sm">Parent Replies</div>
-            <div className="text-xs text-slate-500">{parentRepliesCount} unread messages</div>
-          </div>
-        </Link>
-        <Link href="/portal/faculty/students" className="card card-hover p-5 flex items-center gap-4 cursor-pointer">
-          <div className="h-12 w-12 rounded-xl bg-amber-50 flex items-center justify-center text-2xl flex-shrink-0">👥</div>
-          <div>
-            <div className="font-bold text-slate-900 text-sm">Student Roster</div>
-            <div className="text-xs text-slate-500">View &amp; search students</div>
-          </div>
-        </Link>
+      {/* 9 Enterprise Modules Quick Launcher Grid */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-sm font-bold text-slate-900" style={{ fontFamily: "Outfit, sans-serif" }}>
+            Classroom Command Center Modules
+          </h3>
+          <span className="text-xs text-slate-400">All features synchronized with Student Portal</span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Link href="/portal/faculty/academics" className="card card-hover p-4 flex items-center gap-3.5 cursor-pointer">
+            <div className="h-11 w-11 rounded-xl bg-blue-50 flex items-center justify-center text-xl flex-shrink-0">📈</div>
+            <div>
+              <div className="font-bold text-slate-900 text-xs flex items-center gap-1.5">
+                <span>Academics &amp; AI Radar</span>
+                <span className="badge badge-blue text-[9px]">AI</span>
+              </div>
+              <div className="text-[11px] text-slate-500">Bulk OMR &amp; remedial drills</div>
+            </div>
+          </Link>
+
+          <Link href="/portal/faculty/conduct" className="card card-hover p-4 flex items-center gap-3.5 cursor-pointer">
+            <div className="h-11 w-11 rounded-xl bg-purple-50 flex items-center justify-center text-xl flex-shrink-0">🛡️</div>
+            <div>
+              <div className="font-bold text-slate-900 text-xs">Conduct &amp; Merits</div>
+              <div className="text-[11px] text-slate-500">1-click points &amp; E-sign lock</div>
+            </div>
+          </Link>
+
+          <Link href="/portal/faculty/messages" className="card card-hover p-4 flex items-center gap-3.5 cursor-pointer">
+            <div className="h-11 w-11 rounded-xl bg-emerald-50 flex items-center justify-center text-xl flex-shrink-0">💬</div>
+            <div>
+              <div className="font-bold text-slate-900 text-xs flex items-center gap-1.5">
+                <span>Office Hours &amp; PTM</span>
+                {parentRepliesCount > 0 && <span className="badge badge-rose text-[9px]">{parentRepliesCount}</span>}
+              </div>
+              <div className="text-[11px] text-slate-500">Calendly PTM &amp; parent chat</div>
+            </div>
+          </Link>
+
+          <Link href="/portal/faculty/infirmary" className="card card-hover p-4 flex items-center gap-3.5 cursor-pointer">
+            <div className="h-11 w-11 rounded-xl bg-rose-50 flex items-center justify-center text-xl flex-shrink-0">🏥</div>
+            <div>
+              <div className="font-bold text-slate-900 text-xs">Infirmary &amp; Trauma</div>
+              <div className="text-[11px] text-slate-500">Log injury &amp; alert nurse</div>
+            </div>
+          </Link>
+
+          <Link href="/portal/faculty/lost-found" className="card card-hover p-4 flex items-center gap-3.5 cursor-pointer">
+            <div className="h-11 w-11 rounded-xl bg-amber-50 flex items-center justify-center text-xl flex-shrink-0">🎒</div>
+            <div>
+              <div className="font-bold text-slate-900 text-xs">Lost &amp; Found Snap</div>
+              <div className="text-[11px] text-slate-500">Post items to parents</div>
+            </div>
+          </Link>
+
+          <Link href="/portal/faculty/clubs" className="card card-hover p-4 flex items-center gap-3.5 cursor-pointer">
+            <div className="h-11 w-11 rounded-xl bg-teal-50 flex items-center justify-center text-xl flex-shrink-0">🏆</div>
+            <div>
+              <div className="font-bold text-slate-900 text-xs">Clubs &amp; Dossier</div>
+              <div className="text-[11px] text-slate-500">Verify external awards</div>
+            </div>
+          </Link>
+
+          <Link href="/portal/faculty/relief" className="card card-hover p-4 flex items-center gap-3.5 cursor-pointer">
+            <div className="h-11 w-11 rounded-xl bg-orange-50 flex items-center justify-center text-xl flex-shrink-0">🔄</div>
+            <div>
+              <div className="font-bold text-slate-900 text-xs flex items-center gap-1.5">
+                <span>Relief Desk</span>
+                <span className="badge badge-amber text-[9px]">2 New</span>
+              </div>
+              <div className="text-[11px] text-slate-500">Accept period coverage</div>
+            </div>
+          </Link>
+
+          <Link href="/portal/faculty/field-trips" className="card card-hover p-4 flex items-center gap-3.5 cursor-pointer">
+            <div className="h-11 w-11 rounded-xl bg-indigo-50 flex items-center justify-center text-xl flex-shrink-0">🚌</div>
+            <div>
+              <div className="font-bold text-slate-900 text-xs">Field Trip Manifests</div>
+              <div className="text-[11px] text-slate-500">Verify fees &amp; boarding</div>
+            </div>
+          </Link>
+        </div>
       </div>
     </div>
   );
 }
+

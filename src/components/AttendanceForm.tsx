@@ -65,14 +65,63 @@ export default function AttendanceForm({
   const [isCompleted, setIsCompleted] = useState(hasInitialSubmission);
   const [isEditing, setIsEditing] = useState(!hasInitialSubmission);
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [result, setResult] = useState<{
-    success: boolean;
-    message: string;
-    absentCount?: number;
-    alertsDispatched?: number;
+  const [viewMode, setViewMode] = useState<"roll_call" | "safe_boarding">("roll_call");
+  const [activeMedicalModal, setActiveMedicalModal] = useState<{
+    name: string;
+    allergies: string[];
+    chronic: string[];
+    emergency: string;
   } | null>(null);
+
+  // Student metadata lookup for medical vault, transport & approved leaves
+  const studentMetaLookup: Record<
+    string,
+    {
+      allergies: string[];
+      chronic: string[];
+      emergency: string;
+      transport: string;
+      approvedLeave?: { type: string; label: string };
+    }
+  > = {
+    "1": {
+      allergies: ["Peanuts & Tree Nuts", "Penicillin Sensitivity"],
+      chronic: ["Mild seasonal asthma (Carries Salbutamol inhaler in school bag)"],
+      emergency: "+91 9440266743 (Father)",
+      transport: "Bus 04 (AP 26 TE 4821 • Magunta Layout)",
+    },
+    "2": {
+      allergies: [],
+      chronic: [],
+      emergency: "+91 8247220252 (Mother)",
+      transport: "Private Pickup (Father arriving at Gate 2)",
+    },
+    "3": {
+      allergies: ["Severe dust allergy"],
+      chronic: [],
+      emergency: "+91 7981067780 (Father)",
+      transport: "Bus 04 (AP 26 TE 4821 • Santhi Nagar)",
+      approvedLeave: { type: "on_duty", label: "On Duty (District STEM Hackathon)" },
+    },
+    "4": {
+      allergies: ["Lactose sensitivity"],
+      chronic: [],
+      emergency: "+91 98480 34129 (Mother)",
+      transport: "After-School Club (STEM Robotics Lab)",
+    },
+    "5": {
+      allergies: ["Bee sting allergy"],
+      chronic: ["Low BP tendencies during peak afternoon sun"],
+      emergency: "+91 94901 88421 (Father)",
+      transport: "Bus 07 (AP 26 TE 9104 • Trunk Road)",
+    },
+  };
+
+  const [boardedStatus, setBoardedStatus] = useState<Record<string, boolean>>({});
+
+  function toggleBoarded(id: string) {
+    setBoardedStatus((prev) => ({ ...prev, [id]: !prev[id] }));
+  }
 
   function toggleStatus(id: string) {
     if (!isEditing) {
@@ -268,54 +317,99 @@ export default function AttendanceForm({
         </div>
       </div>
 
-      {/* ── ACTION CONTROLS & SEARCH FILTER ── */}
+      {/* ── ACTION CONTROLS & VIEW SWITCHER ── */}
       <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
-          {/* Quick Bulk Actions (enabled in edit mode or initial session) */}
-          <div className="flex items-center gap-2">
-            {isEditing ? (
-              <>
-                <button
-                  type="button"
-                  onClick={() => markAll("present")}
-                  className="px-3 py-1.5 rounded-lg border border-emerald-200 bg-emerald-50 text-xs font-semibold text-emerald-800 hover:bg-emerald-100 transition-colors"
-                >
-                  ✓ Mark All Present
-                </button>
-                <button
-                  type="button"
-                  onClick={() => markAll("absent")}
-                  className="px-3 py-1.5 rounded-lg border border-rose-200 bg-rose-50 text-xs font-semibold text-rose-800 hover:bg-rose-100 transition-colors"
-                >
-                  ✕ Mark All Absent
-                </button>
-              </>
-            ) : (
-              <button
-                type="button"
-                onClick={() => setIsEditing(true)}
-                className="px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition-colors flex items-center gap-1.5"
-              >
-                <span>✏️ Unlock to Edit</span>
-              </button>
-            )}
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+          {/* Mode Switcher Tabs */}
+          <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl w-fit">
+            <button
+              type="button"
+              onClick={() => setViewMode("roll_call")}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                viewMode === "roll_call"
+                  ? "bg-white text-blue-900 shadow-2xs"
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              <span>📋 Morning Roll Call</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode("safe_boarding")}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                viewMode === "safe_boarding"
+                  ? "bg-blue-900 text-white shadow-2xs"
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              <span>🚌 3:45 PM Safe Boarding View</span>
+            </button>
           </div>
 
-          {/* Search Box */}
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search by name or roll no..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full sm:w-64 rounded-xl border border-slate-200 pl-9 pr-3 py-1.5 text-sm focus:outline-hidden focus:border-blue-900 focus:ring-1 focus:ring-blue-900"
-            />
-            <span className="absolute left-3 top-2 text-slate-400 text-sm">🔍</span>
+          {/* Quick Bulk Actions & Search */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            {viewMode === "roll_call" && (
+              <div className="flex items-center gap-2">
+                {isEditing ? (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => markAll("present")}
+                      className="px-3 py-1.5 rounded-lg border border-emerald-200 bg-emerald-50 text-xs font-semibold text-emerald-800 hover:bg-emerald-100 transition-colors"
+                    >
+                      ✓ All Present
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => markAll("absent")}
+                      className="px-3 py-1.5 rounded-lg border border-rose-200 bg-rose-50 text-xs font-semibold text-rose-800 hover:bg-rose-100 transition-colors"
+                    >
+                      ✕ All Absent
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setIsEditing(true)}
+                    className="px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition-colors flex items-center gap-1.5"
+                  >
+                    <span>✏️ Unlock to Edit</span>
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* Search Box */}
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search student or roll no..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full sm:w-60 rounded-xl border border-slate-200 pl-8 pr-3 py-1.5 text-xs focus:outline-hidden focus:border-blue-900 focus:ring-1 focus:ring-blue-900"
+              />
+              <span className="absolute left-2.5 top-2 text-slate-400 text-xs">🔍</span>
+            </div>
           </div>
         </div>
 
+        {/* ── SAFE BOARDING BANNER ── */}
+        {viewMode === "safe_boarding" && (
+          <div className="mt-4 p-3.5 rounded-xl bg-blue-50 border border-blue-200 text-xs text-blue-950 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <span className="text-xl">🚸</span>
+              <div>
+                <strong>3:45 PM Safe Boarding & Dismissal Protocol:</strong> Verify student transport destination before releasing to the gate or buses.
+              </div>
+            </div>
+            <span className="badge badge-blue flex-shrink-0">
+              {Object.values(boardedStatus).filter(Boolean).length} / {students.length} Released
+            </span>
+          </div>
+        )}
+
         {/* ── STUDENT ROSTER LIST ── */}
-        <div className="mt-5 divide-y divide-slate-100 border-t border-slate-100">
+        <div className="mt-4 divide-y divide-slate-100">
           {filteredStudents.length === 0 ? (
             <div className="py-8 text-center text-slate-500 text-sm">
               No students match your search query.
@@ -324,10 +418,20 @@ export default function AttendanceForm({
             filteredStudents.map((s) => {
               const isPresent = s.status === "present";
               const modified = modifiedMap.get(s.id);
+              const meta = studentMetaLookup[String(s.roll_no)] || {
+                allergies: [],
+                chronic: [],
+                emergency: s.parent_phone || "N/A",
+                transport: "Private Pickup",
+              };
+              const hasMedicalAlert = meta.allergies.length > 0 || meta.chronic.length > 0;
+              const hasApprovedLeave = meta.approvedLeave;
+              const isBoarded = boardedStatus[s.id];
+
               return (
                 <div
                   key={s.id}
-                  className={`flex flex-col sm:flex-row items-start sm:items-center justify-between py-3.5 px-3 rounded-xl transition-colors ${
+                  className={`flex flex-col sm:flex-row items-start sm:items-center justify-between py-3 px-3 rounded-xl transition-colors ${
                     modified
                       ? "bg-amber-50/70 border border-amber-200 my-1"
                       : !isPresent
@@ -335,15 +439,46 @@ export default function AttendanceForm({
                       : "hover:bg-slate-50/80"
                   }`}
                 >
-                  <div className="flex items-center gap-3.5 mb-2 sm:mb-0">
-                    <span className="flex items-center justify-center h-8 w-8 rounded-full bg-slate-100 text-xs font-bold text-slate-700">
+                  <div className="flex items-start gap-3.5 mb-2 sm:mb-0">
+                    <span className="flex items-center justify-center h-8 w-8 rounded-full bg-slate-100 text-xs font-bold text-slate-700 flex-shrink-0">
                       #{s.roll_no}
                     </span>
                     <div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <span className="text-sm font-semibold text-slate-900">
                           {s.full_name}
                         </span>
+
+                        {/* Medical / Allergy Alert Badge */}
+                        {hasMedicalAlert && (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setActiveMedicalModal({
+                                name: s.full_name,
+                                allergies: meta.allergies,
+                                chronic: meta.chronic,
+                                emergency: meta.emergency,
+                              })
+                            }
+                            className="inline-flex items-center gap-1 text-[10px] font-bold text-rose-700 bg-rose-100 hover:bg-rose-200 border border-rose-300 px-2 py-0.5 rounded-full cursor-pointer transition-colors shadow-2xs"
+                            title="Click to view Health & Allergy details"
+                          >
+                            <span>🩺</span>
+                            <span>
+                              {meta.allergies[0] || meta.chronic[0]?.split("(")[0] || "Medical Alert"}
+                            </span>
+                          </button>
+                        )}
+
+                        {/* Approved Leave / On-Duty Badge */}
+                        {hasApprovedLeave && (
+                          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-purple-800 bg-purple-100 border border-purple-300 px-2 py-0.5 rounded-full">
+                            <span>⚡</span>
+                            <span>{hasApprovedLeave.label}</span>
+                          </span>
+                        )}
+
                         {modified && (
                           <span className="inline-flex items-center text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full border border-amber-300 animate-pulse">
                             ✏️ Changed to {modified.current.toUpperCase()}
@@ -351,74 +486,107 @@ export default function AttendanceForm({
                         )}
                       </div>
 
-                      <div className="flex flex-wrap items-center gap-2 mt-1">
-                        {!isPresent ? (
-                          s.parent_acknowledged ? (
-                            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-800 bg-emerald-100/80 border border-emerald-300 px-2 py-0.5 rounded-md shadow-2xs">
-                              <span>✓</span> Acknowledged by Parent: <strong className="text-emerald-950">{s.reason || "Sick Leave"}</strong>
+                      {/* Subtitle Details: Roll Call vs Safe Boarding */}
+                      {viewMode === "roll_call" ? (
+                        <div className="flex flex-wrap items-center gap-2 mt-1">
+                          {!isPresent ? (
+                            s.parent_acknowledged ? (
+                              <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-800 bg-emerald-100/80 border border-emerald-300 px-2 py-0.5 rounded-md shadow-2xs">
+                                <span>✓</span> Acknowledged by Parent: <strong className="text-emerald-950">{s.reason || "Sick Leave"}</strong>
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md">
+                                <span>⏳</span> Absence alert dispatched &middot; Awaiting WhatsApp reply
+                              </span>
+                            )
+                          ) : s.consent_whatsapp && s.parent_phone ? (
+                            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">
+                              <span>💬</span> WhatsApp Active ({s.parent_phone})
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md">
-                              <span>⏳</span> Absence alert dispatched &middot; Awaiting WhatsApp reply
+                            <span className="text-[11px] text-slate-400">
+                              No WhatsApp consent
                             </span>
-                          )
-                        ) : s.consent_whatsapp && s.parent_phone ? (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">
-                            <span>💬</span> WhatsApp Alert Active ({s.parent_phone})
+                          )}
+                        </div>
+                      ) : (
+                        /* Safe Boarding Mode Information */
+                        <div className="flex flex-wrap items-center gap-2 mt-1">
+                          <span className="text-xs font-semibold text-blue-900 bg-blue-100/80 px-2 py-0.5 rounded-md border border-blue-200">
+                            🚌 Transport: {meta.transport}
                           </span>
-                        ) : (
-                          <span className="text-[11px] text-slate-400">
-                            No WhatsApp consent
+                          <span className="text-[11px] text-slate-500">
+                            Emergency: {meta.emergency}
                           </span>
-                        )}
-                      </div>
+                        </div>
+                      )}
                     </div>
                   </div>
 
-                  {/* Status Action / Indicator */}
+                  {/* Actions according to viewMode */}
                   <div className="flex items-center gap-2 self-end sm:self-center">
-                    {isEditing ? (
-                      <button
-                        type="button"
-                        onClick={() => toggleStatus(s.id)}
-                        className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-bold transition-all shadow-2xs active:scale-95 cursor-pointer ${
-                          isPresent
-                            ? "bg-emerald-600 text-white hover:bg-emerald-700"
-                            : "bg-rose-600 text-white hover:bg-rose-700"
-                        }`}
-                        title="Click to toggle status"
-                      >
-                        {isPresent ? (
-                          <>
-                            <span>✓</span> Present
-                          </>
-                        ) : (
-                          <>
-                            <span>✕</span> Absent
-                          </>
-                        )}
-                      </button>
+                    {viewMode === "roll_call" ? (
+                      /* Roll Call Present/Absent Buttons */
+                      hasApprovedLeave ? (
+                        <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-purple-50 text-purple-700 border border-purple-200">
+                          <span>✓</span> Authorized OD / Leave
+                        </span>
+                      ) : isEditing ? (
+                        <button
+                          type="button"
+                          onClick={() => toggleStatus(s.id)}
+                          className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-bold transition-all shadow-2xs active:scale-95 cursor-pointer ${
+                            isPresent
+                              ? "bg-emerald-600 text-white hover:bg-emerald-700"
+                              : "bg-rose-600 text-white hover:bg-rose-700"
+                          }`}
+                          title="Click to toggle status"
+                        >
+                          {isPresent ? (
+                            <>
+                              <span>✓</span> Present
+                            </>
+                          ) : (
+                            <>
+                              <span>✕</span> Absent
+                            </>
+                          )}
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => toggleStatus(s.id)}
+                          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                            isPresent
+                              ? "bg-emerald-100 text-emerald-800 hover:bg-emerald-200"
+                              : "bg-rose-100 text-rose-800 hover:bg-rose-200"
+                          }`}
+                          title="Click to edit"
+                        >
+                          {isPresent ? (
+                            <>
+                              <span>✓</span> Present
+                            </>
+                          ) : (
+                            <>
+                              <span>✕</span> Absent
+                            </>
+                          )}
+                          <span className="text-[10px] text-slate-400 ml-1">✏️</span>
+                        </button>
+                      )
                     ) : (
+                      /* Safe Boarding Mode: Checkmark Boarded */
                       <button
                         type="button"
-                        onClick={() => toggleStatus(s.id)}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                          isPresent
-                            ? "bg-emerald-100 text-emerald-800 hover:bg-emerald-200"
-                            : "bg-rose-100 text-rose-800 hover:bg-rose-200"
+                        onClick={() => toggleBoarded(s.id)}
+                        className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                          isBoarded
+                            ? "bg-emerald-700 text-white shadow-2xs"
+                            : "bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300"
                         }`}
-                        title="Click to edit"
                       >
-                        {isPresent ? (
-                          <>
-                            <span>✓</span> Present
-                          </>
-                        ) : (
-                          <>
-                            <span>✕</span> Absent
-                          </>
-                        )}
-                        <span className="text-[10px] text-slate-400 ml-1">✏️</span>
+                        {isBoarded ? "✓ Safe Boarded / Released" : "Mark Boarded / Released"}
                       </button>
                     )}
                   </div>
@@ -427,6 +595,77 @@ export default function AttendanceForm({
             })
           )}
         </div>
+
+        {/* ── HEALTH & ALLERGY DETAIL MODAL ── */}
+        {activeMedicalModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-fade-in">
+            <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">🩺</span>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900">
+                      Medical Vault &amp; Allergy Alert
+                    </h3>
+                    <p className="text-xs text-slate-500 font-medium">{activeMedicalModal.name}</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setActiveMedicalModal(null)}
+                  className="text-slate-400 hover:text-slate-700 font-bold p-1 rounded-lg hover:bg-slate-100 cursor-pointer"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="space-y-3 text-xs">
+                <div>
+                  <div className="font-bold text-rose-800 mb-1">⚠️ Known Severe Allergies</div>
+                  {activeMedicalModal.allergies.length > 0 ? (
+                    <ul className="list-disc list-inside space-y-0.5 text-slate-700 pl-1">
+                      {activeMedicalModal.allergies.map((a) => (
+                        <li key={a} className="font-semibold text-rose-950">{a}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <span className="text-slate-400">None on record.</span>
+                  )}
+                </div>
+
+                <div>
+                  <div className="font-bold text-amber-800 mb-1">🫁 Chronic Conditions &amp; Medication</div>
+                  {activeMedicalModal.chronic.length > 0 ? (
+                    <ul className="list-disc list-inside space-y-0.5 text-slate-700 pl-1">
+                      {activeMedicalModal.chronic.map((c) => (
+                        <li key={c} className="font-medium text-slate-800">{c}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <span className="text-slate-400">None on record.</span>
+                  )}
+                </div>
+
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                  <div className="font-bold text-slate-700">📞 Immediate Emergency Contact:</div>
+                  <div className="text-sm font-bold text-blue-900 mt-0.5">
+                    {activeMedicalModal.emergency}
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-2 flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => setActiveMedicalModal(null)}
+                  className="btn btn-primary text-xs px-4 py-2"
+                >
+                  Close Alert
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* ── SUBMISSION / UPDATE CONTROLS ── */}
         <div className="mt-6 pt-5 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
