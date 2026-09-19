@@ -37,21 +37,35 @@ export default async function AdminPortalLayout({
   const campuses = await getAllCampuses();
 
   const navItems = [
-    { href: "/portal/admin",                       label: "Executive Overview",     icon: "📊", exact: true },
-    { href: "/portal/admin/treasury",              label: "Centralized Treasury (HQ)", icon: "🏛️" },
-    { href: "/portal/admin/fees",                  label: "Fee Counter & Cash POS", icon: "💳" },
-    { href: "/portal/admin/academics",             label: "Academic Setup",         icon: "📚" },
-    { href: "/portal/admin/classes",               label: "Classes & Sections",     icon: "🏫" },
-    { href: "/portal/admin/students",              label: "Student Registry",       icon: "👥" },
-    { href: "/portal/admin/admissions",            label: "Admissions",             icon: "📋" },
-    { href: "/portal/admin/staff",                 label: "Staff Management",       icon: "👨‍🏫" },
-    { href: "/portal/admin/circulars",             label: "School Circulars",       icon: "📢" },
-    { href: "/portal/admin/homework",              label: "Homework Hub",           icon: "📝" },
-    { href: "/portal/admin/analytics",             label: "AI Analytics",           icon: "🤖" },
-    { href: "/portal/admin/promotions",            label: "Year-End Promotions",    icon: "🎓" },
-    { href: "/portal/admin/whatsapp",              label: "WhatsApp Audit Log",     icon: "💬" },
-    { href: "/portal/admin/whatsapp/setup",        label: "WhatsApp Setup",         icon: "📲" },
-    { href: "/portal/admin/settings",              label: "School Settings",        icon: "⚙️" },
+    // Section 1: Executive Intelligence & AI Forecasting
+    { href: "/portal/admin",                       label: "Executive Overview",        icon: "📊", exact: true },
+    { href: "/portal/admin/admissions/crm",        label: "AI Enrollment & Lead CRM",  icon: "🎯" },
+    { href: "/portal/admin/treasury",              label: "Treasury & Tally-Sync",     icon: "🏛️" },
+    { href: "/portal/admin/fees",                  label: "Fee Counter & Cash POS",    icon: "💳" },
+
+    // Section 2: Smart Campus Logistics & Fleet Command
+    { href: "/portal/admin/store-fulfillment",     label: "Store & Pick-Pack Indent",  icon: "📦" },
+    { href: "/portal/admin/fleet",                 label: "Fleet Radar & RFID Gate",   icon: "🚌" },
+
+    // Section 3: HR, Recruitment & Staff Appraisals
+    { href: "/portal/admin/staff/recruitment",     label: "Careers ATS & Hiring",      icon: "💼" },
+    { href: "/portal/admin/staff/appraisals",      label: "360° Faculty Appraisals",   icon: "⭐" },
+    { href: "/portal/admin/staff",                 label: "Staff Directory",           icon: "👨‍🏫" },
+
+    // Section 4: Academic Governance & NEP 2020 Compliance
+    { href: "/portal/admin/academics/obe",         label: "NEP 2020 OBE Auditor",      icon: "🧠" },
+    { href: "/portal/admin/safespace",             label: "SafeSpace Grievance Triage",icon: "🛡️" },
+    { href: "/portal/admin/academics",             label: "Academic Curriculum",       icon: "📚" },
+    { href: "/portal/admin/classes",               label: "Classes & Sections",        icon: "🏫" },
+    { href: "/portal/admin/students",              label: "Student Registry",          icon: "👥" },
+    { href: "/portal/admin/admissions",            label: "Admissions Desk",           icon: "📋" },
+
+    // Section 5: Campus Maintenance & Helpdesk Operations
+    { href: "/portal/admin/maintenance",           label: "Estate & Helpdesk Command", icon: "🛠️" },
+    { href: "/portal/admin/broadcast",             label: "Waterfall Broadcast Studio",icon: "📡" },
+    { href: "/portal/admin/circulars",             label: "Official Circulars",        icon: "📢" },
+    { href: "/portal/admin/whatsapp",              label: "WhatsApp Audit Trail",      icon: "💬" },
+    { href: "/portal/admin/settings",              label: "School Settings",           icon: "⚙️" },
   ];
 
   return (

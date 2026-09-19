@@ -17,7 +17,11 @@ Built with **Next.js 16 (App Router, React 19)**, **Supabase PostgreSQL (with Ro
   - **Private & Hidden from Search Engines** (`robots.txt` Disallow).
   - **23 Specialized Modules**: Morning Roll Call with Medical 🩺 & SEN ⭐ alerts, Leave/OD Approval Inbox, Academics & AI Radar (OMR bulk scanning, remedial drill dispatch), Conduct Demerit Ledger with parent e-sign lock, Curriculum Unit Planner with cross-section co-teacher sync, AI Essay Voice Grader, Seating Chart with "Eyes on Me" device lock, SEN Confidential IEP Vault, Staff HR Hub (payslips, leave quotas, biometric punch regularization), Store Indent Requisitions, and Campus Maintenance SLA Helpdesk.
 - **🛡️ Executive Admin Console (`/admin/login` -> `/portal/admin`)**:
-  - Multi-campus switcher, Central Treasury dashboard, Maker-Checker End-Of-Day (EOD) Cash Till auditing, bulk CSV student onboarding, staff allocation.
+  - **Section 1 (Executive Intelligence & AI)**: AI Enrollment Forecasting & Lead CRM (funnel stages, marketing campaign ROI, capacity warning), Centralized Treasury & 1-Click Tally-Sync (standard XML voucher generation) + Automated Bank Statement CSV UTR Reconciliation.
+  - **Section 2 (Smart Campus Logistics & Fleet)**: E-Commerce Store Fulfillment ("Pick & Pack" warehouse manifest, 1-scan barcode dispatch, automated vendor PO generation), Live Fleet Radar (real-time GPS telematics map, bus roster with overspeed alerts, turnstile RFID gate swipe stream).
+  - **Section 3 (HR, Recruitment & Staff Appraisals)**: Applicant Tracking System (ATS) Careers sync & recruitment Kanban, 360° Faculty Appraisal Matrix with objective weighted dossier (25% Biometric, 35% Academic, 20% PTM sentiment, 20% Relief).
+  - **Section 4 (Academic Governance & NEP 2020 Compliance)**: NEP 2020 Outcome-Based Education (OBE) Auditor with Bloom's Taxonomy cognitive heatmap, "SafeSpace" Grievance Triage Board with 2-Hour SLA countdown timer & anonymous token replies.
+  - **Section 5 (Campus Maintenance & Operations)**: Estate & Facility Command (work order dispatch, asset depreciation tracker flagging >4 repairs for budget replacement), Omnichannel Waterfall Broadcast Studio (Push -> WhatsApp -> SMS fallback funnel).
 
 ### 2. Modern Calm Visual Design System
 - Redesigned to strictly adhere to clean, calm educational aesthetics inspired by premier university portals.
@@ -160,7 +164,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 
 ---
 
-## 🧪 Automated Testing Suite (140 / 140 Passing — 100%)
+## 🧪 Automated Testing Suite (154 / 154 Passing — 100%)
 
 The codebase features comprehensive end-to-end automation covering Unit, Workflow, Database Resilience, and HTTP SSR Route integrity:
 
@@ -191,7 +195,14 @@ npx tsx scripts/test_student_portal_all.ts
 # Covers: All 18 student routes and self-service features
 ```
 
-**Total Automated Coverage: 140 Tests Executed • 140 Passed • 0 Failed (100% Success Rate)**
+### 5. Enterprise Admin Portal Deep Test Suite
+```bash
+npx tsx scripts/test_admin_enterprise_suite.ts
+# Result: 14/14 passed (100%)
+# Covers: All 5 sections & 10 enterprise modules (Lead CRM, Tally XML, Bank Recon, Store Indent, Fleet Radar & RFID, ATS, 360 Appraisals, OBE Heatmap, SafeSpace 2-hr SLA, Estate Command, Waterfall Broadcast)
+```
+
+**Total Automated Coverage: 154 Tests Executed • 154 Passed • 0 Failed (100% Success Rate)**
 
 ---
 
