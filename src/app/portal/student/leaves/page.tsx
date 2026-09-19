@@ -71,31 +71,30 @@ export default function LeavesAndOdPage() {
 
   return (
     <div className="space-y-8 pb-12">
-      {/* Top Banner */}
-      <div className="bg-gradient-to-r from-teal-950 via-slate-900 to-emerald-950 rounded-2xl p-6 sm:p-8 text-white border border-teal-900/50 shadow-xl relative overflow-hidden">
-        <div className="absolute right-0 top-0 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
+      {/* Top Banner - Clean White & Soft Pastel Style */}
+      <div className="bg-white rounded-2xl p-6 sm:p-8 text-slate-900 border border-slate-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] relative overflow-hidden">
         <div className="relative z-10 max-w-3xl">
-          <div className="flex items-center gap-2 px-3 py-1 bg-teal-500/20 text-teal-300 border border-teal-500/30 rounded-full text-xs font-semibold uppercase tracking-wider w-fit mb-3">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full text-xs font-semibold uppercase tracking-wider mb-3">
             <Calendar className="w-3.5 h-3.5" />
-            Digital Attendance & Exemption Engine
+            Digital Attendance &amp; Exemption Engine
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-2">
-            Leave Applications & On-Duty (OD) Roster
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight mb-2 text-slate-900" style={{ fontFamily: "Outfit, sans-serif" }}>
+            Leave Applications &amp; On-Duty (OD) Roster
           </h1>
-          <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-            Submit sick & casual leave requests online with automatic medical certificate verification for extended illness.
-            Review certified On-Duty (OD) presence credits for inter-school sports & Olympiads.
+          <p className="text-slate-500 text-xs sm:text-sm leading-relaxed">
+            Submit sick &amp; casual leave requests online with automatic medical certificate verification for extended illness.
+            Review certified On-Duty (OD) presence credits for inter-school sports &amp; Olympiads.
           </p>
         </div>
 
         {/* Tab Controls */}
-        <div className="flex flex-wrap gap-2 mt-6 pt-6 border-t border-slate-800">
+        <div className="flex flex-wrap gap-2 mt-6 pt-6 border-t border-slate-100">
           <button
             onClick={() => setActiveTab("apply")}
-            className={`px-4 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2 transition-all cursor-pointer ${
+            className={`px-4 py-2 rounded-xl font-medium text-xs flex items-center gap-2 transition-all cursor-pointer ${
               activeTab === "apply"
-                ? "bg-teal-600 text-white shadow-lg shadow-teal-900/50 font-semibold"
-                : "bg-slate-800/80 text-slate-300 hover:bg-slate-800 hover:text-white"
+                ? "bg-slate-900 text-white font-bold shadow-xs"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}
           >
             <FileText className="w-4 h-4" />
@@ -103,14 +102,14 @@ export default function LeavesAndOdPage() {
           </button>
           <button
             onClick={() => setActiveTab("od")}
-            className={`px-4 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2 transition-all cursor-pointer ${
+            className={`px-4 py-2 rounded-xl font-medium text-xs flex items-center gap-2 transition-all cursor-pointer ${
               activeTab === "od"
-                ? "bg-emerald-600 text-white shadow-lg shadow-emerald-900/50 font-semibold"
-                : "bg-slate-800/80 text-slate-300 hover:bg-slate-800 hover:text-white"
+                ? "bg-indigo-600 text-white font-bold shadow-xs"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}
           >
             <Trophy className="w-4 h-4" />
-            On-Duty (OD) Representation Log ({odLeaves.length})
+            On-Duty (OD) Credits ({odLeaves.length})
           </button>
         </div>
       </div>
@@ -315,19 +314,19 @@ export default function LeavesAndOdPage() {
       {/* TAB 2: ON-DUTY (OD) REPRESENTATION ROSTER */}
       {activeTab === "od" && (
         <div className="space-y-6">
-          {/* Banner */}
-          <div className="p-6 rounded-2xl bg-gradient-to-r from-emerald-900/60 via-slate-900 to-teal-900/60 border border-emerald-500/30 text-white flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          {/* Banner - Clean White & Soft Pastel Style */}
+          <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] text-slate-900 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
-              <div className="flex items-center gap-2 text-emerald-300 text-xs font-bold uppercase tracking-wider mb-1">
+              <div className="flex items-center gap-2 text-emerald-700 text-xs font-bold uppercase tracking-wider mb-1">
                 <Trophy className="w-4 h-4" />
-                Co-Curricular & Sports Honor Roster
+                Co-Curricular &amp; Sports Honor Roster
               </div>
-              <h2 className="text-xl font-bold">Official On-Duty (OD) Academic Presence Credit</h2>
-              <p className="text-slate-300 text-xs mt-1">
+              <h2 className="text-lg font-bold text-slate-900">Official On-Duty (OD) Academic Presence Credit</h2>
+              <p className="text-slate-500 text-xs mt-1">
                 Absences during school representation do not penalize your mandatory 75% attendance threshold. Attendance is officially recorded as &quot;Present - On Duty&quot;.
               </p>
             </div>
-            <div className="px-4 py-2 bg-emerald-500/20 rounded-xl text-xs font-bold text-emerald-300 border border-emerald-500/30">
+            <div className="px-3.5 py-1.5 bg-emerald-50 rounded-xl text-xs font-bold text-emerald-700 border border-emerald-200">
               Total OD Credits: 2 Days
             </div>
           </div>

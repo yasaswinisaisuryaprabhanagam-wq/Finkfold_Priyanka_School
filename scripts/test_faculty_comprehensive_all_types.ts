@@ -191,11 +191,11 @@ async function runAllTests() {
     const res = await createMaintenanceTicketAction({
       title: "Broken window latch - Ground floor lab",
       location: "Room 101",
-      category: "Furniture & Windows",
-      severity: "critical",
+      category: "Carpentry & Desks",
+      severity: "emergency",
       description: "Window frame loose, potential safety hazard during rain.",
     });
-    assert(res.success && res.ticket?.severity === "critical", "Critical ticket failed");
+    assert(res.success && res.ticket?.severity === "emergency", "Emergency ticket failed");
     assert(res.ticket?.status === "pending", "Maintenance ticket should be created with status pending");
   });
 
@@ -285,8 +285,8 @@ async function runAllTests() {
     const cur = await getFacultyCurriculumDataAction();
     const updatedPlan = cur.unitPlans.find((u) => u.id === "unit-math-10-quad");
     assert(!!updatedPlan, "Updated unit plan not found");
-    assert(updatedPlan.coTeachers.some((ct) => ct.section === "10-B"), "Plan must have co-teachers for section 10-B");
-    assert(updatedPlan.digitalResources.some((r) => r.title.includes("Discriminant")), "Resource was not synced into digitalResources");
+    assert(updatedPlan!.coTeachers.some((ct) => ct.section === "10-B"), "Plan must have co-teachers for section 10-B");
+    assert(updatedPlan!.digitalResources.some((r) => r.title.includes("Discriminant")), "Resource was not synced into digitalResources");
   });
 
   await runTest("Type 2: Workflow", "Voice Grader & AI Rubric", "AI Rubric evaluates essay -> Teacher records audio voice note -> Dispatches", async () => {
@@ -340,7 +340,7 @@ async function runAllTests() {
     const senData = await getFacultySenDataAction();
     const profile = senData.profiles.find((p) => p.studentId === "s-10a-03");
     assert(!!profile, "Student profile s-10a-03 missing from SEN vault");
-    assert(profile.actionableAccommodations.length >= 2, "Accommodations list was not expanded");
+    assert(profile!.actionableAccommodations.length >= 2, "Accommodations list was not expanded");
   });
 
   await runTest("Type 2: Workflow", "Staff HR Biometrics", "Regularize missed gate punch with HR reason", async () => {

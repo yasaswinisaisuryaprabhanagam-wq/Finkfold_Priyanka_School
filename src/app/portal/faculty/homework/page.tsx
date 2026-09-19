@@ -60,19 +60,16 @@ export default async function FacultyHomeworkPage() {
 
   return (
     <div className="space-y-6">
-      {/* Top Header Banner */}
-      <div
-        className="rounded-2xl text-white p-6 relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #0c2d5a 0%, #1a4d8f 50%, #2060b0 100%)" }}
-      >
-        <div className="text-amber-300 text-xs font-semibold uppercase tracking-wider mb-1">
+      {/* Top Header Banner - Clean White & Soft Pastel Style */}
+      <div className="rounded-2xl bg-white border border-slate-200/80 p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)] relative overflow-hidden">
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 uppercase tracking-wide mb-2">
           Faculty Workspace &middot; Homework Hub
         </div>
-        <h1 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>
+        <h1 className="text-xl sm:text-2xl font-bold text-slate-900 mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>
           📝 Class Homework Manager
         </h1>
-        <p className="text-white/70 text-xs mt-0.5">
-          Assign daily exercises, project work, and tasks to your students. Real-time sync with Student & Parent Portal.
+        <p className="text-slate-500 text-xs sm:text-sm mt-0.5">
+          Assign daily exercises, project work, and tasks to your students. Real-time sync with Student &amp; Parent Portal.
         </p>
       </div>
 

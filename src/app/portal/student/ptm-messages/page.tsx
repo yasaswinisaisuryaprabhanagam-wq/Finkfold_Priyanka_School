@@ -92,31 +92,30 @@ export default function PtmAndMessagingPage() {
 
   return (
     <div className="space-y-8 pb-12">
-      {/* Top Banner */}
-      <div className="bg-gradient-to-r from-blue-950 via-slate-900 to-indigo-950 rounded-2xl p-6 sm:p-8 text-white border border-blue-900/50 shadow-xl relative overflow-hidden">
-        <div className="absolute right-0 top-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+      {/* Top Banner - Clean White & Soft Pastel Style */}
+      <div className="bg-white rounded-2xl p-6 sm:p-8 text-slate-900 border border-slate-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] relative overflow-hidden">
         <div className="relative z-10 max-w-3xl">
-          <div className="flex items-center gap-2 px-3 py-1 bg-blue-500/20 text-blue-300 border border-blue-500/30 rounded-full text-xs font-semibold uppercase tracking-wider w-fit mb-3">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-sky-50 text-sky-700 border border-sky-200 rounded-full text-xs font-semibold uppercase tracking-wider mb-3">
             <UserCheck className="w-3.5 h-3.5" />
-            Regulated Faculty Comms & PTM
+            Regulated Faculty Comms &amp; PTM
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-2">
-            Teacher Office Hours & PTM Slot Booking
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight mb-2 text-slate-900" style={{ fontFamily: "Outfit, sans-serif" }}>
+            Teacher Office Hours &amp; PTM Slot Booking
           </h1>
-          <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+          <p className="text-slate-500 text-xs sm:text-sm leading-relaxed">
             Message your child&apos;s subject teachers within regulated office hours (3:45 PM – 5:00 PM)
             and reserve 1-on-1 parent-teacher conference slots without phone tag or queuing.
           </p>
         </div>
 
         {/* Tab Controls */}
-        <div className="flex flex-wrap gap-2 mt-6 pt-6 border-t border-slate-800">
+        <div className="flex flex-wrap gap-2 mt-6 pt-6 border-t border-slate-100">
           <button
             onClick={() => setActiveTab("messaging")}
-            className={`px-4 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2 transition-all cursor-pointer ${
+            className={`px-4 py-2 rounded-xl font-medium text-xs flex items-center gap-2 transition-all cursor-pointer ${
               activeTab === "messaging"
-                ? "bg-blue-600 text-white shadow-lg shadow-blue-900/50 font-semibold"
-                : "bg-slate-800/80 text-slate-300 hover:bg-slate-800 hover:text-white"
+                ? "bg-slate-900 text-white font-bold shadow-xs"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}
           >
             <MessageSquare className="w-4 h-4" />
@@ -124,10 +123,10 @@ export default function PtmAndMessagingPage() {
           </button>
           <button
             onClick={() => setActiveTab("ptm")}
-            className={`px-4 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2 transition-all cursor-pointer ${
+            className={`px-4 py-2 rounded-xl font-medium text-xs flex items-center gap-2 transition-all cursor-pointer ${
               activeTab === "ptm"
-                ? "bg-indigo-600 text-white shadow-lg shadow-indigo-900/50 font-semibold"
-                : "bg-slate-800/80 text-slate-300 hover:bg-slate-800 hover:text-white"
+                ? "bg-indigo-600 text-white font-bold shadow-xs"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}
           >
             <Calendar className="w-4 h-4" />
@@ -315,19 +314,19 @@ export default function PtmAndMessagingPage() {
       {/* TAB 2: PTM SLOT SCHEDULER */}
       {activeTab === "ptm" && (
         <div className="space-y-8">
-          {/* PTM Announcement Card */}
-          <div className="p-6 rounded-2xl bg-gradient-to-r from-indigo-900/60 via-slate-900 to-purple-900/60 border border-indigo-500/30 text-white flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          {/* PTM Announcement Card - Clean White & Soft Pastel Style */}
+          <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] text-slate-900 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
-              <div className="flex items-center gap-2 text-indigo-300 text-xs font-bold uppercase tracking-wider mb-1">
+              <div className="flex items-center gap-2 text-indigo-700 text-xs font-bold uppercase tracking-wider mb-1">
                 <Calendar className="w-4 h-4" />
                 Upcoming Mandatory Conference
               </div>
-              <h2 className="text-xl font-bold">Class 10 Mid-Term Parent-Teacher Meeting (PTM)</h2>
-              <p className="text-slate-300 text-xs mt-1">
-                Date: <strong>Saturday, 28 September 2026</strong> • Time: 09:00 AM – 01:00 PM • Format: 10-Minute One-on-One Slots
+              <h2 className="text-lg font-bold text-slate-900">Class 10 Mid-Term Parent-Teacher Meeting (PTM)</h2>
+              <p className="text-slate-500 text-xs mt-1">
+                Date: <strong className="text-slate-700">Saturday, 28 September 2026</strong> • Time: 09:00 AM – 01:00 PM • Format: 10-Minute One-on-One Slots
               </p>
             </div>
-            <div className="px-4 py-2 bg-white/10 rounded-xl text-xs font-semibold text-indigo-200 border border-white/10">
+            <div className="px-3.5 py-1.5 bg-indigo-50 rounded-xl text-xs font-bold text-indigo-700 border border-indigo-200">
               ⚡ Instant Digital Reservation
             </div>
           </div>

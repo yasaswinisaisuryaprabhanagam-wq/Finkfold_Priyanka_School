@@ -196,7 +196,7 @@ export default function StudentOutPassPage() {
               <button
                 type="submit"
                 disabled={isPending}
-                className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-rose-700 to-red-700 hover:from-rose-800 hover:to-red-800 text-white font-bold text-xs shadow-md transition-all active:scale-98 cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-xs transition-all active:scale-98 cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 <span>🚀</span>
                 <span>Submit Multi-Tier Leave Request</span>

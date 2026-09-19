@@ -12,24 +12,19 @@ export default async function FacultyPortalLayout({
   const userProfile = await getProfile();
 
   // ── HARD AUTH GATE ─────────────────────────────────────────
-  // Not logged in → send to login
   if (!userProfile) {
     redirect("/login?from=faculty");
   }
 
-  // Wrong role → send to their correct portal
   if (userProfile.role === "school_admin" || userProfile.role === "super_admin") {
     redirect("/portal/admin");
   }
   if (userProfile.role === "parent") {
     redirect("/portal/student");
   }
-  // Only 'teacher' role reaches below
-  // ───────────────────────────────────────────────────────────
 
   const profile = userProfile;
 
-  // Query unhandled parent replies for notification bubble
   let unhandledReplies = 0;
   try {
     const { createAdminClient } = await import("@/lib/supabase/server");
@@ -101,59 +96,78 @@ export default async function FacultyPortalLayout({
     },
   ];
 
+  const todayStr = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+
   return (
     <div className="portal-shell">
-      {/* ── Sidebar ── */}
-      <aside className="portal-sidebar" id="faculty-sidebar">
-        {/* Brand */}
-        <div className="p-5 border-b border-white/10 flex-shrink-0">
-          <Link href="/" className="flex items-center gap-3 group">
-            {SCHOOL.logoUrl && (
-              <div className="h-9 w-9 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center flex-shrink-0 overflow-hidden">
-                <img src={SCHOOL.logoUrl} alt="Logo" className="h-7 w-7 object-contain" />
+      {/* ── Sidebar (Clean White Theme matching screenshots) ── */}
+      <aside className="portal-sidebar bg-white border-r border-slate-200/80 shadow-xs" id="faculty-sidebar">
+        {/* Brand / Institute Header */}
+        <div className="p-4 border-b border-slate-100 flex-shrink-0">
+          <Link href="/" className="flex items-center justify-between group">
+            <div className="flex items-center gap-2.5 overflow-hidden">
+              {SCHOOL.logoUrl ? (
+                <div className="h-9 w-9 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center flex-shrink-0 overflow-hidden shadow-xs">
+                  <img src={SCHOOL.logoUrl} alt="Logo" className="h-6 w-6 object-contain" />
+                </div>
+              ) : (
+                <div className="h-9 w-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0 shadow-xs">
+                  {SCHOOL.name.charAt(0)}
+                </div>
+              )}
+              <div className="overflow-hidden">
+                <div className="text-slate-900 font-bold text-sm leading-tight truncate group-hover:text-indigo-600 transition" style={{ fontFamily: "Outfit, sans-serif" }}>
+                  {SCHOOL.name}
+                </div>
+                <div className="text-slate-400 text-[11px] font-medium">Faculty Portal</div>
               </div>
-            )}
-            <div className="overflow-hidden">
-              <div className="text-white font-bold text-sm leading-tight truncate" style={{ fontFamily: "Outfit, sans-serif" }}>
-                {SCHOOL.name}
-              </div>
-              <div className="text-white/50 text-[10px] font-medium mt-0.5">Faculty Command Center</div>
+            </div>
+            <div className="text-slate-400 text-xs">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+              </svg>
             </div>
           </Link>
         </div>
 
-        {/* User info */}
-        <div className="px-4 py-3.5 border-b border-white/10 flex-shrink-0">
-          <div className="flex items-center gap-2.5">
-            <div className="h-8 w-8 rounded-full bg-amber-400 flex items-center justify-center text-slate-900 font-bold text-sm flex-shrink-0">
-              {profile.full_name.charAt(0).toUpperCase()}
-            </div>
-            <div className="overflow-hidden">
-              <div className="text-white text-xs font-semibold truncate">{profile.full_name}</div>
-              <div className="text-white/50 text-[10px] flex items-center gap-1">
-                Teacher
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse ml-1" />
-                Online
+        {/* User Capsule */}
+        <div className="px-4 py-3 border-b border-slate-100 flex-shrink-0 bg-slate-50/50">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="h-8 w-8 rounded-full bg-indigo-100 border border-indigo-200 text-indigo-700 flex items-center justify-center font-bold text-xs flex-shrink-0">
+                {profile.full_name.charAt(0).toUpperCase()}
+              </div>
+              <div className="overflow-hidden">
+                <div className="text-slate-800 text-xs font-semibold truncate">{profile.full_name}</div>
+                <div className="text-slate-400 text-[10px] flex items-center gap-1">
+                  Faculty Teacher
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse ml-0.5" />
+                  <span className="text-emerald-600 font-medium">Active</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Navigation with Categories */}
-        <nav className="flex-1 p-3 space-y-4 overflow-y-auto">
+        <nav className="flex-1 p-2.5 space-y-3.5 overflow-y-auto">
           {navSections.map((sec) => (
-            <div key={sec.title} className="space-y-1">
-              <div className="px-2 text-[10px] font-bold text-white/40 uppercase tracking-wider">
+            <div key={sec.title} className="space-y-0.5">
+              <div className="px-2.5 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                 {sec.title}
               </div>
               {sec.items.map((item) => (
-                <Link key={item.href} href={item.href} className="sidebar-nav-item flex items-center justify-between py-1.5 px-2.5 rounded-lg text-xs hover:bg-white/10 transition-colors">
-                  <div className="flex items-center gap-2.5">
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="flex items-center justify-between py-1.5 px-2.5 rounded-xl text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/70 transition-colors group"
+                >
+                  <div className="flex items-center gap-2.5 overflow-hidden">
                     <span className="text-sm w-4 flex-shrink-0 text-center">{item.icon}</span>
                     <span className="truncate">{item.label}</span>
                   </div>
                   {item.badge && (
-                    <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-amber-400 text-slate-950 shadow-2xs">
+                    <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-indigo-50 text-indigo-600 border border-indigo-100/60 shadow-2xs">
                       {item.badge}
                     </span>
                   )}
@@ -163,39 +177,77 @@ export default async function FacultyPortalLayout({
           ))}
         </nav>
 
-        {/* Bottom — sign out only, NO cross-portal links */}
-        <div className="p-3 border-t border-white/10 flex-shrink-0">
-          <div className="px-2">
-            <SignOutButton />
-          </div>
+        {/* Bottom Signout */}
+        <div className="p-3 border-t border-slate-100 flex-shrink-0 bg-white">
+          <SignOutButton />
         </div>
       </aside>
 
-      {/* ── Main Content ── */}
+      {/* ── Main Content Area ── */}
       <div className="portal-main">
-        <header className="portal-topbar gap-4">
-          <div className="flex-1 flex items-center gap-3">
-            <div>
-              <h2 className="text-sm font-bold text-slate-800" style={{ fontFamily: "Outfit, sans-serif" }}>
-                Faculty Dashboard
-              </h2>
-              <p className="text-[11px] text-slate-400">
-                {new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
-              </p>
+        {/* Top Navigation Bar matching Screenshots 1, 2, 3 */}
+        <header className="portal-topbar justify-between gap-4">
+          {/* Search Pill */}
+          <div className="flex items-center gap-2 flex-1 max-w-md">
+            <div className="relative w-full">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <input
+                type="text"
+                placeholder="Search classes, students, or resources..."
+                className="w-full pl-9 pr-4 py-1.5 text-xs bg-slate-100/80 border border-slate-200/60 rounded-xl text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition"
+              />
             </div>
           </div>
-          <div className="flex items-center gap-3 text-xs text-slate-500">
-            <span className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 font-medium border border-emerald-200">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              WhatsApp Active
-            </span>
+
+          {/* Right Action Icons & Badges */}
+          <div className="flex items-center gap-3">
+            {/* Date Pill */}
+            <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200/70 text-xs text-slate-600 font-medium">
+              <span>📅</span>
+              <span>{todayStr}</span>
+            </div>
+
+            {/* Quick Action (+) Button */}
+            <button
+              title="Quick Action"
+              className="h-8 w-8 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-slate-700 flex items-center justify-center text-sm font-semibold transition"
+            >
+              +
+            </button>
+
+            {/* Notification Bell with Badge */}
+            <Link
+              href="/portal/faculty/messages"
+              title="Notifications & Messages"
+              className="relative h-8 w-8 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-slate-600 flex items-center justify-center text-sm transition"
+            >
+              <span>🔔</span>
+              {unhandledReplies > 0 && (
+                <span className="absolute -top-1 -right-1 h-4 min-w-[16px] px-1 rounded-full bg-rose-500 text-white text-[9px] font-bold flex items-center justify-center">
+                  {unhandledReplies}
+                </span>
+              )}
+            </Link>
+
+            {/* User Avatar */}
+            <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
+              <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-indigo-600 to-violet-500 text-white font-bold text-xs flex items-center justify-center shadow-xs">
+                {profile.full_name.charAt(0).toUpperCase()}
+              </div>
+            </div>
           </div>
         </header>
 
+        {/* Content Container */}
         <main className="portal-content animate-fade-in">{children}</main>
 
-        <footer className="border-t border-slate-200 bg-white px-6 py-3 text-[11px] text-slate-400 text-center">
-          {SCHOOL.name} • Faculty Portal • Powered by Finkfold ERP
+        <footer className="border-t border-slate-200/70 bg-white px-6 py-3.5 text-[11px] text-slate-400 flex items-center justify-between">
+          <div>{SCHOOL.name} &bull; Faculty Command Center</div>
+          <div className="text-slate-400">Powered by Finkfold EdOS</div>
         </footer>
       </div>
     </div>

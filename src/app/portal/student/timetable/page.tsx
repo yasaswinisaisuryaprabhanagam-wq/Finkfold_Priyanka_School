@@ -41,11 +41,14 @@ export default async function StudentTimetablePage() {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-2xl text-white p-6 overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%)" }}>
-        <div className="text-violet-300 text-xs font-semibold uppercase tracking-wider mb-1">Student Portal</div>
-        <h1 className="text-2xl font-bold text-white" style={{ fontFamily: "Outfit, sans-serif" }}>🗓️ Today's Timetable</h1>
-        <p className="text-white/60 text-sm mt-1">{todayFormatted}</p>
+      <div className="rounded-2xl bg-white border border-slate-200/80 p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)] overflow-hidden">
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 uppercase tracking-wide mb-2">
+          Student Portal
+        </div>
+        <h1 className="text-xl sm:text-2xl font-bold text-slate-900" style={{ fontFamily: "Outfit, sans-serif" }}>
+          🗓️ Today&apos;s Timetable
+        </h1>
+        <p className="text-slate-500 text-xs sm:text-sm mt-1">{todayFormatted}</p>
       </div>
 
       {activePeriod > 0 && (

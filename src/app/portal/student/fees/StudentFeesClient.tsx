@@ -82,55 +82,52 @@ export default function StudentFeesClient({
   return (
     <div className="space-y-6">
       {/* ── Banner ── */}
-      <div
-        className="rounded-2xl text-white p-6 relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%)" }}
-      >
+      <div className="rounded-2xl bg-white border border-slate-200/80 p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)] relative overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="text-indigo-300 text-xs font-semibold uppercase tracking-wider mb-1">
-              Fee Ledger, Receipts & Institutional Refunds &middot; {schoolName}
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 uppercase tracking-wide mb-2">
+              Fee Ledger, Receipts &amp; Refunds &middot; {schoolName}
             </div>
-            <h1 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>
-              🧾 Student Fee Portal & Refunds
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>
+              🧾 Student Fee Portal &amp; Refunds
             </h1>
-            <p className="text-white/70 text-sm">
+            <p className="text-slate-500 text-xs sm:text-sm">
               Official fee payment history, digital receipts, UPI gateway, and caution deposit refund management.
             </p>
           </div>
 
-          <div className="bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/20 text-right">
-            <div className="text-[10px] text-indigo-200 uppercase font-bold">Enrolled Student</div>
-            <div className="text-base font-bold text-white mt-0.5">{student.full_name}</div>
-            <div className="text-xs text-white/80 font-mono">
+          <div className="bg-slate-50 rounded-xl p-3 border border-slate-200 text-right">
+            <div className="text-[10px] text-slate-400 uppercase font-bold">Enrolled Student</div>
+            <div className="text-base font-bold text-slate-900 mt-0.5">{student.full_name}</div>
+            <div className="text-xs text-slate-500 font-mono">
               Adm: {student.admission_no} &bull; Roll #{student.roll_no}
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Tab Controls */}
-        <div className="flex flex-wrap gap-2 mt-6 pt-6 border-t border-white/15 relative z-10">
-          <button
-            onClick={() => setActiveTab("fees")}
-            className={`px-4 py-2 rounded-xl font-medium text-xs flex items-center gap-2 transition-all cursor-pointer ${
-              activeTab === "fees"
-                ? "bg-white text-indigo-950 font-bold shadow-md"
-                : "bg-white/10 text-white hover:bg-white/20"
-            }`}
-          >
-            <span>📜 Fee Schedules & Receipts</span>
-          </button>
-          <button
-            onClick={() => setActiveTab("bank_refund")}
-            className={`px-4 py-2 rounded-xl font-medium text-xs flex items-center gap-2 transition-all cursor-pointer ${
-              activeTab === "bank_refund"
-                ? "bg-emerald-500 text-white font-bold shadow-md shadow-emerald-900/40"
-                : "bg-white/10 text-white hover:bg-white/20"
-            }`}
-          >
-            <span>🏦 Bank Details & Caution Deposit Refunds</span>
-          </button>
-        </div>
+      {/* Tab Controls */}
+      <div className="flex flex-wrap gap-2 p-1.5 rounded-xl bg-slate-100 border border-slate-200/80 w-fit">
+        <button
+          onClick={() => setActiveTab("fees")}
+          className={`px-4 py-2 rounded-lg font-medium text-xs flex items-center gap-2 transition-all cursor-pointer ${
+            activeTab === "fees"
+              ? "bg-white text-slate-900 font-bold shadow-xs"
+              : "text-slate-600 hover:text-slate-900"
+          }`}
+        >
+          <span>📜 Fee Schedules &amp; Receipts</span>
+        </button>
+        <button
+          onClick={() => setActiveTab("bank_refund")}
+          className={`px-4 py-2 rounded-lg font-medium text-xs flex items-center gap-2 transition-all cursor-pointer ${
+            activeTab === "bank_refund"
+              ? "bg-white text-emerald-700 font-bold shadow-xs"
+              : "text-slate-600 hover:text-slate-900"
+          }`}
+        >
+          <span>🏦 Bank Details &amp; Caution Deposit Refunds</span>
+        </button>
       </div>
 
       {/* Global Notification */}

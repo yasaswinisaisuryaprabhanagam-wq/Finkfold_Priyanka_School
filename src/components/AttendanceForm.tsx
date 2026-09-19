@@ -64,6 +64,14 @@ export default function AttendanceForm({
   const [savedSnapshot, setSavedSnapshot] = useState(students);
   const [isCompleted, setIsCompleted] = useState(hasInitialSubmission);
   const [isEditing, setIsEditing] = useState(!hasInitialSubmission);
+  const [submitting, setSubmitting] = useState(false);
+  const [result, setResult] = useState<{
+    success: boolean;
+    message: string;
+    absentCount?: number;
+    alertsDispatched?: number;
+  } | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [viewMode, setViewMode] = useState<"roll_call" | "safe_boarding">("roll_call");
   const [activeMedicalModal, setActiveMedicalModal] = useState<{

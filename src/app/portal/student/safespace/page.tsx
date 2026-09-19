@@ -86,31 +86,30 @@ export default function SafeSpacePage() {
 
   return (
     <div className="space-y-8 pb-12">
-      {/* Top Banner */}
-      <div className="bg-gradient-to-r from-emerald-950 via-slate-900 to-indigo-950 rounded-2xl p-6 sm:p-8 text-white border border-emerald-900/50 shadow-xl relative overflow-hidden">
-        <div className="absolute right-0 top-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+      {/* Top Banner - Clean White & Soft Pastel Style */}
+      <div className="bg-white rounded-2xl p-6 sm:p-8 text-slate-900 border border-slate-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] relative overflow-hidden">
         <div className="relative z-10 max-w-3xl">
-          <div className="flex items-center gap-2 px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full text-xs font-semibold uppercase tracking-wider w-fit mb-3">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full text-xs font-semibold uppercase tracking-wider mb-3">
             <Lock className="w-3.5 h-3.5" />
-            Zero-Identity Vault & Student Standing
+            Zero-Identity Vault &amp; Student Standing
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-2">
-            Safe Space Drop-Box & Conduct Ledger
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight mb-2 text-slate-900" style={{ fontFamily: "Outfit, sans-serif" }}>
+            Safe Space Drop-Box &amp; Conduct Ledger
           </h1>
-          <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+          <p className="text-slate-500 text-xs sm:text-sm leading-relaxed">
             Report bullying, harassment, or emotional challenges with 100% cryptographic anonymity.
             Check counselor replies via secure token and review your live merits and leadership score.
           </p>
         </div>
 
         {/* Tab Controls */}
-        <div className="flex flex-wrap gap-2 mt-6 pt-6 border-t border-slate-800">
+        <div className="flex flex-wrap gap-2 mt-6 pt-6 border-t border-slate-100">
           <button
             onClick={() => setActiveTab("anonymous")}
-            className={`px-4 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2 transition-all cursor-pointer ${
+            className={`px-4 py-2 rounded-xl font-medium text-xs flex items-center gap-2 transition-all cursor-pointer ${
               activeTab === "anonymous"
-                ? "bg-emerald-500 text-white shadow-lg shadow-emerald-900/50 font-semibold"
-                : "bg-slate-800/80 text-slate-300 hover:bg-slate-800 hover:text-white"
+                ? "bg-slate-900 text-white font-bold shadow-xs"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}
           >
             <EyeOff className="w-4 h-4" />
@@ -118,14 +117,14 @@ export default function SafeSpacePage() {
           </button>
           <button
             onClick={() => setActiveTab("conduct")}
-            className={`px-4 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2 transition-all cursor-pointer ${
+            className={`px-4 py-2 rounded-xl font-medium text-xs flex items-center gap-2 transition-all cursor-pointer ${
               activeTab === "conduct"
-                ? "bg-indigo-600 text-white shadow-lg shadow-indigo-900/50 font-semibold"
-                : "bg-slate-800/80 text-slate-300 hover:bg-slate-800 hover:text-white"
+                ? "bg-indigo-600 text-white font-bold shadow-xs"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}
           >
             <Award className="w-4 h-4" />
-            Live Conduct Ledger & Merits ({conductEntries.length})
+            Live Conduct Ledger &amp; Merits ({conductEntries.length})
           </button>
         </div>
       </div>

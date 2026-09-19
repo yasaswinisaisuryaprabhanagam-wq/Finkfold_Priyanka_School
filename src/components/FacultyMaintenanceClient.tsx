@@ -68,29 +68,29 @@ export default function FacultyMaintenanceClient({ initialTickets }: Props) {
         </div>
       )}
 
-      {/* Header Banner */}
-      <div className="p-6 rounded-2xl bg-gradient-to-r from-zinc-950 via-slate-900 to-amber-950 text-white shadow-xl relative overflow-hidden">
+      {/* Header Banner - Clean Reference Style */}
+      <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] relative overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-400 text-slate-950 uppercase tracking-wide">
-                Campus Estate & Maintenance Helpdesk
+              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 uppercase tracking-wide">
+                Campus Estate &amp; Maintenance Helpdesk
               </span>
-              <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-white/10 text-white/80">
+              <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">
                 SLA-Tracked Facility Repairs
               </span>
             </div>
-            <h1 className="text-2xl font-bold mt-2" style={{ fontFamily: "Outfit, sans-serif" }}>
-              Campus Maintenance Ticketing & Repairs
+            <h1 className="text-xl font-bold text-slate-900 mt-2" style={{ fontFamily: "Outfit, sans-serif" }}>
+              Campus Maintenance Ticketing &amp; Repairs
             </h1>
-            <p className="text-white/70 text-xs mt-1 max-w-xl">
+            <p className="text-slate-500 text-xs mt-1 max-w-xl">
               Report leaking ACs, flickering projectors, or broken desks directly to the Estate Manager. Track technician assignments and resolution progress without chasing janitors.
             </p>
           </div>
 
           <button
             onClick={() => setModalOpen(true)}
-            className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs shadow-lg transition-all flex items-center gap-2"
+            className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-xs transition-all flex items-center gap-2 cursor-pointer"
           >
             <span>➕</span>
             <span>Report Facility Issue</span>

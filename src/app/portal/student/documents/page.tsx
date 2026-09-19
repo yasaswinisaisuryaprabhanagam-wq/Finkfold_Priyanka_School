@@ -150,53 +150,52 @@ export default function StudentDocumentsPage() {
 
   return (
     <div className="space-y-8 pb-12">
-      {/* Top Banner */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-purple-950 rounded-2xl p-6 sm:p-8 text-white border border-indigo-900/50 shadow-xl relative overflow-hidden">
-        <div className="absolute right-0 top-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
+      {/* Top Banner - Clean White & Soft Pastel Style */}
+      <div className="bg-white rounded-2xl p-6 sm:p-8 text-slate-900 border border-slate-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] relative overflow-hidden">
         <div className="relative z-10 max-w-3xl">
-          <div className="flex items-center gap-2 px-3 py-1 bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 rounded-full text-xs font-semibold uppercase tracking-wider w-fit mb-3">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-full text-xs font-semibold uppercase tracking-wider mb-3">
             <ShieldCheck className="w-3.5 h-3.5" />
-            Institutional Credentials & Dossier Vault
+            Institutional Credentials &amp; Dossier Vault
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-2">
-            Verifiable E-Certs, External Achievements & ID Photo
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight mb-2 text-slate-900" style={{ fontFamily: "Outfit, sans-serif" }}>
+            Verifiable E-Certs, External Achievements &amp; ID Photo
           </h1>
-          <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+          <p className="text-slate-500 text-xs sm:text-sm leading-relaxed">
             Generate instantly verifiable QR-signed certificates, deposit external district/state awards for Principal approval,
             manage compliant ID card photos, and raise administrative helpdesk requests.
           </p>
         </div>
 
         {/* Tab Controls */}
-        <div className="flex flex-wrap gap-2 mt-6 pt-6 border-t border-slate-800">
+        <div className="flex flex-wrap gap-2 mt-6 pt-6 border-t border-slate-100">
           <button
             onClick={() => setActiveTab("certificates")}
-            className={`px-4 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2 transition-all cursor-pointer ${
+            className={`px-4 py-2 rounded-xl font-medium text-xs flex items-center gap-2 transition-all cursor-pointer ${
               activeTab === "certificates"
-                ? "bg-indigo-600 text-white shadow-lg shadow-indigo-900/50 font-semibold"
-                : "bg-slate-800/80 text-slate-300 hover:bg-slate-800 hover:text-white"
+                ? "bg-slate-900 text-white font-bold shadow-xs"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}
           >
             <Award className="w-4 h-4" />
-            E-Certificates & Statements ({certificates.length + 3})
+            E-Certificates &amp; Statements ({certificates.length + 3})
           </button>
           <button
             onClick={() => setActiveTab("external")}
-            className={`px-4 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2 transition-all cursor-pointer ${
+            className={`px-4 py-2 rounded-xl font-medium text-xs flex items-center gap-2 transition-all cursor-pointer ${
               activeTab === "external"
-                ? "bg-purple-600 text-white shadow-lg shadow-purple-900/50 font-semibold"
-                : "bg-slate-800/80 text-slate-300 hover:bg-slate-800 hover:text-white"
+                ? "bg-indigo-600 text-white font-bold shadow-xs"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}
           >
             <Sparkles className="w-4 h-4" />
-            External Achievements Drop-Box ({externalAchievements.length})
+            External Achievements ({externalAchievements.length})
           </button>
           <button
             onClick={() => setActiveTab("idphoto")}
-            className={`px-4 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2 transition-all cursor-pointer ${
+            className={`px-4 py-2 rounded-xl font-medium text-xs flex items-center gap-2 transition-all cursor-pointer ${
               activeTab === "idphoto"
-                ? "bg-emerald-600 text-white shadow-lg shadow-emerald-900/50 font-semibold"
-                : "bg-slate-800/80 text-slate-300 hover:bg-slate-800 hover:text-white"
+                ? "bg-emerald-700 text-white font-bold shadow-xs"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}
           >
             <Camera className="w-4 h-4" />
@@ -204,10 +203,10 @@ export default function StudentDocumentsPage() {
           </button>
           <button
             onClick={() => setActiveTab("helpdesk")}
-            className={`px-4 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2 transition-all cursor-pointer ${
+            className={`px-4 py-2 rounded-xl font-medium text-xs flex items-center gap-2 transition-all cursor-pointer ${
               activeTab === "helpdesk"
-                ? "bg-blue-600 text-white shadow-lg shadow-blue-900/50 font-semibold"
-                : "bg-slate-800/80 text-slate-300 hover:bg-slate-800 hover:text-white"
+                ? "bg-sky-700 text-white font-bold shadow-xs"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}
           >
             <HelpCircle className="w-4 h-4" />

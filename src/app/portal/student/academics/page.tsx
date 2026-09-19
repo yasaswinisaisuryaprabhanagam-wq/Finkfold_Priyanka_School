@@ -261,20 +261,17 @@ export default function AcademicsExamPage() {
       {/* TAB 2: AI SKILL & GAP ANALYTICS */}
       {activeTab === "ai_skills" && (
         <div className="space-y-6">
-          {/* AI Banner */}
-          <div
-            className="rounded-3xl p-6 text-white relative overflow-hidden shadow-lg"
-            style={{ background: "linear-gradient(135deg, #1e1b4b 0%, #312e81 60%, #4338ca 100%)" }}
-          >
+          {/* AI Banner - Clean White & Soft Pastel Style */}
+          <div className="rounded-2xl p-6 bg-white border border-slate-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] relative overflow-hidden">
             <div className="relative z-10 max-w-2xl space-y-2">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-violet-200 text-xs font-semibold backdrop-blur-sm">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 text-xs font-semibold">
                 <span>🧠</span>
                 <span>Automated Formative Diagnostics</span>
               </div>
-              <h2 className="text-xl sm:text-2xl font-black text-white" style={{ fontFamily: "Outfit, sans-serif" }}>
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-900" style={{ fontFamily: "Outfit, sans-serif" }}>
                 AI-Powered Learning Gap Analysis
               </h2>
-              <p className="text-xs sm:text-sm text-violet-100/80 leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
                 Rather than generic percentages, our machine learning engine examines exam answer sheets to detect exact chapter vulnerabilities and synthesizes tailored practice sheets for the weekend.
               </p>
             </div>

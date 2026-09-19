@@ -188,21 +188,21 @@ export default function StudentTransportPage() {
 
         {/* Right: Digital Boarding Pass & Opt-Out */}
         <div className="lg:col-span-5 space-y-6">
-          {/* Boarding Pass Card */}
-          <div className="bg-gradient-to-br from-blue-900 via-indigo-900 to-slate-900 text-white rounded-3xl p-6 shadow-md border border-white/10 relative overflow-hidden">
-            <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-4">
+          {/* Boarding Pass Card - Clean White & Soft Pastel Style */}
+          <div className="bg-white text-slate-900 rounded-2xl p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-slate-200/80 relative overflow-hidden">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-amber-300 block">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-amber-700 block">
                   Official Transit Pass
                 </span>
-                <h3 className="text-lg font-bold text-white">Student Boarding QR</h3>
+                <h3 className="text-lg font-bold text-slate-900">Student Boarding QR</h3>
               </div>
               <span className="text-2xl">🎫</span>
             </div>
 
             {/* QR Mock */}
-            <div className="bg-white text-slate-950 p-4 rounded-2xl flex flex-col items-center justify-center text-center shadow-inner space-y-2">
-              <div className="h-32 w-32 border-4 border-slate-900 p-2 rounded-xl flex items-center justify-center bg-slate-50 relative">
+            <div className="bg-slate-50 text-slate-900 p-4 rounded-xl border border-slate-200/80 flex flex-col items-center justify-center text-center space-y-2">
+              <div className="h-32 w-32 border-2 border-slate-900 p-2 rounded-xl flex items-center justify-center bg-white relative">
                 {/* Visual SVG QR Code */}
                 <svg className="w-full h-full text-slate-900" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm10-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm14-2h4v2h-4v-2zm-4 0h2v4h-2v-4zm4 4h4v4h-4v-4zm-4 2h2v2h-2v-2zm-2-6h2v2h-2v-2zm0 4h2v2h-2v-2z" />
@@ -216,16 +216,16 @@ export default function StudentTransportPage() {
               </p>
             </div>
 
-            <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-white/70">
+            <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
               <span>Assigned Stop:</span>
-              <strong className="text-amber-300 font-semibold">{activeStop.name}</strong>
+              <strong className="text-slate-900 font-semibold">{activeStop.name}</strong>
             </div>
 
             {/* Simulate Boarding scan */}
             <button
               onClick={handleBoardingScan}
               disabled={isPending}
-              className="w-full mt-4 py-2.5 px-4 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-bold shadow transition-all active:scale-98 cursor-pointer flex items-center justify-center gap-2"
+              className="w-full mt-4 py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs transition-all active:scale-98 cursor-pointer flex items-center justify-center gap-2"
             >
               <span>📲</span>
               <span>Test Boarding Scan (Simulate Bus Ingress)</span>

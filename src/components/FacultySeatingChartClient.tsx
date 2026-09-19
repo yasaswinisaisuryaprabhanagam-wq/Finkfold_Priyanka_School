@@ -75,22 +75,22 @@ export default function FacultySeatingChartClient({
         </div>
       )}
 
-      {/* Header Banner with "Eyes on Me" Device Lock Button */}
-      <div className="p-6 rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-950 text-white shadow-xl relative overflow-hidden">
+      {/* Header Banner with "Eyes on Me" Device Lock Button - Clean Reference Style */}
+      <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] relative overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-400 text-slate-950 uppercase tracking-wide">
-                ClassDojo & Apple Classroom Inspired
+              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-sky-50 text-sky-700 border border-sky-200 uppercase tracking-wide">
+                ClassDojo &amp; Apple Classroom Inspired
               </span>
-              <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-white/10 text-white/80">
-                Spatial Seating & Device Management
+              <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">
+                Spatial Seating &amp; Device Management
               </span>
             </div>
-            <h1 className="text-2xl font-bold mt-2" style={{ fontFamily: "Outfit, sans-serif" }}>
-              Smart Seating Chart & Behavioral Heatmap
+            <h1 className="text-xl font-bold text-slate-900 mt-2" style={{ fontFamily: "Outfit, sans-serif" }}>
+              Smart Seating Chart &amp; Behavioral Heatmap
             </h1>
-            <p className="text-white/70 text-xs mt-1 max-w-xl">
+            <p className="text-slate-500 text-xs mt-1 max-w-xl">
               Arrange classroom desks visually, automatically flag incompatible student pairings, and instantly freeze student screens with the 1-click &ldquo;Eyes on Me&rdquo; device lock.
             </p>
           </div>
@@ -100,10 +100,10 @@ export default function FacultySeatingChartClient({
             <button
               onClick={handleToggleDeviceLock}
               disabled={isPending}
-              className={`px-5 py-3 rounded-2xl font-extrabold text-xs shadow-2xl transition-all flex items-center gap-2.5 ${
+              className={`px-5 py-3 rounded-2xl font-bold text-xs shadow-xs transition-all flex items-center gap-2.5 cursor-pointer ${
                 deviceLock.isLocked
-                  ? "bg-rose-600 text-white animate-pulse hover:bg-rose-700 ring-4 ring-rose-500/30"
-                  : "bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 text-slate-950 hover:text-white"
+                  ? "bg-rose-600 text-white animate-pulse hover:bg-rose-700 ring-4 ring-rose-200"
+                  : "bg-slate-900 hover:bg-slate-800 text-white"
               }`}
             >
               <span className="text-base">{deviceLock.isLocked ? "🔒" : "🤫"}</span>
@@ -150,9 +150,9 @@ export default function FacultySeatingChartClient({
 
       {/* Classroom Seating Grid (Blackboard at Top) */}
       <div className="p-6 rounded-2xl border border-border bg-card shadow-xs space-y-6">
-        {/* Blackboard Indicator */}
-        <div className="w-full max-w-md mx-auto py-2.5 rounded-xl bg-emerald-950 border border-emerald-800 text-center text-emerald-200 text-xs font-bold tracking-widest uppercase shadow-inner">
-          📖 TEACHER PODIUM & SMART BOARD FRONT
+        {/* Blackboard / Smart Board Indicator */}
+        <div className="w-full max-w-md mx-auto py-2.5 rounded-xl bg-slate-100 border border-slate-300 text-center text-slate-700 text-xs font-bold tracking-wider uppercase">
+          📖 TEACHER PODIUM &amp; SMART BOARD FRONT
         </div>
 
         {/* 2 Rows x 3 Columns Desks Grid */}

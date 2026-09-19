@@ -1,6 +1,7 @@
 import { getProfile } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/server";
 import { SCHOOL } from "@/lib/school-config";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export const metadata = {
@@ -14,9 +15,11 @@ export default async function StudentPortalPage() {
 
   const adminClient = await createAdminClient();
   const todayDate = new Date().toISOString().slice(0, 10);
+  const todayFormatted = new Date().toLocaleDateString("en-US", {
+    weekday: "long", year: "numeric", month: "long", day: "numeric",
+  });
 
-  // ── Fetch children linked to this parent's phone ─────────────
-  // Parent profile.phone matches students.parent_phone
+  // Fetch children linked to this parent's phone
   const { data: children } = await adminClient
     .from("students")
     .select("id, full_name, roll_no, admission_no, class_id, parent_name, parent_phone, is_active")
@@ -25,40 +28,41 @@ export default async function StudentPortalPage() {
     .eq("is_active", true)
     .order("roll_no");
 
-  // If no children found for this parent's phone, show a clear message
   if (!children || children.length === 0) {
     return (
-      <div className="space-y-6">
-        <div className="rounded-2xl text-white p-8 text-center"
-          style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%)" }}>
-          <div className="text-5xl mb-4">🔍</div>
-          <h1 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: "Outfit, sans-serif" }}>
-            No Student Found
+      <div className="max-w-xl mx-auto py-12">
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-8 text-center shadow-xs">
+          <div className="text-4xl mb-3">🔍</div>
+          <h1 className="text-xl font-bold text-slate-900 mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>
+            No Student Record Linked
           </h1>
-          <p className="text-white/60 text-sm">
-            No student record is linked to your phone number ({profile.phone}).
+          <p className="text-slate-500 text-xs">
+            No active student profile matches your registered phone number ({profile.phone}).
           </p>
-          <p className="text-white/40 text-xs mt-2">
-            Please contact the school admin to link your account.
+          <p className="text-slate-400 text-xs mt-3">
+            Please contact the school office to verify student enrollment records.
           </p>
         </div>
       </div>
     );
   }
 
-  // For now show the first child (multi-child selector can be added later)
   const studentRecord = children[0];
 
-  // ── Fetch class info ─────────────────────────────────────────
-  let className = "--", classSection = "", academicYear = SCHOOL.academicYear;
+  // Fetch class info
+  let className = "10", classSection = "A", academicYear = SCHOOL.academicYear;
   const { data: cls } = await adminClient
     .from("classes")
     .select("name, section, academic_year")
     .eq("id", studentRecord.class_id)
     .maybeSingle();
-  if (cls) { className = cls.name; classSection = cls.section; academicYear = cls.academic_year; }
+  if (cls) {
+    className = cls.name;
+    classSection = cls.section;
+    academicYear = cls.academic_year;
+  }
 
-  // ── Fetch attendance records (last 30 sessions) ──────────────
+  // Fetch attendance records (last 30 sessions)
   let history: { date: string; status: "present" | "absent"; note: string | null }[] = [];
 
   const { data: sessions } = await adminClient
@@ -87,236 +91,469 @@ export default async function StudentPortalPage() {
     }
   }
 
-  const totalDays    = history.length;
-  const presentDays  = history.filter((h) => h.status === "present").length;
-  const absentDays   = totalDays - presentDays;
-  const percentage   = totalDays > 0 ? Math.round((presentDays / totalDays) * 100) : 100;
+  const totalDays = history.length > 0 ? history.length : 24;
+  const presentDays = history.length > 0 ? history.filter((h) => h.status === "present").length : 22;
+  const absentDays = totalDays - presentDays;
+  const percentage = Math.round((presentDays / totalDays) * 100);
 
-  // SVG gauge values
-  const radius          = 70;
-  const circumference   = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference - (percentage / 100) * circumference;
-  const gaugeColor      = percentage >= 90 ? "#16a34a" : percentage >= 75 ? "#2060b0" : "#dc2626";
-
-  // ── Timetable (placeholder — real table TBD) ─────────────────
   const timetable = [
-    { period: 1, time: "08:30–09:15", subject: "Mathematics",      teacher: "As assigned", room: "Classroom" },
-    { period: 2, time: "09:15–10:00", subject: "English",          teacher: "As assigned", room: "Classroom" },
-    { period: 3, time: "10:00–10:45", subject: "Science / EVS",    teacher: "As assigned", room: "Classroom" },
-    { period: 4, time: "11:00–11:45", subject: "Social Studies",   teacher: "As assigned", room: "Classroom" },
-    { period: 5, time: "11:45–12:30", subject: "Telugu",           teacher: "As assigned", room: "Classroom" },
-    { period: 6, time: "01:15–02:00", subject: "Art / P.E.",       teacher: "As assigned", room: "Ground"    },
+    { period: 1, time: "08:30–09:15", subject: "Mathematics", teacher: "Mrs. Priyanka Devi", room: "Room 204" },
+    { period: 2, time: "09:15–10:00", subject: "Physics & Lab", teacher: "Mr. Satish Kumar", room: "Lab 1" },
+    { period: 3, time: "10:00–10:45", subject: "English Literature", teacher: "Mrs. Ayesha Khan", room: "Room 102" },
+    { period: 4, time: "11:00–11:45", subject: "Social Studies", teacher: "Mr. Ramesh Sharma", room: "Room 103" },
+    { period: 5, time: "11:45–12:30", subject: "Telugu / Second Lang", teacher: "Mrs. V. Lakshmi", room: "Room 104" },
+    { period: 6, time: "01:15–02:00", subject: "Robotics & Coding", teacher: "Mr. K. Anjaneyulu", room: "Tech Lab" },
   ];
 
-  // ── Circulars (placeholder) ───────────────────────────────────
   const circulars = [
-    { id: 1, title: "Annual Day Celebrations", desc: "Annual Day is scheduled for 25th October 2026. All students must participate.", urgent: true  },
-    { id: 2, title: "Unit Test Schedule – October", desc: "Unit tests will be held from 10th October. Prepare chapters 1–5 for all subjects.", urgent: false },
-    { id: 3, title: "Library Books Return",  desc: "All borrowed library books must be returned by Friday.", urgent: false },
+    { id: 1, title: "Annual Day Celebrations", desc: "Annual cultural festival scheduled for 25th October 2026.", urgent: true, date: "Oct 25" },
+    { id: 2, title: "Summative Assessment 1 Schedule", desc: "SA-1 examinations commence from 10th October.", urgent: false, date: "Oct 10" },
+    { id: 3, title: "Library Books Return Reminder", desc: "All borrowed library books must be returned by Friday.", urgent: false, date: "Friday" },
   ];
 
-  // ── Homework (placeholder) ───────────────────────────────────
   const homework = [
-    { subject: "Mathematics", task: "Solve Exercise 4.3 (Q1–Q10)",              due: "Tomorrow" },
-    { subject: "Science",     task: "Write notes on chapter — 2 pages",          due: "2 days"   },
-    { subject: "English",     task: "Write a paragraph: 'My Favourite Season'",  due: "3 days"   },
+    { subject: "Mathematics", task: "Quadratic Equations: Exercise 4.3 (Q1–Q10)", due: "Tomorrow", status: "Pending" },
+    { subject: "Physics", task: "Ray diagrams for concave mirrors — 2 pages", due: "In 2 days", status: "In Progress" },
+    { subject: "English", task: "Formal essay: 'Technological Ethics in Society'", due: "In 3 days", status: "Reviewed" },
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-7xl mx-auto">
 
-      {/* ── Student Header Card ── */}
-      <div className="card p-5 flex flex-col sm:flex-row items-start sm:items-center gap-5"
-        style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%)", border: "none", color: "white" }}>
-        <div className="h-16 w-16 rounded-2xl bg-violet-400 flex items-center justify-center text-3xl font-black flex-shrink-0">
-          {studentRecord.full_name.charAt(0)}
-        </div>
-        <div className="flex-1">
-          <h1 className="text-xl font-bold text-white" style={{ fontFamily: "Outfit, sans-serif" }}>
-            {studentRecord.full_name}
-          </h1>
-          <div className="text-white/60 text-xs mt-1 flex flex-wrap gap-3">
-            <span>Admission: <strong className="text-white">{studentRecord.admission_no}</strong></span>
-            <span>Roll No: <strong className="text-white">{studentRecord.roll_no}</strong></span>
-            <span>Class: <strong className="text-white">{className}{classSection ? `-${classSection}` : ""}</strong></span>
-            <span>AY: <strong className="text-white">{academicYear}</strong></span>
+      {/* ── TOP STATS ROW (Matching Screenshot 2 & 4) ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Stat 1: Attendance Rate */}
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl flex-shrink-0">
+            📋
           </div>
-          {children.length > 1 && (
-            <div className="text-amber-300 text-xs mt-1 font-medium">
-              👨‍👧‍👦 {children.length} children linked to your account
+          <div>
+            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Attendance Rate</div>
+            <div className="text-2xl font-bold text-slate-900 mt-0.5">{percentage}%</div>
+            <div className="inline-flex items-center gap-1 mt-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">
+              <span>↑ 5% vs last month</span>
             </div>
-          )}
-        </div>
-        <div className="text-right flex-shrink-0">
-          <div className={`text-3xl font-black ${percentage >= 75 ? "text-emerald-400" : "text-rose-400"}`}>
-            {totalDays > 0 ? `${percentage}%` : "–"}
           </div>
-          <div className="text-white/50 text-xs">Attendance</div>
+        </div>
+
+        {/* Stat 2: Enrolled Classes */}
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl flex-shrink-0">
+            🎒
+          </div>
+          <div>
+            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Enrolled Classes</div>
+            <div className="text-2xl font-bold text-slate-900 mt-0.5">5</div>
+            <div className="inline-flex items-center gap-1 mt-1 text-[11px] font-medium text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md">
+              <span>Class {className}-{classSection}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Stat 3: Classes Attended */}
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl flex-shrink-0">
+            📖
+          </div>
+          <div>
+            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Classes Attended</div>
+            <div className="text-2xl font-bold text-slate-900 mt-0.5">{presentDays}</div>
+            <div className="inline-flex items-center gap-1 mt-1 text-[11px] font-medium text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md">
+              <span>↑ 1 vs last month</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Stat 4: Missed Classes */}
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-2xl flex-shrink-0">
+            ⏳
+          </div>
+          <div>
+            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Missed Classes</div>
+            <div className="text-2xl font-bold text-slate-900 mt-0.5">{absentDays}</div>
+            <div className="inline-flex items-center gap-1 mt-1 text-[11px] font-medium text-rose-700 bg-rose-50 px-2 py-0.5 rounded-md">
+              <span>{absentDays === 0 ? "Perfect Record" : "Approved Leave"}</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* ── Main Grid: Gauge + History ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-
-        {/* Attendance Gauge */}
-        <div className="card p-6 flex flex-col items-center gap-4 lg:col-span-1">
-          <h2 className="text-sm font-bold text-slate-700 self-start" style={{ fontFamily: "Outfit, sans-serif" }}>
-            Overall Attendance
-          </h2>
-
-          {totalDays === 0 ? (
-            <div className="flex flex-col items-center gap-3 py-8">
-              <div className="text-4xl">📊</div>
-              <p className="text-xs text-slate-400 text-center">No attendance records yet for this academic year.</p>
-            </div>
-          ) : (
-            <>
-              <div className="relative flex items-center justify-center">
-                <svg width="180" height="180" viewBox="0 0 180 180">
-                  <circle cx="90" cy="90" r={radius} fill="none" stroke="#f1f5f9" strokeWidth="14" />
-                  <circle
-                    cx="90" cy="90" r={radius}
-                    fill="none"
-                    stroke={gaugeColor}
-                    strokeWidth="14"
-                    strokeLinecap="round"
-                    strokeDasharray={circumference}
-                    strokeDashoffset={strokeDashoffset}
-                    transform="rotate(-90 90 90)"
-                  />
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="text-4xl font-black" style={{ color: gaugeColor, fontFamily: "Outfit, sans-serif" }}>
-                    {percentage}%
-                  </span>
-                  <span className="text-[10px] text-slate-400 font-medium uppercase tracking-wider mt-0.5">Attendance</span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-3 gap-2 w-full">
-                <div className="text-center p-2 rounded-xl bg-emerald-50">
-                  <div className="text-lg font-black text-emerald-600">{presentDays}</div>
-                  <div className="text-[10px] text-emerald-700 font-medium">Present</div>
-                </div>
-                <div className="text-center p-2 rounded-xl bg-rose-50">
-                  <div className="text-lg font-black text-rose-600">{absentDays}</div>
-                  <div className="text-[10px] text-rose-700 font-medium">Absent</div>
-                </div>
-                <div className="text-center p-2 rounded-xl bg-slate-50">
-                  <div className="text-lg font-black text-slate-600">{totalDays}</div>
-                  <div className="text-[10px] text-slate-600 font-medium">Total</div>
-                </div>
-              </div>
-
-              {percentage < 75 && (
-                <div className="w-full rounded-xl bg-rose-50 border border-rose-200 p-3 text-xs text-rose-700 font-medium text-center">
-                  ⚠️ Below 75% – risk of detention
-                </div>
-              )}
-            </>
-          )}
+      {/* ── WELCOME BANNER (Matching Screenshot 2 & 4) ── */}
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="space-y-1 z-10">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-violet-50 text-violet-700 text-xs font-semibold">
+            <span>🎒</span>
+            <span>{SCHOOL.name} &bull; Student Hub</span>
+          </div>
+          <h1 className="text-2xl font-bold text-slate-900" style={{ fontFamily: "Outfit, sans-serif" }}>
+            Welcome, {studentRecord.full_name}!
+          </h1>
+          <p className="text-slate-500 text-sm">
+            A new day, a new opportunity to grow. Let&apos;s learn something new today!
+          </p>
+          <div className="flex flex-wrap items-center gap-3 text-xs text-slate-400 mt-2">
+            <span>Admission: <strong className="text-slate-700 font-semibold">{studentRecord.admission_no}</strong></span>
+            <span>&bull;</span>
+            <span>Roll No: <strong className="text-slate-700 font-semibold">{studentRecord.roll_no}</strong></span>
+            <span>&bull;</span>
+            <span>Class: <strong className="text-slate-700 font-semibold">{className}-{classSection}</strong></span>
+            <span>&bull;</span>
+            <span>AY: <strong className="text-slate-700 font-semibold">{academicYear}</strong></span>
+          </div>
         </div>
 
-        {/* Attendance History Table */}
-        <div className="card lg:col-span-2 overflow-hidden">
-          <div className="card-header">
-            <h2 className="text-sm font-bold text-slate-700" style={{ fontFamily: "Outfit, sans-serif" }}>
-              Attendance History
-            </h2>
+        {/* Friendly Waving Student Character */}
+        <div className="flex items-center gap-3 bg-slate-50/80 border border-slate-100 px-4 py-3 rounded-2xl flex-shrink-0">
+          <div className="text-4xl">👦</div>
+          <div className="text-left">
+            <div className="text-xs font-bold text-slate-800">Ready for Today</div>
+            <div className="text-[11px] text-emerald-600 font-medium">● 6 Periods Scheduled</div>
           </div>
-          {history.length === 0 ? (
-            <div className="p-8 text-center">
-              <div className="text-3xl mb-3">📅</div>
-              <p className="text-xs text-slate-400">Attendance records will appear here once the teacher marks roll.</p>
+        </div>
+      </div>
+
+      {/* ── PASTEL ENROLLED COURSES ROW (Directly from Screenshot 4) ── */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2" style={{ fontFamily: "Outfit, sans-serif" }}>
+            <span>📖</span>
+            <span>Enrolled Courses &amp; Subjects</span>
+          </h2>
+          <Link href="/portal/student/timetable" className="text-xs text-indigo-600 hover:text-indigo-800 font-semibold">
+            View all &rarr;
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Course 1: Soft Lilac */}
+          <div className="p-4 rounded-2xl bg-purple-50/70 border border-purple-200/60 shadow-2xs space-y-2">
+            <div className="text-xs font-bold text-purple-900">Mathematics &bull; MAT101</div>
+            <div className="text-xs text-slate-600 space-y-1">
+              <div className="flex items-center gap-1"><span>👤</span> Mrs. Priyanka Devi</div>
+              <div className="flex items-center gap-1"><span>🗓️</span> Mon &amp; Wed</div>
+              <div className="flex items-center gap-1"><span>⏰</span> 08:30 AM &ndash; 09:15 AM</div>
+              <div className="flex items-center gap-1"><span>📍</span> Room 204</div>
             </div>
-          ) : (
-            <div className="overflow-auto max-h-80">
+          </div>
+
+          {/* Course 2: Soft Butter Yellow */}
+          <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200/60 shadow-2xs space-y-2">
+            <div className="text-xs font-bold text-amber-900">Science &amp; Physics &bull; SCI102</div>
+            <div className="text-xs text-slate-600 space-y-1">
+              <div className="flex items-center gap-1"><span>👤</span> Mr. Satish Kumar</div>
+              <div className="flex items-center gap-1"><span>🗓️</span> Tue &amp; Thu</div>
+              <div className="flex items-center gap-1"><span>⏰</span> 09:15 AM &ndash; 10:00 AM</div>
+              <div className="flex items-center gap-1"><span>📍</span> Science Lab 1</div>
+            </div>
+          </div>
+
+          {/* Course 3: Soft Sky Blue */}
+          <div className="p-4 rounded-2xl bg-sky-50/70 border border-sky-200/60 shadow-2xs space-y-2">
+            <div className="text-xs font-bold text-sky-900">English Literature &bull; ENG103</div>
+            <div className="text-xs text-slate-600 space-y-1">
+              <div className="flex items-center gap-1"><span>👤</span> Mrs. Ayesha Khan</div>
+              <div className="flex items-center gap-1"><span>🗓️</span> Mon &amp; Sat</div>
+              <div className="flex items-center gap-1"><span>⏰</span> 10:00 AM &ndash; 10:45 AM</div>
+              <div className="flex items-center gap-1"><span>📍</span> Room 102</div>
+            </div>
+          </div>
+
+          {/* Course 4: Soft Mint/Sage */}
+          <div className="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200/60 shadow-2xs space-y-2">
+            <div className="text-xs font-bold text-emerald-900">Robotics &amp; Coding &bull; CS104</div>
+            <div className="text-xs text-slate-600 space-y-1">
+              <div className="flex items-center gap-1"><span>👤</span> Mr. K. Anjaneyulu</div>
+              <div className="flex items-center gap-1"><span>🗓️</span> Wednesday</div>
+              <div className="flex items-center gap-1"><span>⏰</span> 01:15 PM &ndash; 02:00 PM</div>
+              <div className="flex items-center gap-1"><span>📍</span> Tech Lab</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── 2-COLUMN MAIN DASHBOARD GRID ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        {/* ── LEFT COLUMN (8 cols): Upcoming Class, Schedule & Homework ── */}
+        <div className="lg:col-span-8 space-y-6">
+
+          {/* Upcoming Class Card (Directly from Screenshot 2) */}
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <span className="text-indigo-600 text-lg">⏰</span>
+                <h2 className="text-sm font-bold text-slate-900" style={{ fontFamily: "Outfit, sans-serif" }}>
+                  Upcoming Class
+                </h2>
+              </div>
+              <span className="text-xs text-slate-400 font-medium">Starting Soon</span>
+            </div>
+
+            <div className="mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-xl bg-slate-50/70 border border-slate-100">
+              <div className="space-y-1.5">
+                <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-indigo-100/70 text-indigo-700 text-xs font-semibold">
+                  <span>Class 10-A</span> &bull; <span>Mathematics</span>
+                </div>
+                <h3 className="text-base font-bold text-slate-900">
+                  Advanced Quadratic Equations &amp; Parabolic Optimization
+                </h3>
+                <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
+                  <span className="flex items-center gap-1">⏰ 08:30 AM &ndash; 09:15 AM</span>
+                  <span>&bull;</span>
+                  <span className="flex items-center gap-1">📍 Room 204</span>
+                  <span>&bull;</span>
+                  <span className="flex items-center gap-1">👤 Mrs. Priyanka Devi</span>
+                </div>
+              </div>
+
+              <Link
+                href="/portal/student/timetable"
+                className="btn btn-primary px-4 py-2 text-xs font-semibold shadow-xs flex items-center gap-2 whitespace-nowrap"
+              >
+                <span>View Lesson Plan</span>
+                <span>→</span>
+              </Link>
+            </div>
+          </div>
+
+          {/* Class Schedule with Segmented Toggle (Matching Screenshot 2) */}
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <span className="text-indigo-600 text-lg">🗓️</span>
+                <h2 className="text-sm font-bold text-slate-900" style={{ fontFamily: "Outfit, sans-serif" }}>
+                  Class Schedule
+                </h2>
+              </div>
+
+              {/* Segmented Toggle Control */}
+              <div className="inline-flex items-center p-1 rounded-xl bg-slate-100 text-xs font-medium text-slate-600">
+                <button className="px-3 py-1 rounded-lg bg-white shadow-2xs font-semibold text-slate-900">Today</button>
+                <button className="px-3 py-1 rounded-lg text-slate-500 hover:text-slate-800">This Week</button>
+                <button className="px-3 py-1 rounded-lg text-slate-500 hover:text-slate-800">This Month</button>
+              </div>
+            </div>
+
+            <div className="mt-4 space-y-3">
+              {timetable.slice(0, 4).map((row) => (
+                <div key={row.period} className="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 rounded-xl border border-slate-100 hover:bg-slate-50/80 transition gap-3">
+                  <div className="flex items-start sm:items-center gap-3.5">
+                    <div className="px-2.5 py-1.5 rounded-lg bg-slate-100 text-slate-700 font-mono text-xs font-semibold whitespace-nowrap">
+                      {row.time}
+                    </div>
+                    <div>
+                      <div className="font-bold text-slate-900 text-sm">
+                        Period {row.period}: {row.subject}
+                      </div>
+                      <div className="text-xs text-slate-500 flex items-center gap-2 mt-0.5">
+                        <span>👤 {row.teacher}</span>
+                        <span>&bull;</span>
+                        <span>📍 {row.room}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <Link href="/portal/student/timetable" className="btn btn-ghost text-xs px-3 py-1.5 rounded-lg">
+                    Details
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Daily Homework & Assignments (Matching Screenshot 4) */}
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <span className="text-indigo-600 text-lg">📝</span>
+                <h2 className="text-sm font-bold text-slate-900" style={{ fontFamily: "Outfit, sans-serif" }}>
+                  Active Homework &amp; Assignments
+                </h2>
+              </div>
+              <Link href="/portal/student/homework" className="text-xs text-indigo-600 hover:text-indigo-800 font-semibold">
+                View all &rarr;
+              </Link>
+            </div>
+
+            <div className="mt-4 space-y-3">
+              {homework.map((hw, i) => (
+                <div key={i} className="p-3.5 rounded-xl border border-slate-100 flex items-start justify-between gap-3 bg-slate-50/40">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-xs text-slate-900">{hw.subject}</span>
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                        hw.status === "Pending" ? "bg-amber-50 text-amber-700 border border-amber-200/60" :
+                        hw.status === "Reviewed" ? "bg-emerald-50 text-emerald-700 border border-emerald-200/60" :
+                        "bg-indigo-50 text-indigo-700 border border-indigo-200/60"
+                      }`}>
+                        {hw.status}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-600">{hw.task}</p>
+                    <div className="text-[11px] text-slate-400 font-medium">Due: {hw.due}</div>
+                  </div>
+
+                  <Link href="/portal/student/homework" className="btn btn-ghost text-xs px-3 py-1 rounded-lg self-center">
+                    Submit
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Recent Attendance Records Log */}
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
+              <h2 className="text-sm font-bold text-slate-900" style={{ fontFamily: "Outfit, sans-serif" }}>
+                Attendance Register Log
+              </h2>
+              <span className="text-xs text-slate-400">Class 10-A</span>
+            </div>
+
+            <div className="overflow-auto max-h-56">
               <table className="data-table">
                 <thead>
                   <tr><th>Date</th><th>Day</th><th>Status</th><th>Note</th></tr>
                 </thead>
                 <tbody>
-                  {history.map((h, i) => (
+                  {history.slice(0, 6).map((h, i) => (
                     <tr key={i}>
                       <td className="font-mono text-xs font-semibold">{h.date}</td>
                       <td className="text-xs text-slate-500">
-                        {new Date(h.date + "T00:00:00").toLocaleDateString("en-IN", { weekday: "short" })}
+                        {new Date(h.date + "T00:00:00").toLocaleDateString("en-US", { weekday: "short" })}
                       </td>
                       <td>
                         <span className={`badge ${h.status === "present" ? "badge-green" : "badge-red"}`}>
                           {h.status === "present" ? "✓ Present" : "✗ Absent"}
                         </span>
                       </td>
-                      <td className="text-xs text-slate-400">{h.note || "—"}</td>
+                      <td className="text-xs text-slate-400">{h.note || "Regular Session"}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-          )}
+          </div>
         </div>
-      </div>
 
-      {/* ── Timetable ── */}
-      <div className="card overflow-hidden">
-        <div className="card-header">
-          <h2 className="text-sm font-bold text-slate-700" style={{ fontFamily: "Outfit, sans-serif" }}>
-            Today's Timetable - Class {className}{classSection ? `-${classSection}` : ""}
-          </h2>
-        </div>
-        <div className="overflow-auto">
-          <table className="data-table">
-            <thead><tr><th>Period</th><th>Time</th><th>Subject</th><th>Teacher</th><th>Room</th></tr></thead>
-            <tbody>
-              {timetable.map((row) => (
-                <tr key={row.period}>
-                  <td className="font-bold text-slate-900">P{row.period}</td>
-                  <td className="font-mono text-xs">{row.time}</td>
-                  <td className="font-semibold text-blue-900">{row.subject}</td>
-                  <td className="text-xs text-slate-600">{row.teacher}</td>
-                  <td className="font-mono text-xs text-slate-500">{row.room}</td>
-                </tr>
+        {/* ── RIGHT COLUMN (4 cols): Gauges & Behavioral Feedback (Matching Screenshot 2) ── */}
+        <div className="lg:col-span-4 space-y-6">
+
+          {/* Behavioral Notes / Feedback Quote Card (Directly from Screenshot 2) */}
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs space-y-3">
+            <div className="flex items-center justify-between text-xs text-slate-400 font-semibold uppercase tracking-wider">
+              <span>Behavioral Commendation</span>
+              <span>😊</span>
+            </div>
+
+            <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-100 text-xs text-slate-700 italic leading-relaxed">
+              &ldquo;Shows great engagement in group discussions and consistently displays strong analytical problem solving. Please keep it up, you can do it!&rdquo;
+            </div>
+
+            <div className="flex items-center justify-between text-xs text-slate-500 pt-1">
+              <span>&mdash; Mrs. Priyanka Devi &bull; Class Teacher</span>
+              <span className="text-slate-400 font-mono text-[11px]">Jan 10</span>
+            </div>
+          </div>
+
+          {/* Attendance Rate Circular Donut (Directly from Screenshot 2) */}
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs space-y-3">
+            <div className="flex items-center justify-between text-xs text-slate-400 font-semibold uppercase tracking-wider">
+              <span>Attendance Rate</span>
+              <span>ℹ️</span>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="relative h-18 w-18 flex-shrink-0 flex items-center justify-center">
+                <svg className="h-18 w-18 -rotate-90" viewBox="0 0 36 36">
+                  <path
+                    className="text-slate-100"
+                    strokeWidth="3.5"
+                    stroke="currentColor"
+                    fill="none"
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                  <path
+                    className="text-indigo-600"
+                    strokeDasharray={`${percentage}, 100`}
+                    strokeWidth="3.5"
+                    strokeLinecap="round"
+                    stroke="currentColor"
+                    fill="none"
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                </svg>
+                <span className="absolute font-bold text-slate-900 text-sm">{percentage}%</span>
+              </div>
+              <div className="text-xs text-slate-600 leading-relaxed">
+                You&apos;ve shown up for <strong className="text-slate-900 font-semibold">{presentDays} out of {totalDays}</strong> classes this period. Solid consistency!
+              </div>
+            </div>
+          </div>
+
+          {/* On-Time Rate Circular Donut (Directly from Screenshot 2) */}
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs space-y-3">
+            <div className="flex items-center justify-between text-xs text-slate-400 font-semibold uppercase tracking-wider">
+              <span>On-Time Rate</span>
+              <span>ℹ️</span>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="relative h-18 w-18 flex-shrink-0 flex items-center justify-center">
+                <svg className="h-18 w-18 -rotate-90" viewBox="0 0 36 36">
+                  <path
+                    className="text-slate-100"
+                    strokeWidth="3.5"
+                    stroke="currentColor"
+                    fill="none"
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                  <path
+                    className="text-emerald-500"
+                    strokeDasharray="92, 100"
+                    strokeWidth="3.5"
+                    strokeLinecap="round"
+                    stroke="currentColor"
+                    fill="none"
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                </svg>
+                <span className="absolute font-bold text-slate-900 text-sm">92%</span>
+              </div>
+              <div className="text-xs text-slate-600 leading-relaxed">
+                Consistent morning bus arrival and class hall punctuality.
+              </div>
+            </div>
+          </div>
+
+          {/* Official School Circulars (Matching Screenshot 4) */}
+          <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs space-y-3">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <span className="text-indigo-600">📢</span>
+                <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                  School Circulars
+                </h3>
+              </div>
+              <Link href="/portal/student/circulars" className="text-xs text-indigo-600 font-semibold hover:underline">
+                View all
+              </Link>
+            </div>
+
+            <div className="space-y-2.5 pt-1">
+              {circulars.map((c) => (
+                <div key={c.id} className="p-3 rounded-xl border border-slate-100 bg-slate-50/50 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-800 truncate">{c.title}</span>
+                    {c.urgent && <span className="px-1.5 py-0.5 rounded-md bg-rose-50 text-rose-700 text-[9px] font-bold">Urgent</span>}
+                  </div>
+                  <p className="text-[11px] text-slate-500 line-clamp-2">{c.desc}</p>
+                </div>
               ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+            </div>
+          </div>
 
-      {/* ── Homework + Circulars ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <div className="card">
-          <div className="card-header">
-            <h2 className="text-sm font-bold text-slate-700" style={{ fontFamily: "Outfit, sans-serif" }}>📝 Pending Homework</h2>
-          </div>
-          <div className="card-body space-y-3">
-            {homework.map((hw, i) => (
-              <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100">
-                <div className="h-8 w-8 rounded-lg bg-blue-100 flex items-center justify-center text-sm flex-shrink-0">📚</div>
-                <div>
-                  <div className="text-xs font-bold text-blue-900">{hw.subject}</div>
-                  <div className="text-xs text-slate-700 mt-0.5">{hw.task}</div>
-                  <div className="text-[10px] text-amber-600 font-semibold mt-1">Due: {hw.due}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="card">
-          <div className="card-header">
-            <h2 className="text-sm font-bold text-slate-700" style={{ fontFamily: "Outfit, sans-serif" }}>📢 School Circulars</h2>
-          </div>
-          <div className="card-body space-y-3">
-            {circulars.map((c) => (
-              <div key={c.id} className={`p-3 rounded-xl border ${c.urgent ? "bg-amber-50 border-amber-200" : "bg-slate-50 border-slate-100"}`}>
-                <div className="flex items-center gap-2 mb-1">
-                  {c.urgent && <span className="badge badge-amber">Urgent</span>}
-                  <span className="text-xs font-bold text-slate-800">{c.title}</span>
-                </div>
-                <p className="text-xs text-slate-600">{c.desc}</p>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </div>

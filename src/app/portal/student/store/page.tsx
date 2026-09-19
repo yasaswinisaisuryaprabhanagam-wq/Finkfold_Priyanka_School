@@ -102,14 +102,14 @@ export default function StudentStorePage() {
           </p>
         </div>
 
-        {/* Finkfold Reward Points Badge */}
-        <div className="bg-gradient-to-br from-amber-500 to-amber-600 text-slate-950 px-5 py-3 rounded-2xl shadow-sm border border-amber-400/50 flex items-center gap-3 self-start sm:self-auto">
+        {/* Finkfold Reward Points Badge - Soft Pastel Style */}
+        <div className="bg-amber-50 border border-amber-200/80 text-amber-900 px-4 py-2.5 rounded-xl flex items-center gap-3 self-start sm:self-auto">
           <span className="text-2xl">⭐</span>
           <div>
-            <div className="text-[10px] font-bold uppercase tracking-wider text-amber-950">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-amber-800">
               Finkfold Reward Points
             </div>
-            <div className="text-lg font-black leading-tight">
+            <div className="text-base font-bold text-amber-900 leading-tight">
               {userPoints} Points Available
             </div>
           </div>
@@ -301,7 +301,7 @@ export default function StudentStorePage() {
                 <button
                   onClick={handleCheckout}
                   disabled={isPending}
-                  className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-blue-900 to-indigo-900 hover:from-blue-800 hover:to-indigo-800 text-white font-bold text-xs shadow-md transition-all active:scale-98 cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-full py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-xs transition-all active:scale-98 cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   <span>🧾</span>
                   <span>Confirm Order & Get Lunch-Break Pickup Pass</span>

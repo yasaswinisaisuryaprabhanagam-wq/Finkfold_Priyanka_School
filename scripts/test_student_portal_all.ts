@@ -250,7 +250,7 @@ async function runAllTests() {
   await testCase("Transport", "getTransportData and route subscription works", async () => {
     const data = await getTransportData();
     if (!data.routes || data.routes.length === 0) throw new Error("Routes empty");
-    const subRes = await subscribeRouteAction({ routeId: "route-04", stopId: "s-04-3" });
+    const subRes = await subscribeRouteAction("route-04", "s-04-3");
     if (!subRes.success) throw new Error("Route subscription failed");
   });
 
@@ -258,8 +258,9 @@ async function runAllTests() {
     const data = await getStoreData();
     if (!data.items || data.items.length === 0) throw new Error("Store items empty");
     const ordRes = await placeStoreOrderAction({
-      items: [{ itemId: "st-01", itemName: "Class 10 CBSE Standard Uniform Set", quantity: 1, unitPriceInr: 1850, size: "34" }],
-      deliveryLocation: "Homeroom Class 10-A",
+      items: [{ itemId: "st-01", name: "Class 10 CBSE Standard Uniform Set", qty: 1, price: 1850, size: "34" }],
+      totalAmount: 1850,
+      pointsRedeemed: 0,
     });
     if (!ordRes.success) throw new Error("Store order placement failed");
   });

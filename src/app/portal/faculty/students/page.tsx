@@ -73,17 +73,16 @@ export default async function FacultyStudentsPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="rounded-2xl text-white p-6 relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #0c2d5a 0%, #1a4d8f 50%, #2060b0 100%)" }}>
+      {/* Header - Clean White & Soft Pastel Style */}
+      <div className="rounded-2xl bg-white border border-slate-200/80 p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)] relative overflow-hidden">
         <div className="relative z-10">
-          <div className="text-amber-300 text-xs font-semibold uppercase tracking-wider mb-1">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 uppercase tracking-wide mb-2">
             Faculty Portal &middot; {SCHOOL.name}
           </div>
-          <h1 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>
-             Student Roster
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>
+            👥 Student Roster
           </h1>
-          <p className="text-white/70 text-sm">
+          <p className="text-slate-500 text-xs sm:text-sm">
             {students.length} students across your assigned classes
           </p>
         </div>

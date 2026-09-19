@@ -85,24 +85,24 @@ export default function StudentHealthPage() {
         </div>
       )}
 
-      {/* ── Emergency Health Card ── */}
-      <div className="bg-gradient-to-br from-rose-900 via-slate-900 to-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-md border border-rose-800/40 relative overflow-hidden space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-5">
+      {/* ── Emergency Health Card - Clean White & Soft Pastel Style ── */}
+      <div className="bg-white text-slate-900 rounded-2xl p-6 sm:p-8 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-rose-200/80 relative overflow-hidden space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
           <div className="flex items-center gap-4">
-            <div className="h-14 w-14 rounded-2xl bg-rose-600/30 border border-rose-400/30 flex items-center justify-center text-2xl font-black text-rose-300">
+            <div className="h-14 w-14 rounded-2xl bg-rose-50 border border-rose-200 flex items-center justify-center text-2xl font-black text-rose-700">
               {profile.bloodGroup}
             </div>
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-rose-300 block">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-rose-600 block">
                 Emergency Medical Card
               </span>
-              <h2 className="text-xl font-extrabold text-white">Arjun Reddy (Class 10A)</h2>
-              <div className="text-xs text-white/60">Admission No: PRIY-2026-001</div>
+              <h2 className="text-xl font-bold text-slate-900">Arjun Reddy (Class 10A)</h2>
+              <div className="text-xs text-slate-500">Admission No: PRIY-2026-001</div>
             </div>
           </div>
 
           {/* Active Allergy Alert Badge */}
-          <div className="px-4 py-2 rounded-2xl bg-rose-500/20 border border-rose-400/40 text-rose-200 text-xs font-bold flex items-center gap-2 animate-pulse">
+          <div className="px-3.5 py-1.5 rounded-full bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold flex items-center gap-2">
             <span>⚠️</span>
             <span>Allergy Flags Active on Faculty Roster</span>
           </div>
@@ -110,27 +110,27 @@ export default function StudentHealthPage() {
 
         {/* Vitals & Emergency Contacts */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
-          <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-1">
-            <span className="text-white/50 block">Blood Group:</span>
-            <span className="text-base font-extrabold text-white">{profile.bloodGroup}</span>
+          <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1">
+            <span className="text-slate-400 block font-medium">Blood Group:</span>
+            <span className="text-base font-extrabold text-slate-900">{profile.bloodGroup}</span>
           </div>
-          <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-1">
-            <span className="text-white/50 block">Height / Weight:</span>
-            <span className="text-base font-extrabold text-white">
+          <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1">
+            <span className="text-slate-400 block font-medium">Height / Weight:</span>
+            <span className="text-base font-extrabold text-slate-900">
               {profile.heightCm} cm • {profile.weightKg} kg
             </span>
           </div>
-          <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-1">
-            <span className="text-white/50 block">Pediatrician:</span>
-            <span className="font-bold text-white block truncate">{profile.pediatricianName}</span>
-            <a href={`tel:${profile.pediatricianPhone}`} className="text-rose-300 hover:underline">
+          <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1">
+            <span className="text-slate-400 block font-medium">Pediatrician:</span>
+            <span className="font-bold text-slate-900 block truncate">{profile.pediatricianName}</span>
+            <a href={`tel:${profile.pediatricianPhone}`} className="text-indigo-600 font-semibold hover:underline">
               {profile.pediatricianPhone}
             </a>
           </div>
-          <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-1">
-            <span className="text-white/50 block">Emergency Parent:</span>
-            <span className="font-bold text-white block truncate">{profile.emergencyContactName}</span>
-            <a href={`tel:${profile.emergencyContactPhone}`} className="text-emerald-300 hover:underline">
+          <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1">
+            <span className="text-slate-400 block font-medium">Emergency Parent:</span>
+            <span className="font-bold text-slate-900 block truncate">{profile.emergencyContactName}</span>
+            <a href={`tel:${profile.emergencyContactPhone}`} className="text-emerald-700 font-semibold hover:underline">
               {profile.emergencyContactPhone}
             </a>
           </div>

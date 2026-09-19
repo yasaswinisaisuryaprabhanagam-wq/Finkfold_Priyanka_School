@@ -72,30 +72,30 @@ export default function FacultyStoreIndentClient({
         </div>
       )}
 
-      {/* Header Banner */}
-      <div className="p-6 rounded-2xl bg-gradient-to-r from-orange-950 via-slate-900 to-amber-950 text-white shadow-xl relative overflow-hidden">
+      {/* Header Banner - Clean Reference Style */}
+      <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] relative overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-orange-400 text-slate-950 uppercase tracking-wide">
+              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 uppercase tracking-wide">
                 Digital Inventory Requisition
               </span>
-              <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-white/10 text-white/80">
+              <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">
                 Desk Delivery by Campus Logistics
               </span>
             </div>
-            <h1 className="text-2xl font-bold mt-2" style={{ fontFamily: "Outfit, sans-serif" }}>
-              Digital Store Indent & Classroom Supplies
+            <h1 className="text-xl font-bold text-slate-900 mt-2" style={{ fontFamily: "Outfit, sans-serif" }}>
+              Digital Store Indent &amp; Classroom Supplies
             </h1>
-            <p className="text-white/70 text-xs mt-1 max-w-xl">
+            <p className="text-slate-500 text-xs mt-1 max-w-xl">
               Never leave class to search for markers or lab chemicals. Request items digitally and campus peons deliver them straight to your classroom desk.
             </p>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="bg-white/10 backdrop-blur-sm border border-white/15 px-4 py-2 rounded-xl text-center">
-              <div className="text-xl font-extrabold text-orange-300">{cartTotalItems} Items</div>
-              <div className="text-[10px] text-white/70 uppercase font-semibold">Active In Cart</div>
+            <div className="bg-amber-50/80 border border-amber-200 px-4 py-2 rounded-xl text-center">
+              <div className="text-xl font-extrabold text-amber-700">{cartTotalItems} Items</div>
+              <div className="text-[10px] text-amber-800 uppercase font-semibold">Active In Cart</div>
             </div>
           </div>
         </div>
