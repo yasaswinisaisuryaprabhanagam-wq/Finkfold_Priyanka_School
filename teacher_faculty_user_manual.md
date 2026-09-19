@@ -31,13 +31,13 @@ As a teacher, your true superpower is teaching, mentoring, and inspiring childre
 
 1. Open your web browser (**Google Chrome, Safari, Edge, or Firefox**).
 2. Go to your school portal address: **`https://your-school-url.vercel.app/faculty/login`** (or `http://localhost:3000/faculty/login` during testing).
-3. Enter your **Registered Teacher Email** (e.g., `teacher@priyanka.school` or `fathekhan.math@priyanka.school`).
-4. Enter your **Password** (e.g., `teacher123` or your personal secret password).
+3. Enter your **Registered Teacher Email**: **`teacher@priyanka.school`** (or your assigned institutional email).
+4. Enter your **Password**: **`Teacher@123`**.
 5. Click **"Sign In to Faculty Workspace"**.
 6. You will immediately land on your **Faculty Dashboard**!
 
 > [!NOTE]
-> **Privacy Shield**: The Faculty Portal is completely hidden from public search engines like Google and isolated from the student portal. Parents and students can never view your faculty screens, confidential notes, salary slips, or personal contact numbers.
+> **Privacy Shield**: The Faculty Portal is completely hidden from public search engines like Google (`noindex, nofollow`) and isolated from the student portal. Parents and students can never view your faculty screens, confidential notes, salary slips, or personal contact numbers.
 
 ---
 
@@ -60,10 +60,10 @@ Below is an exhaustive, simple, step-by-step guide to every single feature on ev
 
 ---
 
-### 1. 📋 My Classes & Roll Call (`/portal/faculty`)
+### 1. 📋 My Classes, Dashboard Analytics & Roll Call (`/portal/faculty`)
 
 #### What is the purpose of this page?
-This is your morning command center. It replaces the old paper register, integrates morning roll call with approved leave slips, alerts you to child allergies and special learning needs, and manages safe bus dismissal at 3:45 PM.
+This is your morning command center and performance cockpit. It replaces the old paper register, provides real-time classroom statistics on a clean pure-white card interface, integrates morning roll call with approved leave slips, alerts you to child allergies and special learning needs, and manages safe bus dismissal at 3:45 PM.
 
 #### What are the 4 main tools on this screen?
 
@@ -103,6 +103,15 @@ This is your morning command center. It replaces the old paper register, integra
     - 🥋 **After-School Clubs**: Shows students staying back for Robotics or Karate.
 - **Where does it update?**:
   - Bus captains and security guards at the main gate see the exact same synchronized list on their tablets, preventing any child from wandering onto the wrong bus.
+
+#### Tool D: Performance Cockpit & Visual Schedule Analytics
+- **What it is**: A clean, calm set of overview widgets designed with pure white cards and soft pastels:
+  - **4 Top Stat Cards**: Total Students (42), Daily Attendance Rate (94.2%), Pending Leave Requests (3), and Next Period countdown.
+  - **Teacher Welcome Banner**: Includes a 1-tap **"Class Attendance"** quick-action button that scrolls directly to the roster.
+  - **Circular SVG Performance Gauges**: High-fidelity visual meters displaying overall class attendance (88%) and teacher punctuality rate (94%).
+  - **Teaching Quality Evaluation Scores**: Transparent metrics based on academic audits (Subject Knowledge: 4.4/5.0, Concept Clarity: 4.8/5.0, Punctuality: 4.6/5.0).
+  - **Segmented Timetable View**: Seamlessly toggle between `[Today]`, `[This Week]`, and `[This Month]` to check period rooms and substitution duties.
+  - **Upcoming Holidays**: Crisp pastel calendar cards displaying national and institutional breaks.
 
 ---
 

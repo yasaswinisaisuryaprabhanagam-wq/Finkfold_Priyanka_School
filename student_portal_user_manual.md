@@ -19,8 +19,9 @@ In the past, whenever a parent or student needed something—like checking atten
 2. Go to the website address: **`https://your-school-url.vercel.app/student/login`** (or `http://localhost:3000/student/login` on local testing).
 3. You will see a clean, dedicated login screen.
 4. You can log in using either:
-   - **Your Student ID / Admission Number** (for example: `PRIY-2026-001`) with password `student123`.
-   - **Your Registered Parent Phone Number** (for example: `+919440266743`) with password `student123`.
+   - **Your Student ID / Admission Number**: (for example: `PRIY-2026-001` or `001`) with password **`Student@123`**.
+   - **Your Student Email**: `student@priyanka.school` with password **`Student@123`**.
+   - **Your Registered Parent Phone Number**: (for example: `+919440266743`) with password **`Student@123`**.
 5. Click **"Sign In to Student Portal"**.
 6. You will immediately land on your personal dashboard!
 
@@ -42,25 +43,49 @@ Below is the complete explanation of every single item, what it does, how to use
 
 ---
 
-### 1. 📊 Attendance Record (`/portal/student`)
+### 1. 📊 Student Dashboard Cockpit & Course Progress (`/portal/student`)
 
 #### What is the purpose of this page?
-To show you exactly how many days your child was present, absent, or on official school duty, without waiting for the monthly report card.
+This is the central daily cockpit for students and parents. Built with a calm mist background and pure-white card containers, it provides an instant snapshot of your daily schedule, homework deadlines, course progression, attendance metrics, and positive teacher commendations without clutter or eye strain.
 
-#### Why does it matter?
-State education boards and CBSE mandate that every student must maintain at least **75% attendance** to be eligible to sit for final Board Exams. This page warns you early if attendance drops close to 75%.
+#### What are the key tools and visual widgets on this screen?
 
-#### What can you do here?
-- View the overall attendance percentage (for example, **94.2%**).
-- See the exact total count: e.g., **162 Days Present** out of **172 Working Days**.
-- View a monthly calendar where every day is color-coded:
-  - 🟢 **Green**: Present in school.
-  - 🔴 **Red**: Absent.
-  - 🟡 **Yellow**: Approved Leave / Holiday.
-  - 🔵 **Blue**: Present on Official School Duty (OD).
+#### Widget A: Personalized Header Banner & Key Stat Counters
+- **Student Profile Capsule**: Displays your photo, full name (**Kiran Kumar**), Admission Number (**`PRIY-2026-001`**), Roll Number (**1**), and Class Section (**Grade 10-A**).
+- **Top 4 Stat Cards**:
+  - **Attendance Rate**: 94.2% verified presence across the academic term.
+  - **Term GPA / Average**: 88.4% across Formative & Summative evaluations.
+  - **Finkfold Reward Points**: 150 Pts earned through on-time fee payments and academic diligence (redeemable in the campus store).
+  - **Upcoming Period Alert**: Live indicator showing your next scheduled class ("Mathematics - Period 2 in Room 302").
 
-#### Where does this data come from?
-Every morning at 8:40 AM, the class teacher takes attendance on the teacher tablet or RFID gate scanner. The system instantly syncs the record to your screen in real time.
+#### Widget B: 4 Calm Pastel Subject Course Cards
+Four distinct, calm pastel containers that make reviewing subjects intuitive and pleasant:
+1. **Mathematics (Soft Lavender Container)**:
+   - Current Module: *Quadratic Equations & Arithmetic Progressions*.
+   - Progress: **85% syllabus completed** with 18 practice problems solved.
+2. **Science (Soft Butter Yellow Container)**:
+   - Current Module: *Chemical Reactions, Acids & Bases*.
+   - Progress: **72% syllabus completed** with upcoming lab experiment on Friday.
+3. **English & Literature (Soft Sky Blue Container)**:
+   - Current Module: *Glimpses of India & Nelson Mandela: Long Walk to Freedom*.
+   - Progress: **90% syllabus completed** with essay submission reviewed by AI Voice Grader.
+4. **Robotics & AI Lab (Soft Mint Green Container)**:
+   - Current Module: *Autonomous Obstacle Rover Prototyping*.
+   - Progress: **60% completed** with hands-on lab sessions every Wednesday.
+
+#### Widget C: Interactive Homework & Task Checklist
+- Displays active homework assignments across all subjects with urgency chips:
+  - **Amber Chip**: "Due Tomorrow" for urgent submissions.
+  - **Slate Chip**: "Completed" for finished assignments.
+- Students can check off completed tasks directly from the home dashboard.
+
+#### Widget D: Circular Attendance & Timeliness Gauges
+- High-precision circular SVG rings indicating:
+  - **Verified Attendance Rate**: Overall institutional attendance compliance (safe from the 75% CBSE Board exam threshold).
+  - **On-Time Rate**: 92% morning gate punctuality rate.
+
+#### Widget E: Behavioral Commendation Card
+- A soft pastel quote container highlighting encouraging remarks from teachers (e.g. *"Outstanding problem-solving in quadratic equations and active participation in class discussions — Mrs. Priyanka Devi"*).
 
 ---
 
