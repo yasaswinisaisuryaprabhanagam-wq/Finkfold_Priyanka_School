@@ -149,6 +149,7 @@ Unlike legacy portals that force all users onto a single generic login page with
 ### 2. School / Branch Admin Manual (Principal / Headmaster)
 * **Login URL**: `/admin/login`
 * **Credentials**: `admin@priyanka.school` / `Teacher@123`
+* **Complete Dedicated Guide**: See [School & Branch Admin Portal User Manual](./admin_portal_user_manual.md) for full operational breakdown.
 
 #### Key Workflows:
 1. **Daily Operational Dashboard**:

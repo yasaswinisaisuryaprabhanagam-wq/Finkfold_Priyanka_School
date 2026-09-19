@@ -199,6 +199,7 @@ npx tsx scripts/test_student_portal_all.ts
 
 For comprehensive guides tailored to specific personas, refer to:
 - 📖 [Master Project Documentation](./PROJECT_DOCUMENTATION.md)
+- 🏛️ [School & Branch Admin Portal User Manual](./admin_portal_user_manual.md)
 - 🍎 [Faculty & Teacher User Manual](./teacher_faculty_user_manual.md)
 - 🎓 [Student & Parent Portal User Manual](./student_portal_user_manual.md)
 
