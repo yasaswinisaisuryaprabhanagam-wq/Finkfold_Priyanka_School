@@ -206,11 +206,16 @@ A 100% confidential and safe space for children and parents to report bullying, 
   - Later, paste this token into the tracker box on this page to see private advice or responses from the Senior School Counselor—without anyone ever knowing who asked!
 - **Where does it go?** Straight to the Principal and Certified School Counselor's emergency queue.
 
-#### Tab B: "Live Conduct Ledger & Merits"
+#### Tab B: "Live Conduct Ledger & Merits with Parent E-Signature Lock"
 - **What it shows**:
   - **Merit Points (+)**: Points awarded for good behavior, helping peers, sportsmanship, and academic excellence (e.g., *+25 pts for Star Student of the Week*).
   - **Demerit Warnings (-)**: Mild reminders for late entry or missing uniform tie (-5 pts).
   - **Net Standing Score**: Shows your overall conduct rating (e.g., **95% Exemplary Standing**), which is used to select House Captains and student leaders.
+- **Parent E-Signature Verification Lock**:
+  - Whenever a serious conduct demerit or behavioral notice is issued by the discipline committee, it is locked under **"Awaiting Parent Acknowledgment"**.
+  - Parents can review the incident timestamp, teacher remarks, and evidence.
+  - To acknowledge, the parent taps **"Sign & Acknowledge Infraction"**, which records a cryptographic signature hash (`parent_signature_hash`) and timestamp (`parent_signed_at`).
+  - This eliminates lost paper reprimand slips and ensures complete parent-school transparency.
 
 ---
 
@@ -392,6 +397,10 @@ Manage your portal login security and contact information.
 - Update parent email and notification phone numbers.
 - Change your login password.
 - Set notification preferences: Choose whether you want exam alerts, fee receipts, and homework updates sent via **WhatsApp, SMS, or Email**.
+- **Government Compliance & Board LOC Demographics Verification**:
+  - Parents can verify their child's official demographic records required for CBSE/ICSE Board Exam Registration and Government UDISE+ compliance.
+  - Review and confirm **Aadhaar Number**, **Social Category** (General, OBC, SC, ST), **Minority Status**, and **Mother Tongue**.
+  - Review mandatory physical **Identification Marks** (e.g. *"A mole on right cheek"*), ensuring zero discrepancies when board admit cards are issued.
 
 ---
 

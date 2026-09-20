@@ -125,6 +125,115 @@ Unlike legacy portals that force all users onto a single generic login page with
 
 ---
 
+## Complete Database Schema Specification (78 Production Tables)
+
+The Finkfold EdOS persistence layer is hosted on **Supabase PostgreSQL** with comprehensive **Row-Level Security (RLS)**, foreign key cascade integrity, and automated timestamps. The schema comprises **37 Foundational Core Tables** plus **41 Portal Ecosystem Expansion Tables** provisioned in `supabase/migrations/008_complete_portal_ecosystem_expansion.sql`.
+
+### 1. Foundational Core Schema (37 Base Tables)
+
+| Domain | Table Name | Primary Key | Key Foreign Keys / Relations | Purpose & Workflow |
+| :--- | :--- | :--- | :--- | :--- |
+| **Trust Multi-Tenancy** | `organizations` | `id` (uuid) | None (Top-level trust entity) | Multi-campus trust governance (e.g. Priyanka Educational Trust). |
+| | `schools` | `id` (uuid) | `organization_id -> organizations(id)` | Individual physical branch campuses (Main, Gandhi Nagar, Haranathpuram). |
+| | `academic_years` | `id` (uuid) | `school_id -> schools(id)` | Academic calendar session boundaries (e.g., 2025-2026, 2026-2027). |
+| | `profiles` | `id` (uuid) | `school_id -> schools(id)` | Institutional users (Super Admin, School Admin, Teachers, Parents, Students). |
+| **Classroom & Students** | `classes` | `id` (uuid) | `school_id -> schools(id)` | Grades and sections (e.g., Class 10-A, Class 6-B) with homeroom teachers. |
+| | `teacher_classes` | `id` (uuid) | `teacher_id -> profiles(id)`, `class_id -> classes(id)` | Subject and period allocation matrix for teachers. |
+| | `students` | `id` (uuid) | `school_id -> schools(id)`, `class_id -> classes(id)` | Master student registry with admission number, DOB, and parent details. |
+| | `student_enrollments`| `id` (uuid) | `student_id -> students(id)`, `class_id -> classes(id)` | Historical academic term enrollment records. |
+| | `student_promotions` | `id` (uuid) | `student_id -> students(id)`, `school_id -> schools(id)` | Year-end cohort promotion audit log. |
+| | `pending_admissions` | `id` (uuid) | `school_id -> schools(id)` | Inbound prospective student inquiries and online admission forms. |
+| **Academics & Tasks** | `subjects` | `id` (uuid) | `school_id -> schools(id)` | Subject catalog (Math, Science, English, etc.) with credit hours. |
+| | `homework` | `id` (uuid) | `class_id -> classes(id)`, `subject_id -> subjects(id)` | Daily homework announcements, deadlines, and instructions. |
+| | `circulars` | `id` (uuid) | `school_id -> schools(id)` | Official school circulars and administrative broadcast notices. |
+| **Attendance & Alerts** | `attendance_sessions`| `id` (uuid) | `school_id -> schools(id)`, `class_id -> classes(id)` | Morning and afternoon roll-call session manifests. |
+| | `attendance_records` | `id` (uuid) | `session_id -> attendance_sessions(id)`, `student_id` | Individual student present/absent states with timestamps. |
+| | `whatsapp_notifications`| `id` (uuid)| `student_id -> students(id)` | Outbound Meta Cloud API message delivery audit log. |
+| | `parent_reply_log` | `id` (uuid) | `student_id -> students(id)` | Inbound WhatsApp absence reason button clicks. |
+| **Treasury & Fees** | `fee_structures` | `id` (uuid) | `school_id -> schools(id)` | Configured fee heads (Tuition, Transport, Exam, Lab, Library, Late Fee). |
+| | `cash_drawers` | `id` (uuid) | `school_id -> schools(id)`, `cashier_id -> profiles(id)`| Front-desk EOD physical cash till sessions with maker-checker audit. |
+| | `fee_transactions` | `id` (uuid) | `student_id -> students(id)`, `fee_structure_id` | Immutable fee collection receipts with payment modes (Cash, UPI, NEFT). |
+| **Logistics & Health** | `student_transport_subscriptions` | `id` (uuid) | `student_id -> students(id)` | Bus route and stop allocations with GPS route linkages. |
+| | `campus_store_orders`| `id` (uuid) | `student_id -> students(id)` | Uniform and textbook pre-orders with QR lunch pickup vouchers. |
+| | `student_elective_bids`| `id` (uuid)| `student_id -> students(id)` | 2nd language preferences and capacity-limited club bidding. |
+| | `digital_outpasses` | `id` (uuid) | `student_id -> students(id)` | Multi-stage approved gate passes with security exit QR codes. |
+| | `support_tickets` | `id` (uuid) | `student_id -> students(id)` | Helpdesk tickets across transport, accounts, and academics with SLAs. |
+| | `student_medical_records`| `id` (uuid)| `student_id -> students(id)` | Blood groups, allergies, emergency contacts, and chronic conditions. |
+| | `infirmary_visit_logs`| `id` (uuid)| `student_id -> students(id)` | Chronological nurse visit log with symptoms and medications given. |
+| | `lost_and_found_items`| `id` (uuid)| `school_id -> schools(id)` | Campus lost item catalog with photo uploads and recovery claims. |
+| | `anonymous_grievance_reports`| `id` (uuid)| Cryptographic Token (Anonymous) | SafeSpace confidential reporting with 2-hour SLA response clock. |
+| | `student_conduct_ledger`| `id` (uuid)| `student_id -> students(id)` | Demerit and merit infraction ledger with parent e-sign lock. |
+| | `regulated_teacher_messages`| `id` (uuid)| `teacher_id -> profiles(id)`, `student_id` | Regulated office-hours messaging between parents and teachers. |
+| | `ptm_booking_slots`| `id` (uuid) | `teacher_id -> profiles(id)` | Parent-Teacher Meeting slot booking with calendar locks. |
+| | `student_digital_certificates`| `id` (uuid)| `student_id -> students(id)` | Auto-generated Bonafide and Section 80C fee tax exemption certificates. |
+| | `external_achievements_dropbox`| `id` (uuid)| `student_id -> students(id)` | Student uploads for external awards, sports trophies, and Olympiads. |
+| | `student_id_photo_submissions`| `id` (uuid)| `student_id -> students(id)` | White-background ID card photo compliance submissions. |
+| | `student_leaves_and_od`| `id` (uuid)| `student_id -> students(id)` | Student leave applications and on-duty (OD) event approvals. |
+| | `student_bank_refund_profiles`| `id` (uuid)| `student_id -> students(id)` | Verified parent bank details for graduation caution deposit refunds. |
+
+---
+
+### 2. Ecosystem Expansion Schema (41 Migration 008 Tables)
+
+Provisioned in `supabase/migrations/008_complete_portal_ecosystem_expansion.sql`:
+
+#### A. Faculty Academic Engine (13 Tables)
+1. **`exam_assessments`**: Formal examination master with term boundaries and start/end dates.
+2. **`student_exam_marks`**: Itemized exam marks with max marks, marks obtained, percentage, and AI remedial alert flags.
+3. **`staff_leaves`**: Faculty leave requests (Casual, Sick, On-Duty, Maternity) with multi-stage approval status.
+4. **`curriculum_unit_plans`**: NEP 2020 unit lesson plans with Bloom's taxonomy tags, learning objectives, and co-teacher sync.
+5. **`student_essay_submissions`**: Subjective essay submissions with AI rubric evaluation and 1-tap voice feedback audio memos.
+6. **`classroom_seating_layouts`**: Drag-and-drop seating matrix with pairing collision warnings and "Eyes on Me" device lock controls.
+7. **`sen_student_profiles`**: Inclusive education confidential profiles with diagnosed learning disabilities, IEP goals, and educator assignments.
+8. **`staff_biometric_punches`**: Daily biometric gate punches (punch in/out) with regularization reasons for late arrivals.
+9. **`store_indent_requisitions`**: Teacher classroom supply requisitions (markers, paper, lab chemicals) with desk delivery manifests.
+10. **`campus_maintenance_tickets`**: Classroom asset repair work orders (smartboards, ACs, electrical) with technician SLA countdowns.
+11. **`student_group_projects`**: Team collaborative projects with student IDs (`text[]`), mentor teachers, and peer evaluation heatmaps.
+12. **`faculty_relief_allocations`**: Daily substitution desk assigning free teachers to absent staff periods with clash prevention.
+13. **`field_trip_manifests`**: Educational tour manifests with participating classes (`text[]`), student rosters, and first aid verification.
+
+#### B. Admin Enterprise Operations (12 Tables)
+14. **`admissions_leads`**: Prospective student CRM pipeline funnel (Inquiry → Tour → Documents → Interview → Admitted).
+15. **`bank_reconciliation_records`**: Uploaded bank statement line items with UTR matching against `fee_transactions`.
+16. **`store_inventory`**: Campus store item catalog with SKU, safety stock thresholds, and unit costs.
+17. **`store_purchase_orders`**: Automated vendor re-order POs with vendor emails, itemized line items, and approval states.
+18. **`fleet_vehicles`**: School bus fleet telematics registry with live GPS coordinates, speed, route numbers, and driver phone numbers.
+19. **`rfid_turnstile_logs`**: Main perimeter gate card swipes stream with direction (`entry`/`exit`), gate ID, and unauthorized breach alerts.
+20. **`recruitment_job_openings`**: Institutional vacancy postings (e.g. PGT Physics, TGT Math) with qualification requirements.
+21. **`recruitment_applicants`**: Applicant Tracking System (ATS) candidate records with resume URLs, interview stages, and onboarding flags.
+22. **`faculty_appraisal_dossiers`**: 360° faculty appraisal matrix with generated weighted score (25% Biometric, 35% Academic, 20% PTM, 20% Relief).
+23. **`obe_learning_outcomes`**: NEP 2020 Course Outcomes (CO) mapped to Bloom's taxonomy cognitive levels.
+24. **`obe_student_attainments`**: Individual student outcome attainment percentages with pedagogical intervention alerts.
+25. **`omnichannel_broadcasts`**: Emergency waterfall broadcast studio with delivery channels (`text[]`: Push ➔ WhatsApp ➔ SMS).
+
+#### C. Admin Level 1, 2 & 3 Advanced Modules (16 Tables)
+26. **`certificate_templates`**: Print Room template studio with dynamic variables (`text[]`) for Study, Bonafide, and Loan estimates.
+27. **`generated_admin_certificates`**: Tamper-proof institutional certificates with verification QR codes and variable data snapshots.
+28. **`library_books`**: Media center catalog with ISBN, barcode, author, shelf location, and available copy counters.
+29. **`library_loans`**: Book checkout ledger with due dates, return dates, overdue fines, and automatic fee ledger debit sync.
+30. **`fee_late_penalty_rules`**: Configurable late fee rules (₹50/day after grace period) linked to active `academic_years`.
+31. **`fee_defaulter_logs`**: Automated recovery tracker with overdue penalty calculations and pre-filled WhatsApp UPI links.
+32. **`visitor_passes`**: Digital Visitor Management System (VMS) gate passes with photo, host staff approval, and live campus headcount.
+33. **`timetable_constraints`**: AI timetable solver constraints (teacher max periods, room capacities, part-time availability).
+34. **`class_timetable_slots`**: Conflict-free weekly master timetable slots with day of week, period number, teacher, and room.
+35. **`board_loc_candidates`**: CBSE/State Board List of Candidates with 60-point pre-flight validation, identification marks, and subject codes (`text[]`).
+36. **`staff_salary_structures`**: Faculty pay structures with basic pay, HRA, DA, EPF eligibility, and tax withholding brackets.
+37. **`monthly_payroll_runs`**: Monthly campus payroll batches with total working days, gross payout, deductions, and locked status.
+38. **`staff_monthly_payslips`**: Itemized digital payslips synced to Faculty HR Hub with basic pay, allowances, LOP, EPF, and net pay.
+39. **`alumni_profiles`**: Directory of graduating students tracking Tier-1 higher education institutions, current employers, and mentorship status.
+40. **`endowment_campaigns`**: Institutional fundraising campaigns with target goals, collected totals, and active deadlines.
+41. **`alumni_donations`**: Alumni contributions with donor PAN numbers, UTRs, and Section 80G Tax Exemption receipts with verification QR.
+
+---
+
+### 3. Alterations to Existing Tables
+- **`students`**: Enhanced with Government Compliance & Board LOC Demographics (`aadhaar_number`, `aadhaar_status`, `social_category`, `minority_group`, `bpl_ews_status`, `cwsn_disability`, `mother_tongue_code`, `medium_of_instruction`, `parent_annual_income_slab`, `previous_year_attendance_days`, `total_instructional_days`, `identification_mark_1`, `identification_mark_2`).
+- **`student_conduct_ledger`**: Enhanced with Parent E-Signature Verification Lock (`parent_signed`, `parent_signed_at`, `parent_signature_hash`).
+- **`fee_structures`**: Expanded category check constraint to include `'library_fine'`, `'late_fee'`, `'books_uniform'`, and `'digital_portal'`.
+- **`pending_admissions`**: Enhanced with Admissions CRM pipeline funnel (`lead_source`, `pipeline_stage`, `tour_date`, `lead_score`, `counselor_notes`).
+
+---
+
 ## Role-Based User Manuals
 
 ### 1. Super Admin Manual (Trust Chairman / Central Director)
