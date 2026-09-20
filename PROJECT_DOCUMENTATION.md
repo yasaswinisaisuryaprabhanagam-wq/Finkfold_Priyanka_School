@@ -140,8 +140,6 @@ Unlike legacy portals that force all users onto a single generic login page with
    - In the sidebar, navigate to **Treasury**.
    - Review total trust revenue, collection efficiency %, and individual branch balances.
    - Click **Transfer Funds** to allocate operational capital between branches with automated ledger entries.
-3. **Global Academics & Fee Structures**:
-   - Access **Academics** to oversee curriculum structures and terms across branches.
    - Access **Fee Structures** to view universal and branch-specific fee categories.
 
 ---
@@ -149,13 +147,14 @@ Unlike legacy portals that force all users onto a single generic login page with
 ### 2. School / Branch Admin Manual (Principal / Headmaster)
 * **Login URL**: `/admin/login`
 * **Credentials**: `admin@priyanka.school` / `Teacher@123`
+* **Design Architecture**: Unified Calm Mist (`#f8fafc`) canvas, pure white elevated cards (`bg-white border border-slate-200/80 shadow-sm`), soft pastel stat surfaces, quick-jump search pill, dynamic live date/telemetry topbar, and 4-tier categorized navigation sidebar.
 * **Complete Dedicated Guide**: See [School & Branch Admin Portal User Manual](./admin_portal_user_manual.md) for full operational breakdown.
 
-#### Key Enterprise Modules (10 Core Capabilities Across 5 Operational Sections):
+#### Key Enterprise & Foundational Modules (18 Core Capabilities Across 6 Operational Sections):
 
 ##### Section 1: Executive Intelligence & AI Forecasting
 1. **AI Enrollment Forecasting & Lead CRM (`/portal/admin/admissions/crm`)**:
-   - **Lead Conversion Funnel**: Kanban board tracking prospective parents (Lead &rarr; Campus Tour &rarr; Document Verification &rarr; Enrolled).
+   - **Lead Conversion Funnel**: Kanban board tracking prospective parents (Lead → Campus Tour → Document Verification → Enrolled).
    - **Marketing ROI Tracker**: Correlates admission inquiries with "Referred By" campaign data to pinpoint highest revenue generating ad channels.
    - **Predictive Capacity Engine**: AI analyzes historical dropout and transfer rates, predicting empty seats for next year and automatically opening the waitlist when capacity crosses 95%.
 2. **Multi-Campus Central Treasury & Tally-Sync (`/portal/admin/treasury`)**:
@@ -174,7 +173,7 @@ Unlike legacy portals that force all users onto a single generic login page with
 ##### Section 3: HR, Recruitment & Staff Appraisals
 5. **Careers ATS & Recruitment Kanban (`/portal/admin/staff/recruitment`)**:
    - **Careers Portal Sync**: Ingests candidate applications from public website, AI parses resumes into qualification grids.
-   - **Interview Kanban Board**: Pipeline tracking from Applied &rarr; Demo Class Scheduled &rarr; Hired.
+   - **Interview Kanban Board**: Pipeline tracking from Applied → Demo Class Scheduled → Hired.
    - **1-Click Onboarding**: Moving candidate to "Hired" automatically creates employee ID, faculty login, and biometric attendance credentials.
 6. **360° Faculty Appraisal Matrix (`/portal/admin/staff/appraisals`)**:
    - **Mathematical Performance Dossier**: Weighted formula combining Biometric Punctuality (25%), Academic Impact (35%), Parent PTM Sentiment (20%), and Relief Period Cooperation (20%) for objective merit-based salary increments.
@@ -194,8 +193,18 @@ Unlike legacy portals that force all users onto a single generic login page with
    - **Asset Depreciation Tracker**: Tracks serial numbers (e.g. Asset #4012); automatically flags assets requiring >4 repairs/year for replacement budget.
    - **Preventative Maintenance Alerts**: Scheduled calendar triggers for water tank cleaning, pest control, and elevator inspections.
 10. **Omnichannel Waterfall Broadcast Studio (`/portal/admin/broadcast`)**:
-   - **Waterfall Cascade Delivery Engine**: One-click broadcast attempting Push Notification &rarr; if unread after 5 mins &rarr; WhatsApp Message &rarr; fallback SMS.
-   - **Live Delivery Funnel**: Real-time telemetry tracking sent, delivered, read, and fallback status across recipient cohorts.
+    - **Waterfall Cascade Delivery Engine**: One-click broadcast attempting Push Notification → if unread after 5 mins → WhatsApp Message → fallback SMS.
+    - **Live Delivery Funnel**: Real-time telemetry tracking sent, delivered, read, and fallback status across recipient cohorts.
+
+##### Section 6: Foundational Campus Administration
+11. **Student Registry & Bulk CSV Onboarding (`/portal/admin/students`, `/portal/admin/students/import`)**: Complete student roster with class/section filters, student 360° profile drawer, and high-speed CSV bulk upload engine with pre-flight validation.
+12. **Class Management & Attendance Roll Call Oversight (`/portal/admin/classes`)**: Real-time morning roll call monitoring (Green `Marked` vs. Amber `Pending`), room numbers, student capacity gauges, and administrative attendance override.
+13. **Staff Directory & Allocation Grid (`/portal/admin/staff`, `/portal/admin/staff/allocations`)**: Staff roster, 1-click teacher account provisioning, and interactive subject/period assignment grid with workload balancing.
+14. **Academic Setup & Subjects Master (`/portal/admin/academics`)**: Academic year term boundary configuration and curriculum subject catalog with credit periods and NEP 2020 grading scales.
+15. **Fee Counter & POS Cash Till Sessions (`/portal/admin/fees`)**: Fast student term fee intake, dynamic UPI QR generation, instant printable tax receipts, and Maker-Checker End-of-Day cash till audit locking.
+16. **Year-End Academic Promotions (`/portal/admin/promotions`)**: Batch student promotion wizard migrating class cohorts to the next academic grade with pass/detain/TC filters and rollback protection.
+17. **WhatsApp Notification Audit & Meta Telemetry (`/portal/admin/whatsapp`, `/portal/admin/whatsapp/setup`)**: Real-time delivery logs (`sent`, `delivered`, `read`, `failed`) and WABA phone ID status monitoring.
+18. **Institutional Configuration & Campus Settings (`/portal/admin/settings`)**: School crest/branding, address, academic hours, roll call deadline rules, and administrator password management.
 
 ---
 
@@ -318,16 +327,16 @@ Next.js Server Action: submitAttendance()
 
 ## Modern Calm Visual Design System & UX Standards
 
-The portal user interface adheres strictly to calm, non-distracting educational aesthetics modeled after premier global learning platforms:
+The portal user interface across all three dedicated workspaces (**Student & Parent Portal**, **Faculty Command Center**, and **School & Branch Admin Console**) adheres strictly to calm, non-distracting educational aesthetics modeled after premier global learning platforms:
 
 ### 1. Palette & Surface Specifications
-* **Mist Canvas**: Soft, neutral background (`#f4f6fb` / `#f8fafc`) designed for extended daily classroom and study use without visual strain.
+* **Mist Canvas**: Soft, neutral background (`#f4f6fb` / `#f8fafc` / `bg-slate-50`) designed for extended daily classroom, administrative, and study use without visual strain.
 * **Pure White Surfaces**: High-clarity `#ffffff` card containers with calm borders (`border-slate-200/80`) and subtle elevation (`shadow-[0_2px_8px_rgba(0,0,0,0.04)]`).
 * **Calm Soft Pastels**:
-  - **Mathematics**: Soft Lavender / Lilac (`bg-purple-50`, `text-purple-700`).
-  - **Science**: Soft Butter Yellow / Warm Amber (`bg-amber-50`, `text-amber-700`).
-  - **English & Literature**: Soft Sky Blue (`bg-sky-50`, `text-sky-700`).
-  - **Robotics & AI**: Soft Mint Green (`bg-emerald-50`, `text-emerald-700`).
+  - **Mathematics / Academics**: Soft Lavender / Lilac (`bg-purple-50`, `text-purple-700`).
+  - **Science / Admissions**: Soft Butter Yellow / Warm Amber (`bg-amber-50`, `text-amber-700`).
+  - **English / General**: Soft Sky Blue (`bg-sky-50`, `text-sky-700`).
+  - **Robotics / System / Health**: Soft Mint Green (`bg-emerald-50`, `text-emerald-700`).
 * **Zero Visual Glare**: Completely eliminates neon highlights, high-contrast dark card gradients, and harsh saturated backgrounds in user-facing portals.
 
 ### 2. High-Precision Micro-UI Components

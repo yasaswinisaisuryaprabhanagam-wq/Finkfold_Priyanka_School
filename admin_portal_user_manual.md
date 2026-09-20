@@ -33,8 +33,76 @@ Modern institutional leadership requires moving beyond paper registers, disconne
 
 ---
 
+## 🎨 Unified Educational Design System & Navigation Architecture
+
+In alignment with the **Student & Parent Portal** and the **Faculty Command Center**, the Admin Console has been completely re-engineered around a **Calm Mist & Pure White** visual design system. This eliminates neon eye-strain, visual clutter, and saturated dark gradients, providing a focused, high-clarity environment for hours of administrative work.
+
+### 1. Visual Design System & Surface Tokens
+
+| Element | Specification & CSS Tokens | Purpose & Administrative Experience |
+| :--- | :--- | :--- |
+| **Canvas Background** | `#f8fafc` (`bg-slate-50`) | Soft mist surface that minimizes glare and cognitive fatigue during extended administrative sessions. |
+| **Primary Cards** | `#ffffff` (`bg-white border border-slate-200/80 shadow-sm`) | Crisp, pure white elevated containers with gentle rounded corners (`rounded-2xl`) and hairline slate borders. |
+| **KPI Stat Surfaces** | **Soft Calm Pastels**:<br/>• **Lilac/Lavender**: `bg-purple-50 text-purple-700`<br/>• **Butter Yellow**: `bg-amber-50 text-amber-700`<br/>• **Sky Blue**: `bg-sky-50 text-sky-700`<br/>• **Mint Green**: `bg-emerald-50 text-emerald-700` | Instantly conveys data categories without jarring neon saturation. Replaces all linear gradients with elegant, flat pastel surfaces. |
+| **Typography** | `Outfit` (Headings) + `Inter` (Data) | Bold, institutional authority for metric titles with high-density, monospaced-clean clarity for student counts, UTRs, and currency. |
+| **Interactive States** | `transition-all duration-200 hover:shadow-md hover:border-slate-300` | Tactile, responsive micro-animations on interactive action cards, table rows, and status filters. |
+
+### 2. Enterprise Topbar & Context Telemetry
+
+Every page in the Admin Portal features a standardized top utility bar that keeps administrators grounded in their institutional context:
+
+```
+┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ 🔍 [Quick jump to student, class, staff...]        📅 Today: Saturday, Sep 20, 2026   🟢 System Live  │
+│                                                   🏫 Fathekhan Pet Main Campus       🛡️ Admin Role    │
+└────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+- **Global Quick Jump Pill**: Instant keyboard-accessible search allowing administrators to jump directly to any student record, teacher profile, or class roster without manual menu digging.
+- **Dynamic Date & Weekday Pill**: Real-time institutional calendar widget showing today's operational date and cycle status.
+- **Campus & Branch Context**: Clearly displays the active physical campus (e.g., *Fathekhan Pet Main* vs. *Gandhi Nagar*). Super Admins have an embedded dropdown to switch campuses on the fly.
+- **Live System Telemetry Badge**: Real-time status indicator showing database sync, Supabase Realtime connectivity, and Meta WhatsApp API health.
+
+### 3. Four-Tier Categorized Navigation Sidebar
+
+The administrative navigation sidebar is organized into **4 logical operational tiers**, mirroring the real-world workflow of school leadership:
+
+```mermaid
+graph TD
+    subgraph S1 ["1. Main / Command"]
+        D1["📊 Overview Dashboard"]
+        D2["💬 WhatsApp Engine & Meta Audit"]
+        D3["📢 Circulars & Waterfall Broadcast"]
+    end
+    subgraph S2 ["2. Campus Operations"]
+        O1["🎓 Students Registry & Bulk CSV"]
+        O2["📅 Attendance & Roll Call Oversight"]
+        O3["🏫 Classes & Homeroom Rosters"]
+        O4["👨‍🏫 Staff Directory & Allocations"]
+        O5["📚 Academics & Subjects Master"]
+        O6["💳 Fee Counter & Cash POS Till"]
+        O7["🚀 Year-End Promotions"]
+    end
+    subgraph S3 ["3. Enterprise & Logistics"]
+        L1["🏛️ Central Treasury & Bank Recon"]
+        L2["📦 Store Fulfillment & Pick-Pack"]
+        L3["🚌 Live Fleet Radar & RFID Gates"]
+        L4["🔧 Estate & Maintenance SLAs"]
+    end
+    subgraph S4 ["4. HR & Governance"]
+        G1["💼 Recruitment & ATS Kanban"]
+        G2["⭐ 360° Faculty Appraisal Matrix"]
+        G3["🎯 NEP 2020 OBE Curriculum Auditor"]
+        G4["🛡️ SafeSpace 2-Hr Crisis Triage"]
+        G5["⚙️ Campus Settings & Security"]
+    end
+```
+
+---
+
 # 🧭 Table of Contents
 
+- [🎨 Unified Educational Design System & Navigation Architecture](#-unified-educational-design-system--navigation-architecture)
 - [SECTION 1: Executive Intelligence & AI Forecasting](#section-1-executive-intelligence--ai-forecasting)
   - [1. AI Enrollment Forecasting & Lead CRM](#1-ai-enrollment-forecasting--lead-crm)
   - [2. Multi-Campus Central Treasury & Tally-Sync](#2-multi-campus-central-treasury--tally-sync)
@@ -50,6 +118,15 @@ Modern institutional leadership requires moving beyond paper registers, disconne
 - [SECTION 5: Campus Maintenance & Helpdesk Operations](#section-5-campus-maintenance--helpdesk-operations)
   - [9. Estate & Facility Management Command](#9-estate--facility-management-command)
   - [10. The Omnichannel Broadcast Studio](#10-the-omnichannel-broadcast-studio)
+- [SECTION 6: Foundational Campus Administration](#section-6-foundational-campus-administration)
+  - [11. Student Registry & Bulk CSV Onboarding](#11-student-registry--bulk-csv-onboarding)
+  - [12. Class Management & Attendance Roll Call Oversight](#12-class-management--attendance-roll-call-oversight)
+  - [13. Staff Directory, 1-Click Teacher Provisioning & Class Allocation Grid](#13-staff-directory-1-click-teacher-provisioning--class-allocation-grid)
+  - [14. Academic Setup & Subjects Master](#14-academic-setup--subjects-master)
+  - [15. Fee Counter & Cash POS Till Sessions](#15-fee-counter--cash-pos-till-sessions)
+  - [16. Year-End Academic Promotions](#16-year-end-academic-promotions)
+  - [17. WhatsApp Notification Audit & Meta Pipeline](#17-whatsapp-notification-audit--meta-pipeline)
+  - [18. Institutional Configuration & Campus Settings](#18-institutional-configuration--campus-settings)
 - [Administrator Daily Operational Checklist](#administrator-daily-operational-checklist)
 - [Troubleshooting & Frequently Asked Questions (FAQ)](#troubleshooting--frequently-asked-questions-faq)
 
@@ -69,7 +146,9 @@ Schools spend lakhs on marketing (billboards, newspaper inserts, Facebook/Instag
 #### 💡 The Finkfold Solution
 Finkfold replaces guesswork with an intelligent prospective student pipeline:
 1. **Lead Conversion Funnel**: An interactive CRM board tracking prospective parents through 4 distinct stages:
-   $$\text{New Lead} \longrightarrow \text{Campus Tour Scheduled} \longrightarrow \text{Document Verification} \longrightarrow \text{Enrolled}$$
+   ```
+   New Lead → Campus Tour Scheduled → Document Verification → Enrolled
+   ```
 2. **Marketing ROI Tracker**: Automatically correlates admission inquiries with the "Referred By" tracking field (e.g. *Main Highway Hoarding, Facebook Campaign #3, Word-of-Mouth, Alumni Reference*) to display the exact rupee revenue generated per marketing rupee spent.
 3. **Predictive Capacity Engine**: Machine learning algorithms analyze 3 years of historical transfer/dropout trends and predict the exact number of vacant seats Class 1 will have next academic session. When class enrollment reaches **95% of safe capacity**, the system automatically triggers a digital waitlist on the school website.
 
@@ -83,9 +162,9 @@ Finkfold replaces guesswork with an intelligent prospective student pipeline:
 3. **Checking Marketing ROI**:
    - Switch to the **Campaign Performance** tab.
    - Inspect the table:
-     - *Highway Billboard 01*: ₹45,000 spend $\rightarrow$ 18 Inquiries $\rightarrow$ 12 Enrolled $\rightarrow$ ₹5,40,000 Revenue (**12x ROI**).
-     - *Facebook Digital Ads*: ₹15,000 spend $\rightarrow$ 42 Inquiries $\rightarrow$ 6 Enrolled $\rightarrow$ ₹2,70,000 Revenue (**18x ROI**).
-     - *Newspaper Pamphlets*: ₹20,000 spend $\rightarrow$ 4 Inquiries $\rightarrow$ 1 Enrolled (**Poor ROI $\rightarrow$ System suggests defunding**).
+     - *Highway Billboard 01*: ₹45,000 spend → 18 Inquiries → 12 Enrolled → ₹5,40,000 Revenue (**12x ROI**).
+     - *Facebook Digital Ads*: ₹15,000 spend → 42 Inquiries → 6 Enrolled → ₹2,70,000 Revenue (**18x ROI**).
+     - *Newspaper Pamphlets*: ₹20,000 spend → 4 Inquiries → 1 Enrolled (**Poor ROI → System suggests defunding**).
 4. **Predictive Capacity Warning**:
    - Look at the **Capacity Gauge**. If Grade 1 reaches 38/40 seats (95%), the badge turns **Amber** and activates the one-click toggle: *"Enable Digital Waitlist with Token Queue"*.
 
@@ -108,13 +187,13 @@ Finkfold automates accounting handoffs and eliminates manual tally work:
    - Select the date range (e.g., *1st September 2026 to 19th September 2026*).
    - Click **"Generate Tally XML"**.
    - The system validates ledger codes (`FEE_TUITION_10`, `BUS_REV_R4`, `BANK_SBI_PRIY_MAIN`) and downloads `Finkfold_Tally_Import_Sep2026.xml`.
-   - In Tally: Go to *Import Data $\rightarrow$ Vouchers $\rightarrow$ Select File*. All 500+ receipts are imported into Tally in 4 seconds!
+   - In Tally: Go to *Import Data → Vouchers → Select File*. All 500+ receipts are imported into Tally in 4 seconds!
 2. **Reconciling Bank Statements**:
    - In the **Bank Reconciliation** panel, click **"Upload Bank Statement (CSV)"**.
    - The engine parses 300+ line items:
      - 🟢 **Matched (98.4%)**: Exact UPI UTR match with student fee transaction.
      - 🟡 **Pending Settlement (1.2%)**: Payment initiated at 11:55 PM, cleared in bank next morning.
-     - 🔴 **Discrepancy (0.4%)**: Unclaimed direct NEFT transfer without student admission reference $\rightarrow$ Admin can assign it to a student with 1 click.
+     - 🔴 **Discrepancy (0.4%)**: Unclaimed direct NEFT transfer without student admission reference → Admin can assign it to a student with 1 click.
 
 ---
 
@@ -174,9 +253,9 @@ Complete telematics and security perimeter command:
    - Click any bus pin to view the student manifest and real-time passenger count.
 2. **RFID Gate Feed**:
    - Look at the **Main Gate Security Stream**:
-     - `08:04:12 AM` — *Kiran Kumar (Roll 1, Class 10-A)* swiped RFID $\rightarrow$ Safe entry recorded $\rightarrow$ Parent WhatsApp dispatched.
-     - `08:06:45 AM` — *Mrs. Priyanka Devi (Faculty - Math)* swiped $\rightarrow$ Biometric morning punch recorded.
-     - `01:15:20 PM` — ⚠️ *Unscheduled Gate Exit Attempt*: Student #PRIY-2026-088 scanned at Gate 2 without approved Out-Pass $\rightarrow$ Turnstile locks, red alarm flashes on security console.
+     - `08:04:12 AM` — *Kiran Kumar (Roll 1, Class 10-A)* swiped RFID → Safe entry recorded → Parent WhatsApp dispatched.
+     - `08:06:45 AM` — *Mrs. Priyanka Devi (Faculty - Math)* swiped → Biometric morning punch recorded.
+     - `01:15:20 PM` — ⚠️ *Unscheduled Gate Exit Attempt*: Student #PRIY-2026-088 scanned at Gate 2 without approved Out-Pass → Turnstile locks, red alarm flashes on security console.
 
 ---
 
@@ -195,7 +274,9 @@ Hiring a senior Physics or Mathematics teacher involves sifting through 150+ ema
 An end-to-end recruitment pipeline built directly into your school ERP:
 1. **Careers Portal Sync**: Candidates apply through the school's public website (`/careers`). Finkfold's resume parser automatically extracts years of CBSE experience, degree qualifications (e.g. *M.Sc. Physics, B.Ed.*), and contact details into a structured candidate profile.
 2. **Interview Kanban Board**: A visual workflow board enabling administrators to drag candidate cards across 5 recruitment stages:
-   $$\text{Applied (34)} \longrightarrow \text{Shortlisted (12)} \longrightarrow \text{Demo Class Scheduled (5)} \longrightarrow \text{Principal Interview (3)} \longrightarrow \text{Hired (1)}$$
+   ```
+   Applied (34) → Shortlisted (12) → Demo Class Scheduled (5) → Principal Interview (3) → Hired (1)
+   ```
 3. **1-Click Faculty Onboarding**: Dragging a card to **"Hired"** automatically provisions:
    - Unique Employee ID (e.g. `EMP-PRIY-2026-042`).
    - Faculty Portal credentials (`newteacher@priyanka.school` with secure temporary password).
@@ -227,7 +308,10 @@ Finkfold compiles an objective, mathematically grounded **Performance Dossier** 
 3. **Parent Feedback (20%)**: Sentiment analysis extracted from verified Parent-Teacher Meeting (PTM) consultation feedback and parent ratings.
 4. **Relief Cooperation (20%)**: Tracks how many times the teacher voluntarily accepted period substitutions and relief duties when colleagues were absent.
 
-$$\text{Final Appraisal Score} = (0.25 \times \text{Punctuality}) + (0.35 \times \text{Academic}) + (0.20 \times \text{Parent}) + (0.20 \times \text{Relief})$$
+**Appraisal Formula**:
+```
+Final Score = (0.25 × Punctuality) + (0.35 × Academic Impact) + (0.20 × Parent PTM Sentiment) + (0.20 × Relief Duty)
+```
 
 #### 🖥️ Step-by-Step Screen Walkthrough:
 1. Open `/portal/admin/staff/appraisals`.
@@ -327,7 +411,7 @@ A comprehensive facility and asset maintenance command deck:
    - Assigned: *Technician Ravi (Air Conditioning)*.
 3. **Reviewing Asset Replacement Alerts**:
    - Look at the **Asset Health Radar**:
-     - *Projector #PRJ-102 (Class 9-A)*: 5 repairs logged in 6 months $\rightarrow$ Status: **Flagged for EOL Replacement (Est. Cost: ₹28,000)**.
+     - *Projector #PRJ-102 (Class 9-A)*: 5 repairs logged in 6 months → Status: **Flagged for EOL Replacement (Est. Cost: ₹28,000)**.
 4. **Preventative Reminders**:
    - Upcoming Task: *"Overhead Drinking Water Tank Cleaning — Due in 5 Days"*. Click **"Mark Completed"** after inspecting the contractor certificate.
 
@@ -346,7 +430,9 @@ Administrators compose one emergency alert, and the system executes an intellige
 2. **Tier 2 (5-Minute Fallback)**: For any parent who has not opened or acknowledged the app alert within 5 minutes, the engine automatically routes the message through **Meta WhatsApp Cloud API**.
 3. **Tier 3 (SMS Failover)**: If WhatsApp delivery fails or the parent does not have an active smartphone data connection, the system triggers a **direct telecom SMS fallback**.
 4. **Live Delivery Funnel**: The administrator watches a real-time visual delivery funnel update on screen:
-   $$\text{1,000 Dispatched} \longrightarrow \text{950 Delivered on WhatsApp} \longrightarrow \text{50 SMS Delivered} \longrightarrow \text{100\% Parent Reach}$$
+   ```
+   1,000 Dispatched → 950 Delivered on WhatsApp → 50 SMS Delivered → 100% Parent Reach
+   ```
 
 #### 🖥️ Step-by-Step Screen Walkthrough:
 1. Open `/portal/admin/broadcast`.
@@ -363,6 +449,220 @@ Administrators compose one emergency alert, and the system executes an intellige
 
 ---
 
+# SECTION 6: FOUNDATIONAL CAMPUS ADMINISTRATION
+*(Core Day-to-Day Operations & Institutional Record Keeping)*
+
+---
+
+### 11. Student Registry & Bulk CSV Onboarding
+**Route**: `/portal/admin/students` & `/portal/admin/students/import`
+
+#### 💥 The Real-World Problem
+At the start of the school year or term, school clerks spend weeks manually entering 500+ student admission forms into outdated databases, creating duplicate student profiles, misspelled parent names, and missing contact numbers that break emergency WhatsApp alerts.
+
+#### 💡 The Finkfold Solution
+A complete student information system (SIS) with bulk onboarding:
+1. **Universal Student Directory**: Interactive, search-as-you-type student table filterable by Class, Section, Gender, and Enrollment Status (`active`, `withdrawn`, `graduated`).
+2. **1-Click Bulk CSV Import Engine (`/portal/admin/students/import`)**:
+   - Download the official pre-formatted Excel/CSV template.
+   - Upload hundreds of student rows in one file.
+   - The server validates required fields (`admission_number`, `full_name`, `class_id`, `parent_phone`), strips whitespace, normalizes phone numbers to E.164 (`+91`), and detects duplicates before writing to the database.
+3. **Student Profile 360° Drawer**: Click any student row to view emergency blood group, bus route ID, fee balances, fee concession tags, and parent portal login credentials.
+
+#### 🖥️ Step-by-Step Screen Walkthrough:
+1. **Browsing & Filtering Students**:
+   - Open `/portal/admin/students`.
+   - The top stat cards display **Total Students (842)**, **Active Roster (814)**, **New Admissions (38)**, and **Transfers (6)**.
+   - Filter by `Class 10 - Section A` to see all 34 enrolled students.
+2. **Running a Bulk CSV Import**:
+   - Click **"Import CSV"** or open `/portal/admin/students/import`.
+   - Click **"Download Sample Template (.csv)"** to verify required header columns.
+   - Drag and drop your completed student spreadsheet file into the upload zone.
+   - The live pre-flight scanner validates all rows. If row 42 has an invalid phone number (*"98490"*), it displays: `Row 42: Phone must be 10 digits`.
+   - Click **"Confirm & Import 150 Students"**. In under 3 seconds, all records and default portal credentials are generated.
+
+---
+
+### 12. Class Management & Attendance Roll Call Oversight
+**Route**: `/portal/admin/classes` & `/portal/admin/attendance`
+
+#### 💥 The Real-World Problem
+Principals do not know which classes have completed their 08:45 AM morning roll call and which teachers are running late. As a result, absent student WhatsApp notifications are delayed until noon, leaving parents uninformed about missing children.
+
+#### 💡 The Finkfold Solution
+A centralized classroom control deck providing live attendance transparency:
+1. **Class Catalog Grid**: Visual cards for every class (Nursery to Class 10, Sections A through D) showing assigned Class Teacher, Room Number, Student Enrollment vs. Safe Capacity, and current attendance %.
+2. **Live Morning Roll Call Radar**: Real-time status indicators:
+   - 🟢 **Roll Call Submitted**: Homeroom teacher has marked attendance; WhatsApp absence notifications are already on parents' phones.
+   - 🟡 **Pending Submission (Past 08:45 AM)**: Displays a flashing reminder with a 1-click **"Mark Attendance for Class"** override for the Principal or Duty Teacher.
+3. **Classroom Capacity Gauge**: Shows occupancy percentage (e.g. `34/40 seats • 85%`).
+
+#### 🖥️ Step-by-Step Screen Walkthrough:
+1. Open `/portal/admin/classes`.
+2. Inspect the **Live Morning Roll Call Status**:
+   - *Class 10-A*: 🟢 **Marked** (32 Present, 2 Absent • Submitted at 08:42 AM by Mrs. Priyanka Devi).
+   - *Class 8-B*: 🟡 **Unmarked** (08:52 AM • Past morning deadline).
+3. **Administrative Attendance Override**:
+   - For an unmarked class where the teacher is on leave, click **"Mark Attendance"**.
+   - Review the roster, tap absent students, and click **"Submit Attendance & Fire Alerts"**. The absence notifications dispatch immediately to parent WhatsApp phones.
+
+---
+
+### 13. Staff Directory, 1-Click Teacher Provisioning & Class Allocation Grid
+**Route**: `/portal/admin/staff`, `/portal/admin/staff/add`, & `/portal/admin/staff/allocations`
+
+#### 💥 The Real-World Problem
+Managing teacher workloads, period allocations, and class teacher responsibilities across 40+ staff members using whiteboards or paper sheets leads to double-booking teachers in the same period, teacher burnout, and unassigned classes.
+
+#### 💡 The Finkfold Solution
+Comprehensive staff lifecycle and workload governance:
+1. **Staff Directory (`/portal/admin/staff`)**: Searchable roster of all teaching and non-teaching staff, with department filters (Mathematics, Science, Languages, Sports, Administration), employee codes, designations, and biometric sync status.
+2. **1-Click Teacher Provisioning (`/portal/admin/staff/add`)**: Enter name, email, department, and phone number. The system provisions the faculty account, generates initial credentials, and dispatches a welcome notification.
+3. **Interactive Class & Subject Allocation Matrix (`/portal/admin/staff/allocations`)**:
+   - Visual grid mapping faculty to classes and subject periods.
+   - Real-time weekly period counter prevents assigning more than 28 periods per week per educator.
+   - Instantly assign Homeroom Class Teachers with one click.
+
+#### 🖥️ Step-by-Step Screen Walkthrough:
+1. Open `/portal/admin/staff`.
+2. Click **"Add Staff Member"** (`/portal/admin/staff/add`).
+3. Fill in *Full Name: "Dr. K. Srinivas"*, *Department: "Physics"*, *Email: "srinivas.k@priyanka.school"*.
+4. Click **"Save & Create Account"**. Credentials are automatically provisioned.
+5. Open **Class Allocations** (`/portal/admin/staff/allocations`):
+   - Locate *Class 9-A*. Assign *Dr. K. Srinivas* as Subject Teacher for *Physics (5 Periods/Week)*.
+   - System confirms: *"Allocation Saved • Dr. K. Srinivas Workload: 18/26 Periods/Week"*.
+
+---
+
+### 14. Academic Setup & Subjects Master
+**Route**: `/portal/admin/academics`
+
+#### 💥 The Real-World Problem
+Transitioning between academic terms (Term 1, Term 2, Annual Exams) requires configuring syllabus weighting, subjects, and grading systems across multiple grades without corrupting historical report card records.
+
+#### 💡 The Finkfold Solution
+A structured curriculum foundation:
+1. **Academic Terms & Sessions**: Define the active academic year (e.g., *2026-2027*) with term date boundaries, holiday calendars, and exam windows.
+2. **Subjects & Curriculum Master**: Create, edit, and categorize school subjects (e.g., Mathematics, Physical Science, Biological Science, Social Studies, First Language Telugu, Second Language Hindi, English).
+3. **Grading Scheme Alignment**: Configure grading scales (CBSE 8-point grading scale, State Board marks, or NEP 2020 formative rubrics).
+
+#### 🖥️ Step-by-Step Screen Walkthrough:
+1. Open `/portal/admin/academics`.
+2. Inspect the **Subject Master Directory**:
+   - Review subject list, code identifiers (e.g. `SUB-MATH-10`), and weekly credit periods.
+3. **Adding a New Elective Subject**:
+   - Click **"Add Subject"**.
+   - Input *Name: "Robotics & Artificial Intelligence"*, *Code: "SUB-ROBOT-01"*, *Category: "Skill Elective"*.
+   - Assign to Grades 8, 9, and 10. Click **"Save Subject"**. It appears immediately on student elective choice forms.
+
+---
+
+### 15. Fee Counter & Cash POS Till Sessions
+**Route**: `/portal/admin/fees`
+
+#### 💥 The Real-World Problem
+Parents arrive at the campus cash counter to pay tuition or bus fees. Cashiers use paper receipt books or basic calculators, leading to cash discrepancies at the end of the day, unrecorded discounts, and long parent queues.
+
+#### 💡 The Finkfold Solution
+A high-speed Point-of-Sale (POS) fee collection and audit station:
+1. **Fast Student Lookup**: Enter student Admission Number (e.g. `PRIY-2026-001`) or name. The ledger displays all term dues broken down by Tuition, Transport, Laboratory, and Books.
+2. **Multi-Mode Fee Acceptance**:
+   - 💵 **Cash**: Records currency collected and calculates exact change.
+   - 📱 **Dynamic UPI QR**: Displays on-screen QR code linked directly to the campus bank account. Parent scans and pays via PhonePe/GPay; system confirms payment via webhook.
+   - 💳 **Cheque / DD**: Records cheque number, issuing bank, and clearance status.
+3. **Instant Printable Thermal / PDF Receipt**: Generates an official, numbered fee receipt with school watermark and tax compliance details.
+4. **Maker-Checker Till Verification**: At 5:00 PM, the cashier submits their closing cash count. The Principal verifies the currency in the till, adds notes on any over/short balance, and locks the session.
+
+#### 🖥️ Step-by-Step Screen Walkthrough:
+1. Open `/portal/admin/fees`.
+2. Enter Admission Number `PRIY-2026-001`.
+3. Select *Term 2 Tuition Fee (₹18,500)*.
+4. Choose Payment Method: **UPI QR**.
+5. Parent scans the on-screen dynamic QR and completes payment. The screen turns green with a checkmark: *"Payment Confirmed • UTR #429810294821"*.
+6. Click **"Print Official Receipt"**. Hand receipt to the parent.
+7. **End-of-Day Till Audit**:
+   - Click **"Review Active Till Session"**.
+   - Cashier reported cash: ₹64,500. Expected cash: ₹64,500. Variance: ₹0.
+   - Click **"Approve & Lock Cash Till"**. The session is archived into immutable accounting records.
+
+---
+
+### 16. Year-End Academic Promotions
+**Route**: `/portal/admin/promotions`
+
+#### 💥 The Real-World Problem
+At the conclusion of the academic year in March/April, moving 800+ students from their current class to the next grade (Class 1-A → Class 2-A) is a nightmare of spreadsheet copying that frequently leaves students lost in limbo or assigned to the wrong section.
+
+#### 💡 The Finkfold Solution
+An automated, bulk academic promotion wizard with rollback safeguards:
+1. **Class-by-Class Promotion Flow**: Select the source class (e.g., *Class 9-A • Academic Year 2025-2026*) and destination class (*Class 10-A • Academic Year 2026-2027*).
+2. **Merit & Attendance Criteria**: The engine flags students with critical exam failure marks or attendance below mandatory compliance (<75%), suggesting detention or summer remedial work.
+3. **Bulk Action Toggles**: Promote all eligible students with one click, or individually mark students as *Promoted*, *Detained*, or *Withdrawn / TC Issued*.
+4. **Instant Roster Migration**: Finalizing the promotion seamlessly migrates student enrollments, archives prior academic grades, and resets term fee ledgers for the new year.
+
+#### 🖥️ Step-by-Step Screen Walkthrough:
+1. Open `/portal/admin/promotions`.
+2. Select **Source Academic Year**: `2025-2026` | **Source Class**: `Class 9 - Section A`.
+3. Select **Target Academic Year**: `2026-2027` | **Target Class**: `Class 10 - Section A`.
+4. Review the candidate list of 34 students.
+   - 33 students show green checkmarks: `Eligible for Promotion`.
+   - 1 student shows yellow warning: `Pending Term 2 Examination Retest`.
+5. Click **"Execute Batch Promotion (33 Students)"**.
+6. The system migrates all 33 students to Class 10-A and updates their student portal dashboards instantly.
+
+---
+
+### 17. WhatsApp Notification Audit & Meta Pipeline
+**Route**: `/portal/admin/whatsapp` & `/portal/admin/whatsapp/setup`
+
+#### 💥 The Real-World Problem
+Parents often claim: *"I never received an attendance notification that my child was absent!"* Administrators have no proof whether the message was sent, delayed by telecom networks, or actually delivered and read by the parent.
+
+#### 💡 The Finkfold Solution
+Full audit trail of Meta WhatsApp Cloud API traffic:
+1. **Live Notification Feed**: Chronological log of every automated message dispatched by the school (morning roll call absence alerts, dynamic fee payment receipts, circular broadcasts, emergency notifications).
+2. **Meta Telemetry Status Badges**:
+   - 🔵 `sent`: Dispatched to Meta Graph API gateway.
+   - 🟢 `delivered`: Acknowledged by parent's physical smartphone device.
+   - 👁️ `read`: Parent opened and viewed the notification.
+   - 🔴 `failed`: Phone number invalid or user blocked business messages.
+3. **Search & Proof Verification**: Search by student Admission Number or parent mobile number to produce a timestamped delivery certificate.
+4. **Meta WABA Health Monitor (`/portal/admin/whatsapp/setup`)**: Live indicator confirming active connection to WhatsApp Business Account ID `1718429122911368` and Phone ID `1144602028740736`.
+
+#### 🖥️ Step-by-Step Screen Walkthrough:
+1. Open `/portal/admin/whatsapp`.
+2. In the search box, enter parent mobile: `+91 98490 12345`.
+3. View the audit trail:
+   - `08:45:12 AM` — Template: `school_absence_notification_v2`
+   - Status: 🟢 **Delivered (08:45:14 AM)** • 👁️ **Read (08:47:02 AM)**
+   - Interactive Button Pressed: *"Child is Sick"* at 08:47:30 AM.
+4. Administrator can present this definitive, timestamped proof to resolve any parent communication inquiry.
+
+---
+
+### 18. Institutional Configuration & Campus Settings
+**Route**: `/portal/admin/settings`
+
+#### 💥 The Real-World Problem
+Schools need to update their official logo, letterhead information, school timings, fee late-payment grace periods, and administrator security passwords without needing to call an external software developer.
+
+#### 💡 The Finkfold Solution
+Self-service campus configuration suite:
+1. **Institutional Profile**: Edit School Legal Name, CBSE/State Board Affiliation Code, Campus Address, Contact Phone, and Official Email.
+2. **Branding & Crest**: Upload high-resolution school crest/logo for auto-embedding on official fee receipts, student ID cards, and bonafide certificates.
+3. **Academic Hours & Attendance Rules**: Configure morning roll call deadline (e.g., `08:45 AM`), automated absence dispatch delay (e.g., `3 minutes`), and minimum attendance thresholds (e.g., `75%`).
+4. **Account & Password Security**: Update administrative email and change administrator password with cryptographic salt hashing.
+
+#### 🖥️ Step-by-Step Screen Walkthrough:
+1. Open `/portal/admin/settings`.
+2. Inspect the **General School Profile** tab.
+3. Update phone number, office timings, or school motto.
+4. Switch to **Security & Credentials** tab:
+   - Enter current password, input new password, and click **"Update Admin Password"**.
+5. Click **"Save Institutional Settings"**. Changes apply campus-wide immediately.
+
+---
+
 # 📅 Administrator Daily Operational Checklist
 
 To ensure maximum operational efficiency, follow this standardized 3-phase daily administrative protocol:
@@ -370,32 +670,34 @@ To ensure maximum operational efficiency, follow this standardized 3-phase daily
 ```mermaid
 graph LR
     subgraph Morning ["🌅 08:30 – 09:00 AM"]
-        A1[Check Pending Roll Calls] --> A2[Verify WhatsApp Alerts Stream]
+        A1[Check Pending Roll Calls] --> A2[Verify WhatsApp Alerts Stream] --> A3[Check SafeSpace Board]
     end
     subgraph Midday ["☀️ 12:30 – 02:00 PM"]
-        B1[Process Inbound Admissions] --> B2[Audit Homework Load] --> B3[Review Store Fulfillment]
+        B1[Process Inbound Admissions] --> B2[Review Store Fulfillment] --> B3[Audit Classroom Allocations]
     end
     subgraph Evening ["🌆 04:45 – 05:15 PM"]
-        C1[Audit EOD Cash Till] --> C2[Verify Bus Radar Fleet Safe Return] --> C3[Lock Day Records]
+        C1[Audit EOD Cash Till] --> C2[Verify Bus Fleet Radar] --> C3[Lock Day Records & Export Tally]
     end
 ```
 
 ### Phase 1: Morning Command (08:30 AM – 09:00 AM)
 - [ ] Log in to `/portal/admin`.
-- [ ] Check **Pending Roll Calls KPI**. If any homeroom is unmarked at 08:50 AM, click **"Mark →"** or alert the teacher.
-- [ ] Inspect the **WhatsApp Delivery Ticker** to confirm absence alerts are reaching parent phones.
-- [ ] Review the **SafeSpace Triage Board** for any urgent overnight student grievance tokens.
+- [ ] Check **Pending Roll Calls KPI** on the dashboard. If any homeroom is unmarked at 08:50 AM, click **"Mark →"** or notify the teacher.
+- [ ] Inspect the **WhatsApp Delivery Ticker** to confirm absence alerts are reaching parent phones with green `delivered` status.
+- [ ] Review the **SafeSpace Triage Board** (`/portal/admin/safespace`) for any urgent overnight student grievance tokens.
+- [ ] Open **Main Gate RFID Feed** to monitor campus arrivals and unauthorized exit attempts.
 
 ### Phase 2: Mid-Day Operations (12:30 PM – 02:00 PM)
-- [ ] Open **Admissions CRM** (`/portal/admin/admissions/crm`) to move prospective parents through the funnel.
-- [ ] Inspect the **Store Fulfillment Pick List** to ensure lunch-break student kits are packed.
-- [ ] Review the **Homework Hub** to confirm teachers have posted daily academic assignments.
+- [ ] Open **Admissions CRM** (`/portal/admin/admissions/crm`) to advance prospective parents through the tour and verification pipeline.
+- [ ] Inspect the **Store Fulfillment Pick List** (`/portal/admin/store-fulfillment`) to ensure lunch-break student kits are packed and labeled.
+- [ ] Review the **Class Management & Staff Directory** to accommodate any substitute teacher period allocations for absent staff.
+- [ ] Check **Estate Maintenance Tickets** for any urgent classroom repair requests (smartboards, fans, ACs).
 
 ### Phase 3: Evening Closeout & Till Audit (04:45 PM – 05:15 PM)
-- [ ] Open **Live Fleet Radar** (`/portal/admin/fleet`) to confirm all 15 buses have completed afternoon drops.
+- [ ] Open **Live Fleet Radar** (`/portal/admin/fleet`) to confirm all 15 school buses have finished afternoon routes and returned safely.
 - [ ] Open **Fee Counter & Cash POS** (`/portal/admin/fees`).
-- [ ] Request the Bursar/Cashier's physical cash count, verify against system expected balance, and click **"Approve & Lock Till"**.
-- [ ] Export today's transactions to **Tally XML** for accounting archives.
+- [ ] Count the physical cash in the bursar till, match against system expected totals, log any discrepancy, and click **"Approve & Lock Till"**.
+- [ ] On `/portal/admin/treasury`, click **"Generate Tally XML"** to export today's voucher batch for the accounting team.
 
 ---
 
@@ -408,10 +710,19 @@ graph LR
 **Answer**: **No.** Once the Administrator or Principal approves and locks a till session, it becomes an immutable financial record. Only the Trust Super Admin can authorize a formal till reopening with a documented audit rationale.
 
 #### Q3: How do we import fee records into our chartered accountant's Tally ERP9?
-**Answer**: On `/portal/admin/treasury`, click **"Generate Tally XML"**. Open your local Tally ERP9 / TallyPrime company, select *Import Data $\rightarrow$ Vouchers*, and choose the downloaded `.xml` file. All student fee heads, bank debits, and concession credits are imported automatically.
+**Answer**: On `/portal/admin/treasury`, click **"Generate Tally XML"**. Open your local Tally ERP9 / TallyPrime company, select *Import Data → Vouchers*, and choose the downloaded `.xml` file. All student fee heads, bank debits, and concession credits are imported automatically.
 
 #### Q4: How does the system ensure student anonymity in SafeSpace grievance reports?
 **Answer**: Student profiles and IP addresses are completely stripped before being written to the grievance database. The system generates a cryptographic token (e.g. `SAFE-TOKEN-8819`). Administrators and counselors can communicate back and forth with this token through the portal, guaranteeing safety without deanonymizing the student.
+
+#### Q5: Can I import students if my CSV file has slightly different column headers?
+**Answer**: We strongly recommend downloading the official template from `/portal/admin/students/import`. The import engine expects standard columns (`admission_number`, `full_name`, `class_name`, `section`, `parent_name`, `parent_phone`). If a column is missing or misnamed, the pre-flight check will alert you with the exact column name to correct before writing any data.
+
+#### Q6: What if a homeroom teacher is on medical leave and cannot take morning roll call?
+**Answer**: The Administrator or Duty Principal can open `/portal/admin/classes` or `/portal/admin/attendance`, click **"Mark Attendance"** on the pending class, and submit roll call on the teacher's behalf. WhatsApp alerts will dispatch immediately to parents with the administrator's timestamp.
+
+#### Q7: How does the Staff Allocation Grid prevent teacher scheduling conflicts?
+**Answer**: When you assign a teacher to a subject period on `/portal/admin/staff/allocations`, the engine checks their active period count and flags any overlap where that teacher is already assigned to another class during the same time slot, preventing double-booking and overburdening.
 
 ---
 

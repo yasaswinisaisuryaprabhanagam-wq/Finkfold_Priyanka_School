@@ -22,14 +22,16 @@ Built with **Next.js 16 (App Router, React 19)**, **Supabase PostgreSQL (with Ro
   - **Section 3 (HR, Recruitment & Staff Appraisals)**: Applicant Tracking System (ATS) Careers sync & recruitment Kanban, 360° Faculty Appraisal Matrix with objective weighted dossier (25% Biometric, 35% Academic, 20% PTM sentiment, 20% Relief).
   - **Section 4 (Academic Governance & NEP 2020 Compliance)**: NEP 2020 Outcome-Based Education (OBE) Auditor with Bloom's Taxonomy cognitive heatmap, "SafeSpace" Grievance Triage Board with 2-Hour SLA countdown timer & anonymous token replies.
   - **Section 5 (Campus Maintenance & Operations)**: Estate & Facility Command (work order dispatch, asset depreciation tracker flagging >4 repairs for budget replacement), Omnichannel Waterfall Broadcast Studio (Push -> WhatsApp -> SMS fallback funnel).
+  - **Section 6 (Foundational Campus Administration)**: Student Registry & Bulk CSV Import, Class Management & Roll Call Oversight, Staff Directory & Period Allocation Grid, Academics Master, Fee Counter POS Cash Till, Year-End Academic Promotions, and WhatsApp Audit Trail.
 
 ### 2. Modern Calm Visual Design System
-- Redesigned to strictly adhere to clean, calm educational aesthetics inspired by premier university portals.
+- Unified across all 3 portals (**Student & Parent**, **Faculty**, and **Admin**) to strictly adhere to clean, calm educational aesthetics inspired by premier university portals.
 - **Color Palette**:
-  - Canvas: Calm mist background (`#f4f6fb` / `#f8fafc`).
+  - Canvas: Calm mist background (`#f4f6fb` / `#f8fafc` / `bg-slate-50`).
   - Surfaces: Pure white cards (`#ffffff`) with clean borders (`border-slate-200/80`) and subtle elevation (`shadow-[0_2px_8px_rgba(0,0,0,0.04)]`).
-  - Soft Pastels: Soft Lilac (Math), Butter Yellow (Science), Sky Blue (English), Mint Green (Robotics & AI).
+  - Soft Pastels: Soft Lilac (Academics), Butter Yellow (Admissions/Finance), Sky Blue (General/Students), Mint Green (System/Health).
   - Zero eye-brightening, neon, or saturated dark surfaces in user-facing portals.
+- **Navigation & Topbar**: 4-tier categorized administrative sidebar, global quick search pill, dynamic live date/telemetry topbar, and active branch context switcher.
 - **Widgets**: Circular SVG attendance and punctuality gauges, segmented schedule toggles (`[Today] [This Week] [This Month]`), teaching quality evaluation scorecards, and interactive status chips.
 
 ### 3. Meta WhatsApp Automation & n8n Engine
@@ -73,7 +75,8 @@ finkfold-school-portal/
 ├── scripts/
 │   ├── test_faculty_comprehensive_all_types.ts # 39/39 comprehensive faculty tests (Unit, Workflow, DB, HTTP)
 │   ├── test_faculty_portal_all.ts            # 61/61 deep faculty action & route tests
-│   └── test_student_portal_all.ts            # 40/40 comprehensive student portal tests
+│   ├── test_student_portal_all.ts            # 40/40 comprehensive student portal tests
+│   └── test_admin_enterprise_suite.ts        # 14/14 deep enterprise admin suite tests
 ├── src/
 │   ├── actions/                              # Server Actions (12+ functional domains)
 │   │   ├── academics.ts                      # Exam marks, AI remedial worksheets, report cards
