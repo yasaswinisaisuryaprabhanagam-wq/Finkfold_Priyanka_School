@@ -47,7 +47,7 @@ ALTER TABLE public.fee_structures
 
 ALTER TABLE public.fee_structures 
   ADD CONSTRAINT fee_structures_category_check 
-  CHECK (category IN ('tuition', 'admission', 'exam', 'transport', 'books_uniform', 'digital_portal', 'miscellaneous', 'library_fine', 'late_fee'));
+  CHECK (category IN ('tuition', 'admission', 'exam', 'transport', 'library', 'laboratory', 'sports', 'annual', 'other', 'books_uniform', 'digital_portal', 'miscellaneous', 'library_fine', 'late_fee'));
 
 -- 1.4 Expand pending_admissions with Lead CRM & Pipeline Funnel tracking
 ALTER TABLE public.pending_admissions
@@ -66,7 +66,8 @@ ALTER TABLE public.pending_admissions
 CREATE TABLE IF NOT EXISTS public.exam_assessments (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   school_id uuid NOT NULL REFERENCES public.schools(id) ON DELETE CASCADE,
-  academic_year_id uuid REFERENCES public.academic_years(id) ON DELETE SET NULL,
+  term_id uuid REFERENCES public.terms(id) ON DELETE SET NULL,
+  academic_year text NOT NULL DEFAULT '2025-2026',
   name text NOT NULL,
   term text NOT NULL DEFAULT 'Term 1',
   start_date date,
@@ -170,7 +171,7 @@ CREATE TABLE IF NOT EXISTS public.sen_student_profiles (
   school_id uuid NOT NULL REFERENCES public.schools(id) ON DELETE CASCADE,
   student_id uuid NOT NULL REFERENCES public.students(id) ON DELETE CASCADE UNIQUE,
   primary_diagnosis text NOT NULL,
-  accommodations ARRAY DEFAULT ARRAY[]::text[],
+  accommodations text[] DEFAULT ARRAY[]::text[],
   iep_goals jsonb NOT NULL DEFAULT '[]'::jsonb,
   behavior_triggers text,
   special_educator_assigned text,
@@ -235,7 +236,7 @@ CREATE TABLE IF NOT EXISTS public.student_group_projects (
   subject_id uuid NOT NULL REFERENCES public.subjects(id) ON DELETE CASCADE,
   project_title text NOT NULL,
   team_name text NOT NULL,
-  student_ids ARRAY NOT NULL,
+  student_ids text[] NOT NULL,
   peer_evaluations jsonb NOT NULL DEFAULT '[]'::jsonb,
   mentor_teacher_id uuid REFERENCES public.profiles(id) ON DELETE SET NULL,
   grade numeric,
@@ -263,7 +264,7 @@ CREATE TABLE IF NOT EXISTS public.field_trip_manifests (
   destination text NOT NULL,
   trip_date date NOT NULL,
   lead_teacher_id uuid REFERENCES public.profiles(id) ON DELETE SET NULL,
-  participating_classes ARRAY DEFAULT ARRAY[]::text[],
+  participating_classes text[] DEFAULT ARRAY[]::text[],
   student_roster jsonb NOT NULL DEFAULT '[]'::jsonb,
   first_aid_kit_packed boolean NOT NULL DEFAULT true,
   status text NOT NULL DEFAULT 'scheduled' CHECK (status IN ('planning', 'scheduled', 'ongoing', 'completed', 'cancelled')),
@@ -303,7 +304,7 @@ CREATE TABLE IF NOT EXISTS public.bank_reconciliation_records (
   credit_amount numeric DEFAULT 0.00,
   debit_amount numeric DEFAULT 0.00,
   reconciliation_status text NOT NULL DEFAULT 'unmatched' CHECK (reconciliation_status IN ('matched_auto', 'matched_manual', 'unmatched', 'flagged_discrepancy')),
-  matched_fee_transaction_id uuid REFERENCES public.fee_transactions(id) ON DELETE SET NULL,
+  matched_fee_payment_id uuid REFERENCES public.fee_payments(id) ON DELETE SET NULL,
   reconciled_by uuid REFERENCES public.profiles(id) ON DELETE SET NULL,
   reconciled_at timestamptz
 );
@@ -457,7 +458,7 @@ CREATE TABLE IF NOT EXISTS public.omnichannel_broadcasts (
   broadcast_title text NOT NULL,
   target_cohort text NOT NULL,
   message_body text NOT NULL,
-  channels_sequence ARRAY DEFAULT ARRAY['push', 'whatsapp', 'sms']::text[],
+  channels_sequence text[] DEFAULT ARRAY['push', 'whatsapp', 'sms']::text[],
   priority text NOT NULL DEFAULT 'normal' CHECK (priority IN ('normal', 'urgent', 'crisis')),
   total_recipients integer NOT NULL DEFAULT 0,
   push_delivered_count integer DEFAULT 0,
@@ -480,7 +481,7 @@ CREATE TABLE IF NOT EXISTS public.certificate_templates (
   title text NOT NULL,
   category text NOT NULL,
   description text NOT NULL,
-  variables ARRAY NOT NULL,
+  variables text[] NOT NULL,
   sample_title text NOT NULL,
   template_body text,
   created_at timestamptz NOT NULL DEFAULT now()
@@ -536,7 +537,7 @@ CREATE TABLE IF NOT EXISTS public.library_loans (
   status text NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'returned', 'overdue', 'lost')),
   overdue_fine_amount numeric NOT NULL DEFAULT 0.00,
   fine_synced_to_fee_ledger boolean NOT NULL DEFAULT false,
-  fee_transaction_id uuid REFERENCES public.fee_transactions(id) ON DELETE SET NULL,
+  fee_payment_id uuid REFERENCES public.fee_payments(id) ON DELETE SET NULL,
   issued_by uuid REFERENCES public.profiles(id) ON DELETE SET NULL,
   created_at timestamptz NOT NULL DEFAULT now()
 );
@@ -546,7 +547,7 @@ CREATE INDEX IF NOT EXISTS idx_library_loans_student ON public.library_loans(stu
 CREATE TABLE IF NOT EXISTS public.fee_late_penalty_rules (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   school_id uuid NOT NULL REFERENCES public.schools(id) ON DELETE CASCADE,
-  academic_year_id uuid REFERENCES public.academic_years(id) ON DELETE SET NULL,
+  academic_year text NOT NULL DEFAULT '2025-2026',
   daily_penalty_amount numeric NOT NULL DEFAULT 50.00 CHECK (daily_penalty_amount >= 0),
   grace_period_days integer NOT NULL DEFAULT 10,
   is_active boolean NOT NULL DEFAULT true,
@@ -639,14 +640,14 @@ CREATE TABLE IF NOT EXISTS public.board_loc_candidates (
   category text NOT NULL CHECK (category IN ('GEN', 'OBC', 'SC', 'ST')),
   identification_mark_1 text NOT NULL,
   identification_mark_2 text,
-  subject_codes ARRAY NOT NULL DEFAULT ARRAY['184', '002', '041', '086', '087']::text[],
+  subject_codes text[] NOT NULL DEFAULT ARRAY['184', '002', '041', '086', '087']::text[],
   aadhaar_number text NOT NULL,
   annual_parent_income numeric NOT NULL,
   cwsn_code text DEFAULT 'NA',
   photo_verified boolean NOT NULL DEFAULT false,
   signature_verified boolean NOT NULL DEFAULT false,
   board_verification_status text NOT NULL DEFAULT 'pending' CHECK (board_verification_status IN ('verified', 'pending', 'error_missing_marks', 'discrepancy_flagged')),
-  validation_errors ARRAY DEFAULT ARRAY[]::text[],
+  validation_errors text[] DEFAULT ARRAY[]::text[],
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now()
 );
