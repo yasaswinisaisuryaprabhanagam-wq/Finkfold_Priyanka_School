@@ -66,8 +66,7 @@ ALTER TABLE public.pending_admissions
 CREATE TABLE IF NOT EXISTS public.exam_assessments (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   school_id uuid NOT NULL REFERENCES public.schools(id) ON DELETE CASCADE,
-  term_id uuid REFERENCES public.terms(id) ON DELETE SET NULL,
-  academic_year text NOT NULL DEFAULT '2025-2026',
+  academic_year_id uuid REFERENCES public.academic_years(id) ON DELETE SET NULL,
   name text NOT NULL,
   term text NOT NULL DEFAULT 'Term 1',
   start_date date,
@@ -304,7 +303,7 @@ CREATE TABLE IF NOT EXISTS public.bank_reconciliation_records (
   credit_amount numeric DEFAULT 0.00,
   debit_amount numeric DEFAULT 0.00,
   reconciliation_status text NOT NULL DEFAULT 'unmatched' CHECK (reconciliation_status IN ('matched_auto', 'matched_manual', 'unmatched', 'flagged_discrepancy')),
-  matched_fee_payment_id uuid REFERENCES public.fee_payments(id) ON DELETE SET NULL,
+  matched_fee_transaction_id uuid REFERENCES public.fee_transactions(id) ON DELETE SET NULL,
   reconciled_by uuid REFERENCES public.profiles(id) ON DELETE SET NULL,
   reconciled_at timestamptz
 );
@@ -537,7 +536,7 @@ CREATE TABLE IF NOT EXISTS public.library_loans (
   status text NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'returned', 'overdue', 'lost')),
   overdue_fine_amount numeric NOT NULL DEFAULT 0.00,
   fine_synced_to_fee_ledger boolean NOT NULL DEFAULT false,
-  fee_payment_id uuid REFERENCES public.fee_payments(id) ON DELETE SET NULL,
+  fee_transaction_id uuid REFERENCES public.fee_transactions(id) ON DELETE SET NULL,
   issued_by uuid REFERENCES public.profiles(id) ON DELETE SET NULL,
   created_at timestamptz NOT NULL DEFAULT now()
 );
@@ -547,7 +546,7 @@ CREATE INDEX IF NOT EXISTS idx_library_loans_student ON public.library_loans(stu
 CREATE TABLE IF NOT EXISTS public.fee_late_penalty_rules (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   school_id uuid NOT NULL REFERENCES public.schools(id) ON DELETE CASCADE,
-  academic_year text NOT NULL DEFAULT '2025-2026',
+  academic_year_id uuid REFERENCES public.academic_years(id) ON DELETE SET NULL,
   daily_penalty_amount numeric NOT NULL DEFAULT 50.00 CHECK (daily_penalty_amount >= 0),
   grace_period_days integer NOT NULL DEFAULT 10,
   is_active boolean NOT NULL DEFAULT true,
