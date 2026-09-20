@@ -202,42 +202,38 @@ export default function FeesClientShell({
 
   return (
     <div className="space-y-6">
-      {/* ── Banner Header ── */}
-      <div
-        className="rounded-2xl text-white p-6 relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #064e3b 0%, #047857 50%, #059669 100%)" }}
-      >
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <div className="text-emerald-200 text-xs font-semibold uppercase tracking-wider mb-1">
-              Treasury & Counter POS &middot; {schoolName}
-            </div>
-            <h1 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>
-              💳 Fee Counter & Maker-Checker Cash Till
-            </h1>
-            <p className="text-emerald-100 text-sm">
-              Instant fee collections, dynamic UPI QR generation, and daily maker-checker cash till audits.
-            </p>
+      {/* ── Banner matching Faculty & Student Portal visual design ── */}
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-100 mb-2">
+            <span>💳</span>
+            <span>Treasury &amp; Counter POS &middot; {schoolName}</span>
           </div>
+          <h1 className="text-2xl font-bold text-slate-900 mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>
+            Fee Counter &amp; Maker-Checker Cash Till
+          </h1>
+          <p className="text-slate-500 text-xs mt-1 max-w-2xl">
+            Instant fee collections, dynamic UPI QR generation, and daily maker-checker cash till audits.
+          </p>
+        </div>
 
-          {/* Active Till Status Pill */}
-          <div className="bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/20 text-right">
-            <div className="text-[10px] text-emerald-200 uppercase font-bold">Today's Cash Drawer</div>
-            <div className="text-sm font-black text-white mt-0.5 flex items-center justify-end gap-2">
-              <span
-                className={`h-2.5 w-2.5 rounded-full ${
-                  drawer?.status === "verified"
-                    ? "bg-emerald-400"
-                    : drawer?.status === "discrepancy_flagged"
-                    ? "bg-rose-400"
-                    : "bg-amber-400 animate-pulse"
-                }`}
-              />
-              {drawer?.status ? drawer.status.replace("_", " ").toUpperCase() : "OPEN"}
-            </div>
-            <div className="text-xs text-white/80 font-mono mt-0.5">
-              System Cash: ₹{Number(drawer?.system_cash_collected || 0).toLocaleString("en-IN")}
-            </div>
+        {/* Active Till Status Capsule */}
+        <div className="bg-slate-50/80 border border-slate-200/80 rounded-2xl p-3.5 text-right flex-shrink-0">
+          <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Today&apos;s Cash Drawer</div>
+          <div className="text-sm font-black text-slate-900 mt-0.5 flex items-center justify-end gap-2">
+            <span
+              className={`h-2.5 w-2.5 rounded-full ${
+                drawer?.status === "verified"
+                  ? "bg-emerald-500"
+                  : drawer?.status === "discrepancy_flagged"
+                  ? "bg-rose-500"
+                  : "bg-amber-500 animate-pulse"
+              }`}
+            />
+            {drawer?.status ? drawer.status.replace("_", " ").toUpperCase() : "OPEN"}
+          </div>
+          <div className="text-xs text-slate-600 font-mono mt-0.5 font-bold">
+            System Cash: ₹{Number(drawer?.system_cash_collected || 0).toLocaleString("en-IN")}
           </div>
         </div>
       </div>

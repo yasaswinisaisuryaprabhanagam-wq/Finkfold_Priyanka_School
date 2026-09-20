@@ -27,20 +27,24 @@ export default async function AddTeacherPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div
-        className="rounded-2xl text-white p-6 overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #2d1b69 60%, #4c1d95 100%)" }}
-      >
-        <div className="relative z-10">
-          <div className="text-purple-300 text-xs font-semibold uppercase tracking-wider mb-1">
-            Admin Control Panel &middot; {SCHOOL.name}
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-xs font-semibold border border-indigo-100 mb-2">
+            <span>👨‍🏫 Staff Management</span>
+            <span>·</span>
+            <span>{SCHOOL.name}</span>
           </div>
-          <h1 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>
-            ➕ Add New Staff Member
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight" style={{ fontFamily: "Outfit, sans-serif" }}>
+            Add New Staff Member
           </h1>
-          <p className="text-white/60 text-sm">
-            Creates a login account + teacher profile in one step
+          <p className="text-slate-500 text-sm mt-1">
+            Creates a secure login account and faculty profile in one step
           </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Link href="/portal/admin/staff" className="px-3 py-2 rounded-xl text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 transition">
+            ← Back to Staff
+          </Link>
         </div>
       </div>
 

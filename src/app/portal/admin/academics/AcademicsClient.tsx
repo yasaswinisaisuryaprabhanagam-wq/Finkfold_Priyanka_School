@@ -111,20 +111,23 @@ export default function AcademicsClient({
   return (
     <div className="space-y-6">
       {/* ── Banner ── */}
-      <div
-        className="rounded-2xl text-white p-6 relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #1e1b4b 0%, #312e81 60%, #4338ca 100%)" }}
-      >
-        <div className="relative z-10">
-          <div className="text-indigo-300 text-xs font-semibold uppercase tracking-wider mb-1">
-            Academic Governance &middot; {schoolName}
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-xs font-semibold border border-indigo-100 mb-2">
+            <span>📚 Academic Governance</span>
+            <span>·</span>
+            <span>{schoolName}</span>
           </div>
-          <h1 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>
-            📚 Academic Setup & Subjects Master
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight" style={{ fontFamily: "Outfit, sans-serif" }}>
+            Academic Setup & Subjects Master
           </h1>
-          <p className="text-white/70 text-sm">
+          <p className="text-slate-500 text-sm mt-1">
             Configure multi-year academic terms, session dates, and syllabus subject classifications.
           </p>
+        </div>
+        <div className="flex items-center gap-2 bg-slate-50 border border-slate-100 px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-600">
+          <span className="text-indigo-600 font-bold">{years.length}</span>
+          <span>Academic Sessions</span>
         </div>
       </div>
 

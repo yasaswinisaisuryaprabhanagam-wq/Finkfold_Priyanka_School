@@ -57,25 +57,32 @@ export default async function AdminAdmissionsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="rounded-2xl text-white p-6 overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #2d1b69 60%, #4c1d95 100%)" }}>
-        <div className="relative z-10">
-          <div className="text-purple-300 text-xs font-semibold uppercase tracking-wider mb-1">
-            Admin Control Panel &middot; {SCHOOL.name}
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-xs font-semibold border border-indigo-100 mb-2">
+            <span>📋 Enrollment & Admissions</span>
+            <span>·</span>
+            <span>{SCHOOL.name}</span>
           </div>
-          <h1 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>
-            📋 Pending Admissions
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight" style={{ fontFamily: "Outfit, sans-serif" }}>
+            Admissions Pipeline
           </h1>
-          <div className="flex items-center gap-3 flex-wrap">
-            <span className="text-white/60 text-sm">
-              {pending.length} applications awaiting review
+          <p className="text-slate-500 text-sm mt-1">
+            {pending.length} applications awaiting verification & enrollment
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          {pending.length > 0 ? (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 text-amber-700 font-semibold text-xs border border-amber-200">
+              <span className="h-2 w-2 rounded-full bg-amber-500 animate-pulse"></span>
+              {pending.length} Pending Review
             </span>
-            {pending.length > 0 && (
-              <span className="bg-amber-400 text-amber-900 text-xs font-black px-2.5 py-1 rounded-full">
-                {pending.length} NEW
-              </span>
-            )}
-          </div>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 font-semibold text-xs border border-emerald-200">
+              <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
+              All Reviewed
+            </span>
+          )}
         </div>
       </div>
 

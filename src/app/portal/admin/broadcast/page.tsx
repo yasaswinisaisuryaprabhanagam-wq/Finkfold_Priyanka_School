@@ -105,22 +105,19 @@ export default function AdminBroadcastPage() {
       )}
 
       {/* Header Banner */}
-      <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] relative overflow-hidden">
+      <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs relative overflow-hidden">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-purple-50 text-purple-700 border border-purple-200 uppercase tracking-wide">
-                Section 5: Campus Communications
-              </span>
-              <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">
-                Triple-Tier Delivery Cascade
-              </span>
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-purple-50 text-purple-700 text-xs font-semibold border border-purple-100 mb-2">
+              <span>Section 5: Campus Communications</span>
+              <span>·</span>
+              <span>Triple-Tier Delivery Cascade</span>
             </div>
-            <h1 className="text-xl font-bold text-slate-900 mt-2" style={{ fontFamily: "Outfit, sans-serif" }}>
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight" style={{ fontFamily: "Outfit, sans-serif" }}>
               The Omnichannel Broadcast Studio
             </h1>
-            <p className="text-slate-500 text-xs mt-1 max-w-2xl">
-              Execute urgent school-wide broadcasts through a cost-optimized waterfall: Instant App Push $\rightarrow$ Meta WhatsApp Message (if unread after 5 mins) $\rightarrow$ Failover Telecom SMS.
+            <p className="text-slate-500 text-sm mt-1 max-w-2xl">
+              Execute urgent school-wide broadcasts through a cost-optimized waterfall: Instant App Push → Meta WhatsApp Message (if unread after 5 mins) → Failover Telecom SMS.
             </p>
           </div>
 

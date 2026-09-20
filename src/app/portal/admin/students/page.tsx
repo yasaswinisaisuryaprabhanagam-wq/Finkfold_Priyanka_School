@@ -79,37 +79,93 @@ export default async function AdminStudentsPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="rounded-2xl text-white p-6 relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #2d1b69 60%, #4c1d95 100%)" }}>
-        <div className="relative z-10">
-          <div className="text-purple-300 text-xs font-semibold uppercase tracking-wider mb-1">
-            Admin Control Panel &middot; {SCHOOL.name}
+      {/* Header matching Student & Faculty Portal design */}
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-xs font-semibold border border-indigo-100">
+            <span>👥</span>
+            <span>Admin Control Panel &middot; {SCHOOL.name}</span>
           </div>
-          <h1 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>
-            👥 Student Registry
+          <h1 className="text-2xl font-bold text-slate-900" style={{ fontFamily: "Outfit, sans-serif" }}>
+            Student Registry
           </h1>
-          <p className="text-white/60 text-sm">{activeCount} active students enrolled · {SCHOOL.academicYear}</p>
+          <p className="text-slate-500 text-xs">
+            {activeCount} active students enrolled · Academic Year {SCHOOL.academicYear}
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <Link href="/portal/admin/students/import" className="btn btn-secondary btn-sm flex items-center gap-1.5 text-xs">
+            <span>📥</span>
+            <span>Import CSV</span>
+          </Link>
+          <Link href="/portal/admin/admissions" className="btn btn-primary btn-sm flex items-center gap-1.5 text-xs">
+            <span>+</span>
+            <span>New Admission</span>
+          </Link>
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="stat-card text-center">
-          <div className="text-3xl font-black text-slate-900">{students.length}</div>
-          <div className="text-xs text-slate-500 mt-1">Total Students</div>
+      {/* Stats matching Student & Faculty Portal design */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl flex-shrink-0">
+            👥
+          </div>
+          <div>
+            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Students</div>
+            <div className="text-2xl font-bold text-slate-900 mt-0.5" style={{ fontFamily: "Outfit, sans-serif" }}>
+              {students.length}
+            </div>
+            <div className="inline-flex items-center gap-1 mt-1 text-[11px] font-medium text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md">
+              <span>Roster Count</span>
+            </div>
+          </div>
         </div>
-        <div className="stat-card text-center">
-          <div className="text-3xl font-black text-emerald-600">{activeCount}</div>
-          <div className="text-xs text-slate-500 mt-1">Active</div>
+
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl flex-shrink-0">
+            ✓
+          </div>
+          <div>
+            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Active Enrolled</div>
+            <div className="text-2xl font-bold text-emerald-600 mt-0.5" style={{ fontFamily: "Outfit, sans-serif" }}>
+              {activeCount}
+            </div>
+            <div className="inline-flex items-center gap-1 mt-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">
+              <span>In Good Standing</span>
+            </div>
+          </div>
         </div>
-        <div className="stat-card text-center">
-          <div className="text-3xl font-black text-green-600">{whatsAppCount}</div>
-          <div className="text-xs text-slate-500 mt-1">WhatsApp Enabled</div>
+
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center text-2xl flex-shrink-0">
+            💬
+          </div>
+          <div>
+            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">WhatsApp Enabled</div>
+            <div className="text-2xl font-bold text-green-600 mt-0.5" style={{ fontFamily: "Outfit, sans-serif" }}>
+              {whatsAppCount}
+            </div>
+            <div className="inline-flex items-center gap-1 mt-1 text-[11px] font-medium text-green-700 bg-green-50 px-2 py-0.5 rounded-md">
+              <span>Verified Parents</span>
+            </div>
+          </div>
         </div>
-        <div className="stat-card text-center">
-          <div className="text-3xl font-black text-slate-700">{students.length - whatsAppCount}</div>
-          <div className="text-xs text-slate-500 mt-1">No WhatsApp</div>
+
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-slate-50 text-slate-600 flex items-center justify-center text-2xl flex-shrink-0">
+            📱
+          </div>
+          <div>
+            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Missing WhatsApp</div>
+            <div className="text-2xl font-bold text-slate-700 mt-0.5" style={{ fontFamily: "Outfit, sans-serif" }}>
+              {students.length - whatsAppCount}
+            </div>
+            <div className="inline-flex items-center gap-1 mt-1 text-[11px] font-medium text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">
+              <span>Phone Pending</span>
+            </div>
+          </div>
         </div>
       </div>
 

@@ -108,18 +108,23 @@ export default async function PromotionsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="rounded-2xl text-white p-6 overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #2d1b69 60%, #4c1d95 100%)" }}>
-        <div className="relative z-10">
-          <div className="text-purple-300 text-xs font-semibold uppercase tracking-wider mb-1">
-            Admin Control Panel &middot; {SCHOOL.name}
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-xs font-semibold border border-indigo-100 mb-2">
+            <span>🎓 Academic Transition</span>
+            <span>·</span>
+            <span>{SCHOOL.name}</span>
           </div>
-          <h1 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>
-            🎓 Year-End Promotions
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight" style={{ fontFamily: "Outfit, sans-serif" }}>
+            Year-End Promotions
           </h1>
-          <p className="text-white/60 text-sm">
-            Promote all students to next class &middot; {SCHOOL.academicYear} &rarr; {nextAcYear}
+          <p className="text-slate-500 text-sm mt-1">
+            Promote students to next class · {SCHOOL.academicYear} → {nextAcYear}
           </p>
+        </div>
+        <div className="flex items-center gap-2 bg-slate-50 border border-slate-100 px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-600">
+          <span className="text-indigo-600 font-bold">Session:</span>
+          <span>{SCHOOL.academicYear} → {nextAcYear}</span>
         </div>
       </div>
 

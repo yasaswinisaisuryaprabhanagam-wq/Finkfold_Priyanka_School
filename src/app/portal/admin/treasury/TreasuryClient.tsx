@@ -47,80 +47,98 @@ export default function TreasuryClient({
   return (
     <div className="space-y-6">
       {/* ── Banner ── */}
-      <div
-        className="rounded-2xl text-white p-6 relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #091e3a 0%, #102a45 50%, #1e3a8a 100%)" }}
-      >
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <div className="text-blue-300 text-xs font-semibold uppercase tracking-wider mb-1">
-              HQ Financial Governance &middot; {orgName}
-            </div>
-            <h1 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>
-              🏛️ Centralized Treasury & Multi-Branch Audit
-            </h1>
-            <p className="text-white/70 text-sm">
-              Real-time cash & UPI collections roll-up, till reconciliation status, and automated EOD audit trail across all campuses.
-            </p>
+      {/* ── Banner matching Faculty & Student Portal visual design ── */}
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold border border-blue-100 mb-2">
+            <span>🏛️</span>
+            <span>HQ Financial Governance &middot; {orgName}</span>
           </div>
+          <h1 className="text-2xl font-bold text-slate-900" style={{ fontFamily: "Outfit, sans-serif" }}>
+            Centralized Treasury &amp; Multi-Branch Audit
+          </h1>
+          <p className="text-slate-500 text-xs mt-1 max-w-2xl">
+            Real-time cash &amp; UPI collections roll-up, till reconciliation status, and automated EOD audit trail across all campuses.
+          </p>
+        </div>
 
-          <div className="flex items-center gap-3">
-            <span className="px-3.5 py-1.5 rounded-full bg-blue-500/20 text-blue-200 border border-blue-400/30 text-xs font-bold flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-              {branches.length} Active Campuses
-            </span>
-          </div>
+        <div className="flex items-center gap-3">
+          <span className="px-3.5 py-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+            {branches.length} Active Campuses
+          </span>
         </div>
       </div>
 
-      {/* ── Top Summary Metrics ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="stat-card">
-          <div className="text-xs text-slate-500 font-semibold">Grand Total Collections (Today)</div>
-          <div className="text-3xl font-black text-slate-900 mt-1 font-mono">
-            ₹{summary.grandTotal.toLocaleString("en-IN")}
+      {/* ── Top Summary Metrics (Matching Faculty & Student Stat Style) ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl flex-shrink-0">
+            💵
           </div>
-          <div className="text-[11px] text-slate-400 mt-1">Across all 3 campuses</div>
-        </div>
-
-        <div className="stat-card">
-          <div className="text-xs text-slate-500 font-semibold">Cash vs. Digital UPI Ratio</div>
-          <div className="text-lg font-black text-slate-800 mt-1 flex items-center justify-between">
-            <span className="text-emerald-700">Cash: ₹{summary.totalCash.toLocaleString("en-IN")}</span>
-            <span className="text-blue-700">UPI: ₹{summary.totalUpi.toLocaleString("en-IN")}</span>
-          </div>
-          {/* Progress split bar */}
-          <div className="h-2 rounded-full bg-blue-600 overflow-hidden flex mt-2">
-            <div style={{ width: `${cashPct}%` }} className="bg-emerald-500 h-full" />
-            <div style={{ width: `${upiPct}%` }} className="bg-blue-500 h-full" />
-          </div>
-          <div className="flex justify-between text-[10px] text-slate-400 mt-1">
-            <span>{cashPct}% Cash</span>
-            <span>{upiPct}% Digital UPI</span>
+          <div>
+            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Grand Total Today</div>
+            <div className="text-2xl font-bold text-slate-900 mt-0.5 font-mono">
+              ₹{summary.grandTotal.toLocaleString("en-IN")}
+            </div>
+            <div className="inline-flex items-center gap-1 mt-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">
+              <span>Across all 3 campuses</span>
+            </div>
           </div>
         </div>
 
-        <div className="stat-card">
-          <div className="text-xs text-slate-500 font-semibold">Total Trust Students</div>
-          <div className="text-3xl font-black text-indigo-900 mt-1 font-mono">
-            {summary.totalStudents.toLocaleString("en-IN")}
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl flex-shrink-0">
+            📱
           </div>
-          <div className="text-[11px] text-indigo-600 mt-1">Active student body</div>
+          <div className="flex-1 min-w-0">
+            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Cash vs Digital UPI</div>
+            <div className="text-xs font-bold text-slate-800 mt-1 flex items-center justify-between font-mono">
+              <span className="text-emerald-700">₹{summary.totalCash.toLocaleString("en-IN")}</span>
+              <span className="text-blue-700">₹{summary.totalUpi.toLocaleString("en-IN")}</span>
+            </div>
+            <div className="h-2 rounded-full bg-blue-100 overflow-hidden flex mt-2">
+              <div style={{ width: `${cashPct}%` }} className="bg-emerald-500 h-full" />
+              <div style={{ width: `${upiPct}%` }} className="bg-blue-500 h-full" />
+            </div>
+            <div className="flex justify-between text-[10px] text-slate-400 mt-1 font-medium">
+              <span>{cashPct}% Cash</span>
+              <span>{upiPct}% Digital</span>
+            </div>
+          </div>
         </div>
 
-        <div className="stat-card">
-          <div className="text-xs text-slate-500 font-semibold">Till Discrepancy Flags</div>
-          <div className="text-3xl font-black mt-1 font-mono flex items-center gap-2">
-            <span className={summary.flaggedCount > 0 ? "text-rose-600" : "text-emerald-600"}>
-              {summary.flaggedCount}
-            </span>
-            {summary.flaggedCount > 0 ? (
-              <span className="badge badge-red text-[10px]">Variance Alert</span>
-            ) : (
-              <span className="badge badge-green text-[10px]">Zero Variance</span>
-            )}
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl flex-shrink-0">
+            👥
           </div>
-          <div className="text-[11px] text-slate-400 mt-1">Maker-checker EOD balance</div>
+          <div>
+            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Students</div>
+            <div className="text-2xl font-bold text-slate-900 mt-0.5 font-mono">
+              {summary.totalStudents.toLocaleString("en-IN")}
+            </div>
+            <div className="inline-flex items-center gap-1 mt-1 text-[11px] font-medium text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md">
+              <span>Trust student body</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-2xl flex-shrink-0">
+            🚨
+          </div>
+          <div>
+            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Till Discrepancy Flags</div>
+            <div className="text-2xl font-bold mt-0.5 font-mono flex items-center gap-2">
+              <span className={summary.flaggedCount > 0 ? "text-rose-600" : "text-emerald-600"}>
+                {summary.flaggedCount}
+              </span>
+              <span className={`badge text-[10px] ${summary.flaggedCount > 0 ? "badge-red" : "badge-green"}`}>
+                {summary.flaggedCount > 0 ? "Variance" : "Zero Variance"}
+              </span>
+            </div>
+            <div className="text-[11px] text-slate-400 mt-1">Maker-checker EOD balance</div>
+          </div>
         </div>
       </div>
 

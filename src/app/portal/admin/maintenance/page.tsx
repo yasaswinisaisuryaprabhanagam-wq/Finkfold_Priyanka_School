@@ -61,21 +61,18 @@ export default function AdminMaintenancePage() {
       )}
 
       {/* Header Banner */}
-      <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] relative overflow-hidden">
+      <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs relative overflow-hidden">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 uppercase tracking-wide">
-                Section 5: Campus Operations
-              </span>
-              <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">
-                Estate &amp; Facility Helpdesk
-              </span>
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 text-xs font-semibold border border-amber-100 mb-2">
+              <span>Section 5: Campus Operations</span>
+              <span>·</span>
+              <span>Estate & Facility Helpdesk</span>
             </div>
-            <h1 className="text-xl font-bold text-slate-900 mt-2" style={{ fontFamily: "Outfit, sans-serif" }}>
-              Estate &amp; Facility Management Command
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight" style={{ fontFamily: "Outfit, sans-serif" }}>
+              Estate & Facility Management Command
             </h1>
-            <p className="text-slate-500 text-xs mt-1 max-w-2xl">
+            <p className="text-slate-500 text-sm mt-1 max-w-2xl">
               Centralized work order dispatch for campus plumbers, electricians, and IT staff. Track equipment depreciation and schedule automated quarterly preventative maintenance.
             </p>
           </div>

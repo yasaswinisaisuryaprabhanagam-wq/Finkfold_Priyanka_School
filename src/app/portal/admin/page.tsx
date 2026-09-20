@@ -107,98 +107,128 @@ export default async function AdminPortalPage() {
   return (
     <div className="space-y-6">
 
-      {/* Welcome Banner */}
-      <div
-        className="rounded-2xl text-white p-6 relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #2d1b69 60%, #4c1d95 100%)" }}
-      >
-        <div className="absolute top-0 right-0 w-80 h-80 rounded-full opacity-10"
-          style={{ background: "radial-gradient(circle, #a78bfa, transparent)", transform: "translate(25%, -25%)" }} />
-        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <div className="text-purple-300 text-xs font-semibold uppercase tracking-wider mb-1">
-              Admin Control Panel &middot; {SCHOOL.name}
-            </div>
-            <h1 className="text-2xl font-bold text-white" style={{ fontFamily: "Outfit, sans-serif" }}>
-              Executive Overview
-            </h1>
-            <p className="text-white/60 text-sm mt-1">{todayFormatted}</p>
+      {/* Welcome Banner matching Faculty & Student Portal design */}
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="space-y-1 z-10">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-xs font-semibold border border-indigo-100">
+            <span>🏫</span>
+            <span>{SCHOOL.name} &bull; Admin Control Panel</span>
           </div>
-          <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 border border-white/15 text-xs text-emerald-300">
-            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-            Meta WhatsApp: {SCHOOL.supportPhone}
+          <h1 className="text-2xl font-bold text-slate-900" style={{ fontFamily: "Outfit, sans-serif" }}>
+            Executive Overview
+          </h1>
+          <p className="text-slate-500 text-sm">
+            Institutional intelligence, real-time attendance KPIs, WhatsApp alerts, and campus operations.
+          </p>
+          <p className="text-slate-400 text-xs mt-1">
+            Today is <strong className="text-slate-600 font-semibold">{todayFormatted}</strong>
+          </p>
+        </div>
+
+        {/* WhatsApp & Telemetry Capsule */}
+        <div className="flex items-center gap-3 bg-slate-50/80 border border-slate-100 px-4 py-3 rounded-2xl flex-shrink-0">
+          <div className="text-3xl">🏛️</div>
+          <div className="text-left">
+            <div className="text-xs font-bold text-slate-800">Branch Operations Live</div>
+            <div className="text-[11px] text-emerald-600 font-medium flex items-center gap-1 mt-0.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              Meta WhatsApp: {SCHOOL.supportPhone}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="stat-card">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Students</span>
-            <span className="text-2xl">&#128101;</span>
+      {/* KPI Cards (Matching Faculty & Student Portal Aesthetics) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl flex-shrink-0">
+            👥
           </div>
-          <div className="text-3xl font-black text-slate-900" style={{ fontFamily: "Outfit, sans-serif" }}>{totalStudents}</div>
-          <div className="text-xs text-emerald-600 font-medium mt-1">Active Enrolled</div>
-        </div>
-        <div className="stat-card">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Classes</span>
-            <span className="text-2xl">&#127979;</span>
-          </div>
-          <div className="text-3xl font-black text-slate-900" style={{ fontFamily: "Outfit, sans-serif" }}>{classes.length}</div>
-          <div className="text-xs text-slate-500 font-medium mt-1">{classesMarkedToday} marked today</div>
-        </div>
-        <div className="stat-card">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Pending Roll Calls</span>
-            <span className="text-2xl">&#128203;</span>
-          </div>
-          <div className={`text-3xl font-black ${classesPending > 0 ? "text-amber-600" : "text-emerald-600"}`} style={{ fontFamily: "Outfit, sans-serif" }}>
-            {classesPending}
-          </div>
-          <div className="text-xs text-slate-500 font-medium mt-1">
-            {classesPending === 0 ? "All done!" : "Classes not marked"}
+          <div>
+            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Students</div>
+            <div className="text-2xl font-bold text-slate-900 mt-0.5" style={{ fontFamily: "Outfit, sans-serif" }}>
+              {totalStudents}
+            </div>
+            <div className="inline-flex items-center gap-1 mt-1 text-[11px] font-medium text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md">
+              <span>Active Enrolled</span>
+            </div>
           </div>
         </div>
-        <div className="stat-card">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">WhatsApp Sent</span>
-            <span className="text-2xl">&#128172;</span>
+
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl flex-shrink-0">
+            🏫
           </div>
-          <div className="text-3xl font-black text-emerald-600" style={{ fontFamily: "Outfit, sans-serif" }}>{whatsappSentToday}</div>
-          <div className="text-xs text-slate-500 font-medium mt-1">Alerts today</div>
+          <div>
+            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Active Classes</div>
+            <div className="text-2xl font-bold text-slate-900 mt-0.5" style={{ fontFamily: "Outfit, sans-serif" }}>
+              {classes.length}
+            </div>
+            <div className="inline-flex items-center gap-1 mt-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">
+              <span>{classesMarkedToday} marked today</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl flex-shrink-0">
+            📋
+          </div>
+          <div>
+            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Pending Roll Calls</div>
+            <div className={`text-2xl font-bold mt-0.5 ${classesPending > 0 ? "text-amber-600" : "text-emerald-600"}`} style={{ fontFamily: "Outfit, sans-serif" }}>
+              {classesPending}
+            </div>
+            <div className={`inline-flex items-center gap-1 mt-1 text-[11px] font-medium px-2 py-0.5 rounded-md ${classesPending > 0 ? "text-amber-700 bg-amber-50" : "text-emerald-700 bg-emerald-50"}`}>
+              <span>{classesPending === 0 ? "All classes marked!" : "Classes pending"}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-2xl flex-shrink-0">
+            💬
+          </div>
+          <div>
+            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">WhatsApp Sent</div>
+            <div className="text-2xl font-bold text-slate-900 mt-0.5" style={{ fontFamily: "Outfit, sans-serif" }}>
+              {whatsappSentToday}
+            </div>
+            <div className="inline-flex items-center gap-1 mt-1 text-[11px] font-medium text-purple-700 bg-purple-50 px-2 py-0.5 rounded-md">
+              <span>Automated alerts today</span>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Quick Access Action Hub */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Link href="/portal/admin/circulars" className="card card-hover p-4 flex items-center gap-3.5 cursor-pointer border-l-4 border-amber-500">
-          <div className="h-11 w-11 rounded-xl bg-amber-50 flex items-center justify-center text-2xl flex-shrink-0">📢</div>
+        <Link href="/portal/admin/circulars" className="card card-hover p-4.5 rounded-2xl bg-white border border-slate-200/80 shadow-xs flex items-center gap-3.5 cursor-pointer hover:border-amber-300 hover:shadow-sm transition-all group">
+          <div className="h-11 w-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl flex-shrink-0 group-hover:scale-105 transition-transform">📢</div>
           <div>
-            <div className="font-bold text-slate-900 text-sm">School Circulars</div>
-            <div className="text-[11px] text-slate-500">Publish notices &amp; alerts</div>
+            <div className="font-bold text-slate-900 text-sm group-hover:text-amber-700 transition-colors">School Circulars</div>
+            <div className="text-[11px] text-slate-400 mt-0.5">Publish notices &amp; alerts</div>
           </div>
         </Link>
-        <Link href="/portal/admin/homework" className="card card-hover p-4 flex items-center gap-3.5 cursor-pointer border-l-4 border-blue-500">
-          <div className="h-11 w-11 rounded-xl bg-blue-50 flex items-center justify-center text-2xl flex-shrink-0">📝</div>
+        <Link href="/portal/admin/homework" className="card card-hover p-4.5 rounded-2xl bg-white border border-slate-200/80 shadow-xs flex items-center gap-3.5 cursor-pointer hover:border-blue-300 hover:shadow-sm transition-all group">
+          <div className="h-11 w-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl flex-shrink-0 group-hover:scale-105 transition-transform">📝</div>
           <div>
-            <div className="font-bold text-slate-900 text-sm">Homework Hub</div>
-            <div className="text-[11px] text-slate-500">Oversight across all classes</div>
+            <div className="font-bold text-slate-900 text-sm group-hover:text-blue-700 transition-colors">Homework Hub</div>
+            <div className="text-[11px] text-slate-400 mt-0.5">Oversight across all classes</div>
           </div>
         </Link>
-        <Link href="/portal/admin/admissions" className="card card-hover p-4 flex items-center gap-3.5 cursor-pointer border-l-4 border-purple-500">
-          <div className="h-11 w-11 rounded-xl bg-purple-50 flex items-center justify-center text-2xl flex-shrink-0">📋</div>
+        <Link href="/portal/admin/admissions" className="card card-hover p-4.5 rounded-2xl bg-white border border-slate-200/80 shadow-xs flex items-center gap-3.5 cursor-pointer hover:border-purple-300 hover:shadow-sm transition-all group">
+          <div className="h-11 w-11 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl flex-shrink-0 group-hover:scale-105 transition-transform">📋</div>
           <div>
-            <div className="font-bold text-slate-900 text-sm">Admissions</div>
-            <div className="text-[11px] text-slate-500">Process student applications</div>
+            <div className="font-bold text-slate-900 text-sm group-hover:text-purple-700 transition-colors">Admissions Desk</div>
+            <div className="text-[11px] text-slate-400 mt-0.5">Process student applications</div>
           </div>
         </Link>
-        <Link href="/portal/admin/whatsapp" className="card card-hover p-4 flex items-center gap-3.5 cursor-pointer border-l-4 border-emerald-500">
-          <div className="h-11 w-11 rounded-xl bg-emerald-50 flex items-center justify-center text-2xl flex-shrink-0">📲</div>
+        <Link href="/portal/admin/whatsapp" className="card card-hover p-4.5 rounded-2xl bg-white border border-slate-200/80 shadow-xs flex items-center gap-3.5 cursor-pointer hover:border-emerald-300 hover:shadow-sm transition-all group">
+          <div className="h-11 w-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl flex-shrink-0 group-hover:scale-105 transition-transform">📲</div>
           <div>
-            <div className="font-bold text-slate-900 text-sm">WhatsApp Audit</div>
-            <div className="text-[11px] text-slate-500">Live delivery logs</div>
+            <div className="font-bold text-slate-900 text-sm group-hover:text-emerald-700 transition-colors">WhatsApp Audit</div>
+            <div className="text-[11px] text-slate-400 mt-0.5">Live delivery logs</div>
           </div>
         </Link>
       </div>

@@ -14,23 +14,28 @@ export default async function AdminSettingsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="rounded-2xl text-white p-6 relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #2d1b69 60%, #4c1d95 100%)" }}>
-        <div className="relative z-10">
-          <div className="text-purple-300 text-xs font-semibold uppercase tracking-wider mb-1">
-            Admin Control Panel · {SCHOOL.name}
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-xs font-semibold border border-indigo-100 mb-2">
+            <span>⚙️ Admin Control Panel</span>
+            <span>·</span>
+            <span>{SCHOOL.name}</span>
           </div>
-          <h1 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>
-            ⚙️ School Settings
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight" style={{ fontFamily: "Outfit, sans-serif" }}>
+            School Settings
           </h1>
-          <p className="text-white/60 text-sm">System configuration and account security</p>
+          <p className="text-slate-500 text-sm mt-1">System configuration and account security</p>
+        </div>
+        <div className="flex items-center gap-2 bg-slate-50 border border-slate-100 px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-600">
+          <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          Environment: Production
         </div>
       </div>
 
       {/* Profile Card */}
       <div className="card p-6">
         <div className="flex items-center gap-4 mb-6">
-          <div className="h-16 w-16 rounded-2xl bg-purple-500 flex items-center justify-center text-white font-black text-2xl flex-shrink-0">
+          <div className="h-16 w-16 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white font-bold text-2xl flex-shrink-0 shadow-xs">
             {profile.full_name.charAt(0).toUpperCase()}
           </div>
           <div>

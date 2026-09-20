@@ -51,21 +51,18 @@ export default function AdminFleetRadarPage() {
   return (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] relative overflow-hidden">
+      <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs relative overflow-hidden">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-sky-50 text-sky-700 border border-sky-200 uppercase tracking-wide">
-                Section 2: Smart Campus Logistics
-              </span>
-              <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">
-                Live GPS Telematics &amp; Perimeter Security
-              </span>
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-sky-50 text-sky-700 text-xs font-semibold border border-sky-100 mb-2">
+              <span>Section 2: Smart Campus Logistics</span>
+              <span>·</span>
+              <span>Live GPS & RFID</span>
             </div>
-            <h1 className="text-xl font-bold text-slate-900 mt-2" style={{ fontFamily: "Outfit, sans-serif" }}>
-              Live Fleet Radar &amp; RFID Gate Control
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight" style={{ fontFamily: "Outfit, sans-serif" }}>
+              Live Fleet Radar & RFID Gate Control
             </h1>
-            <p className="text-slate-500 text-xs mt-1 max-w-2xl">
+            <p className="text-slate-500 text-sm mt-1 max-w-2xl">
               Control tower overview: 15 school transport vehicles tracked in real time, speed adherence alerts, and real-time biometric turnstile event stream at campus perimeters.
             </p>
           </div>
@@ -93,25 +90,45 @@ export default function AdminFleetRadarPage() {
 
       {/* KPI Counters */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-          <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Buses On Transit</div>
-          <div className="text-2xl font-black text-slate-900 mt-1" style={{ fontFamily: "Outfit, sans-serif" }}>15 / 15</div>
-          <div className="text-[11px] text-emerald-600 font-medium mt-1">All GPS Transponders Active</div>
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-xl text-emerald-600 flex-shrink-0">
+            🚌
+          </div>
+          <div>
+            <div className="text-2xl font-bold font-['Outfit'] text-slate-900">15 / 15</div>
+            <div className="text-xs font-medium text-slate-600">Buses On Transit</div>
+            <div className="text-[10px] text-emerald-600 font-medium mt-0.5">All GPS Transponders Active</div>
+          </div>
         </div>
-        <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-          <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Students Onboard</div>
-          <div className="text-2xl font-black text-sky-600 mt-1" style={{ fontFamily: "Outfit, sans-serif" }}>384</div>
-          <div className="text-[11px] text-slate-500 font-medium mt-1">QR Boarding Pass Scanned</div>
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-sky-50 flex items-center justify-center text-xl text-sky-600 flex-shrink-0">
+            🎒
+          </div>
+          <div>
+            <div className="text-2xl font-bold font-['Outfit'] text-slate-900">384</div>
+            <div className="text-xs font-medium text-slate-600">Students Onboard</div>
+            <div className="text-[10px] text-slate-400 mt-0.5">QR Boarding Pass Scanned</div>
+          </div>
         </div>
-        <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-          <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Speed Violations</div>
-          <div className="text-2xl font-black text-rose-600 mt-1" style={{ fontFamily: "Outfit, sans-serif" }}>1</div>
-          <div className="text-[11px] text-rose-700 font-medium mt-1">Bus 02: 52 km/h on Flyover</div>
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-rose-50 flex items-center justify-center text-xl text-rose-600 flex-shrink-0">
+            ⚠️
+          </div>
+          <div>
+            <div className="text-2xl font-bold font-['Outfit'] text-rose-600">1</div>
+            <div className="text-xs font-medium text-slate-600">Speed Violations</div>
+            <div className="text-[10px] text-rose-600 font-medium mt-0.5">Bus 02: 52 km/h on Flyover</div>
+          </div>
         </div>
-        <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-          <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Gate Swipes Today</div>
-          <div className="text-2xl font-black text-purple-600 mt-1" style={{ fontFamily: "Outfit, sans-serif" }}>842</div>
-          <div className="text-[11px] text-purple-700 font-medium mt-1">Zero perimeter breaches</div>
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-purple-50 flex items-center justify-center text-xl text-purple-600 flex-shrink-0">
+            🛡️
+          </div>
+          <div>
+            <div className="text-2xl font-bold font-['Outfit'] text-slate-900">842</div>
+            <div className="text-xs font-medium text-slate-600">Gate Swipes Today</div>
+            <div className="text-[10px] text-emerald-600 font-medium mt-0.5">Zero perimeter breaches</div>
+          </div>
         </div>
       </div>
 

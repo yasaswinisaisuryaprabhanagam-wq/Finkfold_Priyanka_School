@@ -89,37 +89,90 @@ export default async function AdminClassesPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="rounded-2xl text-white p-6 relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #2d1b69 60%, #4c1d95 100%)" }}>
-        <div className="relative z-10">
-          <div className="text-purple-300 text-xs font-semibold uppercase tracking-wider mb-1">
-            Admin Control Panel &middot; {SCHOOL.name}
+      {/* Header matching Student & Faculty Portal design */}
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-xs font-semibold border border-indigo-100">
+            <span>🏫</span>
+            <span>Admin Control Panel &middot; {SCHOOL.name}</span>
           </div>
-          <h1 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>
-            🏫 Class Management
+          <h1 className="text-2xl font-bold text-slate-900" style={{ fontFamily: "Outfit, sans-serif" }}>
+            Class Management
           </h1>
-          <p className="text-white/60 text-sm">{classes.length} active classes &middot; {pendingCount} pending roll call today</p>
+          <p className="text-slate-500 text-xs">
+            {classes.length} active classes &middot; {pendingCount} pending roll call today
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3 bg-slate-50/80 border border-slate-100 px-4 py-3 rounded-2xl flex-shrink-0">
+          <div className="text-2xl">📚</div>
+          <div>
+            <div className="text-xs font-bold text-slate-800">Academic Year 2026–27</div>
+            <div className="text-[11px] text-emerald-600 font-medium">Active Sections</div>
+          </div>
         </div>
       </div>
 
-      {/* KPI */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="stat-card text-center">
-          <div className="text-3xl font-black text-slate-900">{classes.length}</div>
-          <div className="text-xs text-slate-500 mt-1">Total Classes</div>
+      {/* KPI Cards matching Student & Faculty Portal design */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl flex-shrink-0">
+            🏫
+          </div>
+          <div>
+            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Classes</div>
+            <div className="text-2xl font-bold text-slate-900 mt-0.5" style={{ fontFamily: "Outfit, sans-serif" }}>
+              {classes.length}
+            </div>
+            <div className="inline-flex items-center gap-1 mt-1 text-[11px] font-medium text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md">
+              <span>All Sections</span>
+            </div>
+          </div>
         </div>
-        <div className="stat-card text-center">
-          <div className="text-3xl font-black text-emerald-600">{markedCount}</div>
-          <div className="text-xs text-slate-500 mt-1">Marked Today</div>
+
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl flex-shrink-0">
+            ✓
+          </div>
+          <div>
+            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Marked Today</div>
+            <div className="text-2xl font-bold text-emerald-600 mt-0.5" style={{ fontFamily: "Outfit, sans-serif" }}>
+              {markedCount}
+            </div>
+            <div className="inline-flex items-center gap-1 mt-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">
+              <span>Completed Sessions</span>
+            </div>
+          </div>
         </div>
-        <div className="stat-card text-center">
-          <div className={`text-3xl font-black ${pendingCount > 0 ? "text-amber-600" : "text-emerald-600"}`}>{pendingCount}</div>
-          <div className="text-xs text-slate-500 mt-1">Pending Today</div>
+
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl flex-shrink-0">
+            ⏱️
+          </div>
+          <div>
+            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Pending Today</div>
+            <div className={`text-2xl font-bold mt-0.5 ${pendingCount > 0 ? "text-amber-600" : "text-emerald-600"}`} style={{ fontFamily: "Outfit, sans-serif" }}>
+              {pendingCount}
+            </div>
+            <div className={`inline-flex items-center gap-1 mt-1 text-[11px] font-medium px-2 py-0.5 rounded-md ${pendingCount > 0 ? "text-amber-700 bg-amber-50" : "text-emerald-700 bg-emerald-50"}`}>
+              <span>{pendingCount === 0 ? "All classes marked!" : "Roll call pending"}</span>
+            </div>
+          </div>
         </div>
-        <div className="stat-card text-center">
-          <div className="text-3xl font-black text-blue-900">{students.length}</div>
-          <div className="text-xs text-slate-500 mt-1">Total Students</div>
+
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-2xl flex-shrink-0">
+            👥
+          </div>
+          <div>
+            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Students</div>
+            <div className="text-2xl font-bold text-slate-900 mt-0.5" style={{ fontFamily: "Outfit, sans-serif" }}>
+              {students.length}
+            </div>
+            <div className="inline-flex items-center gap-1 mt-1 text-[11px] font-medium text-purple-700 bg-purple-50 px-2 py-0.5 rounded-md">
+              <span>Active Enrolled</span>
+            </div>
+          </div>
         </div>
       </div>
 

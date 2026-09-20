@@ -55,49 +55,96 @@ export default async function AdminWhatsAppPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="rounded-2xl text-white p-6 relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #2d1b69 60%, #4c1d95 100%)" }}>
-        <div className="relative z-10 flex items-start justify-between">
-          <div>
-            <div className="text-purple-300 text-xs font-semibold uppercase tracking-wider mb-1">
-              Admin Control Panel &middot; {SCHOOL.name}
-            </div>
-            <h1 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>
-              💬 WhatsApp Audit Log
-            </h1>
-            <p className="text-white/60 text-sm">Full history of parent notification alerts</p>
+      {/* Header matching Student & Faculty Portal design */}
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-100">
+            <span>💬</span>
+            <span>Admin Control Panel &middot; {SCHOOL.name}</span>
           </div>
-          <div className="flex flex-col items-end gap-2 flex-shrink-0">
-            <Link
-              href="/portal/admin/whatsapp/setup"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/40 text-emerald-300 text-xs font-semibold transition-all"
-            >
-              📲 n8n Setup →
-            </Link>
-            <span className="text-white/40 text-[10px]">{SCHOOL.supportPhone} → Meta API</span>
+          <h1 className="text-2xl font-bold text-slate-900" style={{ fontFamily: "Outfit, sans-serif" }}>
+            WhatsApp Audit Log
+          </h1>
+          <p className="text-slate-500 text-xs">
+            Full history of parent notification alerts dispatched via Meta Cloud API v19.0
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <Link
+            href="/portal/admin/whatsapp/setup"
+            className="btn btn-secondary btn-sm flex items-center gap-1.5 text-xs"
+          >
+            <span>⚙️</span>
+            <span>n8n Setup</span>
+          </Link>
+          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 font-medium text-xs border border-emerald-200">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            {SCHOOL.supportPhone}
           </div>
         </div>
       </div>
 
+      {/* KPI Cards matching Student & Faculty Portal design */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl flex-shrink-0">
+            💬
+          </div>
+          <div>
+            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Sent</div>
+            <div className="text-2xl font-bold text-slate-900 mt-0.5" style={{ fontFamily: "Outfit, sans-serif" }}>
+              {notifications.length}
+            </div>
+            <div className="inline-flex items-center gap-1 mt-1 text-[11px] font-medium text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md">
+              <span>Lifetime Dispatches</span>
+            </div>
+          </div>
+        </div>
 
-      {/* KPI */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="stat-card text-center">
-          <div className="text-3xl font-black text-slate-900">{notifications.length}</div>
-          <div className="text-xs text-slate-500 mt-1">Total Sent</div>
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl flex-shrink-0">
+            📅
+          </div>
+          <div>
+            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Today</div>
+            <div className="text-2xl font-bold text-blue-900 mt-0.5" style={{ fontFamily: "Outfit, sans-serif" }}>
+              {todayCount}
+            </div>
+            <div className="inline-flex items-center gap-1 mt-1 text-[11px] font-medium text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md">
+              <span>Today&apos;s Sessions</span>
+            </div>
+          </div>
         </div>
-        <div className="stat-card text-center">
-          <div className="text-3xl font-black text-blue-900">{todayCount}</div>
-          <div className="text-xs text-slate-500 mt-1">Today</div>
+
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl flex-shrink-0">
+            ✓
+          </div>
+          <div>
+            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Delivered</div>
+            <div className="text-2xl font-bold text-emerald-600 mt-0.5" style={{ fontFamily: "Outfit, sans-serif" }}>
+              {deliveredCount}
+            </div>
+            <div className="inline-flex items-center gap-1 mt-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">
+              <span>Verified Handshake</span>
+            </div>
+          </div>
         </div>
-        <div className="stat-card text-center">
-          <div className="text-3xl font-black text-emerald-600">{deliveredCount}</div>
-          <div className="text-xs text-slate-500 mt-1">Delivered</div>
-        </div>
-        <div className="stat-card text-center">
-          <div className={`text-3xl font-black ${failedCount > 0 ? "text-rose-600" : "text-emerald-600"}`}>{failedCount}</div>
-          <div className="text-xs text-slate-500 mt-1">Failed</div>
+
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-2xl flex-shrink-0">
+            ⚠️
+          </div>
+          <div>
+            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Failed / Bounced</div>
+            <div className={`text-2xl font-bold mt-0.5 ${failedCount > 0 ? "text-rose-600" : "text-emerald-600"}`} style={{ fontFamily: "Outfit, sans-serif" }}>
+              {failedCount}
+            </div>
+            <div className={`inline-flex items-center gap-1 mt-1 text-[11px] font-medium px-2 py-0.5 rounded-md ${failedCount > 0 ? "text-rose-700 bg-rose-50" : "text-emerald-700 bg-emerald-50"}`}>
+              <span>{failedCount === 0 ? "100% Delivery Rate" : "Delivery Exceptions"}</span>
+            </div>
+          </div>
         </div>
       </div>
 

@@ -158,56 +158,79 @@ export default async function AdminAnalyticsPage() {
   return (
     <div className="space-y-6">
       {/* ── Header ── */}
-      <div
-        className="rounded-2xl text-white p-6 relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)" }}
-      >
-        <div className="absolute inset-0 opacity-10" style={{
-          backgroundImage: "radial-gradient(circle at 20% 50%, #00d2ff 0%, transparent 50%), radial-gradient(circle at 80% 20%, #7b2ff7 0%, transparent 50%)"
-        }} />
-        <div className="relative z-10 flex items-start justify-between">
-          <div>
-            <div className="text-cyan-300 text-xs font-semibold uppercase tracking-wider mb-1">
-              AI Analytics &middot; {SCHOOL.name}
-            </div>
-            <h1 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>
-              Predictive Insights Dashboard
-            </h1>
-            <p className="text-white/60 text-sm">Last 30 days &bull; {students.length} active students &bull; {classes.length} classes</p>
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-xs font-semibold border border-indigo-100 mb-2">
+            <span>📊 AI Analytics</span>
+            <span>·</span>
+            <span>{SCHOOL.name}</span>
           </div>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight" style={{ fontFamily: "Outfit, sans-serif" }}>
+            Predictive Insights Dashboard
+          </h1>
+          <p className="text-slate-500 text-sm mt-1">Last 30 days · {students.length} active students · {classes.length} classes</p>
+        </div>
+        <div className="flex items-center gap-3">
           {isDemo && (
-            <span className="bg-amber-400/20 text-amber-300 border border-amber-400/30 text-xs font-semibold px-3 py-1 rounded-full">
+            <span className="bg-amber-50 text-amber-700 border border-amber-200 text-xs font-semibold px-3 py-1 rounded-full">
               Demo Mode
             </span>
           )}
+          <div className="flex items-center gap-2 bg-slate-50 border border-slate-100 px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-600">
+            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            Real-time Telemetry
+          </div>
         </div>
       </div>
 
       {/* ── KPI Row ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="card p-5 text-center border-l-4 border-emerald-500">
-          <div className={`text-4xl font-black ${overallRate >= 90 ? "text-emerald-600" : overallRate >= 75 ? "text-amber-600" : "text-rose-600"}`}>
-            {isDemo ? "87" : overallRate}%
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-xl text-emerald-600 flex-shrink-0">
+            📈
           </div>
-          <div className="text-xs text-slate-500 font-medium mt-1">Overall Attendance</div>
-          <div className="text-[10px] text-slate-400 mt-0.5">Last 30 days</div>
-        </div>
-        <div className="card p-5 text-center border-l-4 border-rose-500">
-          <div className="text-4xl font-black text-rose-600">{isDemo ? "43" : totalAbsent}</div>
-          <div className="text-xs text-slate-500 font-medium mt-1">Total Absences</div>
-          <div className="text-[10px] text-slate-400 mt-0.5">Cumulative</div>
-        </div>
-        <div className="card p-5 text-center border-l-4 border-amber-500">
-          <div className="text-4xl font-black text-amber-600">{isDemo ? "12" : atRiskStudents.length}</div>
-          <div className="text-xs text-slate-500 font-medium mt-1">At-Risk Students</div>
-          <div className="text-[10px] text-slate-400 mt-0.5">&gt;20% absence rate</div>
-        </div>
-        <div className="card p-5 text-center border-l-4 border-violet-500">
-          <div className="text-4xl font-black text-violet-600">
-            {isDemo ? "94" : (waStats.total > 0 ? Math.round((waStats.delivered / waStats.total) * 100) : 100)}%
+          <div>
+            <div className={`text-2xl font-bold font-['Outfit'] ${overallRate >= 90 ? "text-emerald-600" : overallRate >= 75 ? "text-amber-600" : "text-rose-600"}`}>
+              {isDemo ? "87" : overallRate}%
+            </div>
+            <div className="text-xs font-medium text-slate-600">Overall Attendance</div>
+            <div className="text-[10px] text-slate-400 mt-0.5">Last 30 days</div>
           </div>
-          <div className="text-xs text-slate-500 font-medium mt-1">WA Delivery Rate</div>
-          <div className="text-[10px] text-slate-400 mt-0.5">{isDemo ? "186" : waStats.total} alerts sent</div>
+        </div>
+
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-rose-50 flex items-center justify-center text-xl text-rose-600 flex-shrink-0">
+            ⚠️
+          </div>
+          <div>
+            <div className="text-2xl font-bold font-['Outfit'] text-slate-900">{isDemo ? "43" : totalAbsent}</div>
+            <div className="text-xs font-medium text-slate-600">Total Absences</div>
+            <div className="text-[10px] text-slate-400 mt-0.5">Cumulative absences</div>
+          </div>
+        </div>
+
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-amber-50 flex items-center justify-center text-xl text-amber-600 flex-shrink-0">
+            🚨
+          </div>
+          <div>
+            <div className="text-2xl font-bold font-['Outfit'] text-slate-900">{isDemo ? "12" : atRiskStudents.length}</div>
+            <div className="text-xs font-medium text-slate-600">At-Risk Students</div>
+            <div className="text-[10px] text-slate-400 mt-0.5">&gt;20% absence rate</div>
+          </div>
+        </div>
+
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-xl text-indigo-600 flex-shrink-0">
+            💬
+          </div>
+          <div>
+            <div className="text-2xl font-bold font-['Outfit'] text-slate-900">
+              {isDemo ? "94" : (waStats.total > 0 ? Math.round((waStats.delivered / waStats.total) * 100) : 100)}%
+            </div>
+            <div className="text-xs font-medium text-slate-600">WA Delivery Rate</div>
+            <div className="text-[10px] text-slate-400 mt-0.5">{isDemo ? "186" : waStats.total} alerts sent</div>
+          </div>
         </div>
       </div>
 

@@ -29,35 +29,35 @@ export default async function WhatsAppSetupPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div
-        className="rounded-2xl text-white p-6 relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #064e3b 0%, #065f46 50%, #047857 100%)" }}
-      >
-        <div className="absolute inset-0 opacity-10"
-          style={{ backgroundImage: "radial-gradient(circle at 80% 50%, #10b981 0%, transparent 60%)" }}
-        />
-        <div className="relative z-10 flex items-start justify-between">
-          <div>
-            <div className="text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-1">
-              WhatsApp Automation · {SCHOOL.name}
-            </div>
-            <h1 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>
-              📲 Phase A — n8n Setup Guide
-            </h1>
-            <p className="text-white/60 text-sm">
-              Configure the full pipeline: Attendance → n8n → WhatsApp → Status log
-            </p>
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-100 mb-2">
+            <span>📲 WhatsApp Automation</span>
+            <span>·</span>
+            <span>{SCHOOL.name}</span>
           </div>
-          <div className="flex flex-col items-end gap-2">
-            <Link href="/portal/admin/whatsapp" className="btn btn-ghost text-white/70 hover:text-white text-xs">
-              ← Audit Log
-            </Link>
-            {webhookConfigured ? (
-              <span className="badge badge-green">Pipeline Active</span>
-            ) : (
-              <span className="badge badge-amber">Setup Required</span>
-            )}
-          </div>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight" style={{ fontFamily: "Outfit, sans-serif" }}>
+            Phase A — n8n Setup Guide
+          </h1>
+          <p className="text-slate-500 text-sm mt-1">
+            Configure the full pipeline: Attendance → n8n → WhatsApp → Status log
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Link href="/portal/admin/whatsapp" className="px-3 py-2 rounded-xl text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 transition">
+            ← Audit Log
+          </Link>
+          {webhookConfigured ? (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 font-semibold text-xs border border-emerald-200">
+              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Pipeline Active
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 text-amber-700 font-semibold text-xs border border-amber-200">
+              <span className="h-2 w-2 rounded-full bg-amber-500"></span>
+              Setup Required
+            </span>
+          )}
         </div>
       </div>
 

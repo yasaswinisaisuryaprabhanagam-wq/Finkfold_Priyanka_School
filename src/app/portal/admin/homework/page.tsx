@@ -37,20 +37,28 @@ export default async function AdminHomeworkPage() {
 
   return (
     <div className="space-y-6">
-      {/* Top Header Banner */}
-      <div
-        className="rounded-2xl text-white p-6 relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #2d1b69 50%, #0f3460 100%)" }}
-      >
-        <div className="text-emerald-300 text-xs font-semibold uppercase tracking-wider mb-1">
-          Administration &middot; Academic Oversight
+      {/* Top Header Banner matching Student & Faculty Portal design */}
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold border border-blue-100">
+            <span>📝</span>
+            <span>Administration &middot; Academic Oversight</span>
+          </div>
+          <h1 className="text-2xl font-bold text-slate-900" style={{ fontFamily: "Outfit, sans-serif" }}>
+            Class Homework Hub
+          </h1>
+          <p className="text-slate-500 text-xs">
+            View, assign, and manage daily homework assignments across all classes and sections in {SCHOOL.name}.
+          </p>
         </div>
-        <h1 className="text-2xl font-bold text-white mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>
-          📝 Class Homework Hub
-        </h1>
-        <p className="text-white/70 text-xs mt-0.5">
-          View, assign, and manage daily homework assignments across all classes and sections in {SCHOOL.name}.
-        </p>
+
+        <div className="flex items-center gap-3 bg-slate-50/80 border border-slate-100 px-4 py-3 rounded-2xl flex-shrink-0">
+          <div className="text-2xl">📚</div>
+          <div>
+            <div className="text-xs font-bold text-slate-800">Classroom Homework</div>
+            <div className="text-[11px] text-indigo-600 font-medium">{schoolClasses.length} Active Classes</div>
+          </div>
+        </div>
       </div>
 
       <FacultyHomeworkManager

@@ -67,21 +67,18 @@ export default function AdminAdmissionsCrmPage() {
       )}
 
       {/* Header Banner */}
-      <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] relative overflow-hidden">
+      <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs relative overflow-hidden">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-purple-50 text-purple-700 border border-purple-200 uppercase tracking-wide">
-                Section 1: Executive Intelligence
-              </span>
-              <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">
-                PowerSchool &amp; Tableau Engine
-              </span>
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-purple-50 text-purple-700 text-xs font-semibold border border-purple-100 mb-2">
+              <span>Section 1: Executive Intelligence</span>
+              <span>·</span>
+              <span>PowerSchool & Tableau Engine</span>
             </div>
-            <h1 className="text-xl font-bold text-slate-900 mt-2" style={{ fontFamily: "Outfit, sans-serif" }}>
-              AI Enrollment Forecasting &amp; Lead CRM
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight" style={{ fontFamily: "Outfit, sans-serif" }}>
+              AI Enrollment Forecasting & Lead CRM
             </h1>
-            <p className="text-slate-500 text-xs mt-1 max-w-2xl">
+            <p className="text-slate-500 text-sm mt-1 max-w-2xl">
               Track prospective parents from billboard impression to classroom desk. Measure exact marketing ROI per rupee spent and leverage predictive capacity forecasting.
             </p>
           </div>
@@ -118,25 +115,45 @@ export default function AdminAdmissionsCrmPage() {
 
       {/* KPI Overview Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-          <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Active Inquiries</div>
-          <div className="text-2xl font-black text-slate-900 mt-1" style={{ fontFamily: "Outfit, sans-serif" }}>148</div>
-          <div className="text-[11px] text-emerald-600 font-medium mt-1">+22% vs last year</div>
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-xl text-indigo-600 flex-shrink-0">
+            📋
+          </div>
+          <div>
+            <div className="text-2xl font-bold font-['Outfit'] text-slate-900">148</div>
+            <div className="text-xs font-medium text-slate-600">Active Inquiries</div>
+            <div className="text-[10px] text-emerald-600 font-medium mt-0.5">+22% vs last year</div>
+          </div>
         </div>
-        <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-          <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Tours Completed</div>
-          <div className="text-2xl font-black text-slate-900 mt-1" style={{ fontFamily: "Outfit, sans-serif" }}>92</div>
-          <div className="text-[11px] text-slate-500 font-medium mt-1">62.1% tour rate</div>
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-sky-50 flex items-center justify-center text-xl text-sky-600 flex-shrink-0">
+            🏫
+          </div>
+          <div>
+            <div className="text-2xl font-bold font-['Outfit'] text-slate-900">92</div>
+            <div className="text-xs font-medium text-slate-600">Tours Completed</div>
+            <div className="text-[10px] text-slate-400 mt-0.5">62.1% tour rate</div>
+          </div>
         </div>
-        <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-          <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Confirmed Enrolled</div>
-          <div className="text-2xl font-black text-emerald-600 mt-1" style={{ fontFamily: "Outfit, sans-serif" }}>58</div>
-          <div className="text-[11px] text-emerald-700 font-medium mt-1">₹26.1L Est. Revenue</div>
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-xl text-emerald-600 flex-shrink-0">
+            🎓
+          </div>
+          <div>
+            <div className="text-2xl font-bold font-['Outfit'] text-slate-900">58</div>
+            <div className="text-xs font-medium text-slate-600">Confirmed Enrolled</div>
+            <div className="text-[10px] text-emerald-600 font-medium mt-0.5">₹26.1L Est. Revenue</div>
+          </div>
         </div>
-        <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-          <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Conversion Efficiency</div>
-          <div className="text-2xl font-black text-purple-600 mt-1" style={{ fontFamily: "Outfit, sans-serif" }}>39.2%</div>
-          <div className="text-[11px] text-purple-700 font-medium mt-1">Industry avg: 28%</div>
+        <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-purple-50 flex items-center justify-center text-xl text-purple-600 flex-shrink-0">
+            ⚡
+          </div>
+          <div>
+            <div className="text-2xl font-bold font-['Outfit'] text-slate-900">39.2%</div>
+            <div className="text-xs font-medium text-slate-600">Conversion Rate</div>
+            <div className="text-[10px] text-purple-600 font-medium mt-0.5">Industry avg: 28%</div>
+          </div>
         </div>
       </div>
 
