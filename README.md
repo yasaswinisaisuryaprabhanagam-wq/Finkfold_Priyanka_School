@@ -23,6 +23,9 @@ Built with **Next.js 16 (App Router, React 19)**, **Supabase PostgreSQL (with Ro
   - **Section 4 (Academic Governance & NEP 2020 Compliance)**: NEP 2020 Outcome-Based Education (OBE) Auditor with Bloom's Taxonomy cognitive heatmap, "SafeSpace" Grievance Triage Board with 2-Hour SLA countdown timer & anonymous token replies.
   - **Section 5 (Campus Maintenance & Operations)**: Estate & Facility Command (work order dispatch, asset depreciation tracker flagging >4 repairs for budget replacement), Omnichannel Waterfall Broadcast Studio (Push -> WhatsApp -> SMS fallback funnel).
   - **Section 6 (Foundational Campus Administration)**: Student Registry & Bulk CSV Import, Class Management & Roll Call Oversight, Staff Directory & Period Allocation Grid, Academics Master, Fee Counter POS Cash Till, Year-End Academic Promotions, and WhatsApp Audit Trail.
+  - **Section 7 (Level 1: Core Daily Admin)**: Dynamic Certificate & Document Studio ("Print Room" with drag-and-drop templates, tamper-proof QR verification for Bonafide, Study, Character, and Bank Education Loan Fee Estimates), Library & Media Center Console (ISBN/barcode scanning, active loans, 7-day overdue auto-fine sync to central fee ledger).
+  - **Section 8 (Level 2: Workflow & Revenue Automation)**: Automated Defaulter & Late-Penalty Engine (₹50/day after 10th rule, automated WhatsApp reminders with dynamic UPI links, recovery heatmap), Digital Visitor Management System (VMS) & Gatepass (reception tablet check-in, host approval, thermal-printed badge with QR, live campus headcount), Government Compliance Exporter (UDISE+ & State Boards with demographic compilation, pre-flight auditor, JSON & Excel DCF exports).
+  - **Section 9 (Level 3: Enterprise Intelligence & AI)**: AI-Powered Timetable & Clash-Resolution Engine (teacher constraints, room capacities, 100% conflict-free master timetable generation in <2s), Board Exam LOC (List of Candidates) Automator (60-point pre-flight validation for missing marks/typos, inline editor, board-compliant export), Automated Payroll & Statutory Deductions Engine (biometric attendance & approved leaves reconciliation, LOP calculation, EPF 12%, PT ₹200, TDS, batch payslips, bank transfer CSV), Alumni Network & Endowment CRM (directory of alumni at IITs/NITs/AIIMS, campaigns, 80G Tax Exemption receipts with verification QR).
 
 ### 2. Modern Calm Visual Design System
 - Unified across all 3 portals (**Student & Parent**, **Faculty**, and **Admin**) to strictly adhere to clean, calm educational aesthetics inspired by premier university portals.
@@ -73,6 +76,7 @@ finkfold-school-portal/
 ├── .env.local                                # Active environment configuration
 ├── public/                                   # Assets & branding logos
 ├── scripts/
+│   ├── test_admin_level123_suite.ts          # 30/30 Level 1-2-3 admin capability suite tests
 │   ├── test_faculty_comprehensive_all_types.ts # 39/39 comprehensive faculty tests (Unit, Workflow, DB, HTTP)
 │   ├── test_faculty_portal_all.ts            # 61/61 deep faculty action & route tests
 │   ├── test_student_portal_all.ts            # 40/40 comprehensive student portal tests

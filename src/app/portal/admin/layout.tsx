@@ -38,35 +38,41 @@ export default async function AdminPortalLayout({
 
   const navSections = [
     {
-      title: "Section 1: Executive Intelligence",
+      title: "Section 1: Executive Intelligence & Revenue",
       items: [
         { href: "/portal/admin",                       label: "Executive Overview",        icon: "📊", exact: true },
         { href: "/portal/admin/admissions/crm",        label: "AI Enrollment & Lead CRM",  icon: "🎯", badge: "AI" },
         { href: "/portal/admin/treasury",              label: "Treasury & Tally-Sync",     icon: "🏛️", badge: "Sync" },
         { href: "/portal/admin/fees",                  label: "Fee Counter & Cash POS",    icon: "💳" },
+        { href: "/portal/admin/fees/defaulters",       label: "Defaulters & Late Penalty", icon: "⚡", badge: "Auto" },
       ],
     },
     {
-      title: "Section 2: Logistics & Fleet",
+      title: "Section 2: Logistics, Library & Security",
       items: [
         { href: "/portal/admin/store-fulfillment",     label: "Store & Pick-Pack Indent",  icon: "📦" },
+        { href: "/portal/admin/library",               label: "Library & Media Center",    icon: "📚", badge: "ISBN" },
         { href: "/portal/admin/fleet",                 label: "Fleet Radar & RFID Gate",   icon: "🚌", badge: "Live" },
+        { href: "/portal/admin/visitors",              label: "Visitor Management (VMS)",  icon: "🛡️", badge: "VMS" },
       ],
     },
     {
-      title: "Section 3: HR & Staff Appraisals",
+      title: "Section 3: HR, Payroll & Staff Appraisals",
       items: [
+        { href: "/portal/admin/payroll",               label: "Payroll & Deductions",      icon: "💵", badge: "EPF" },
         { href: "/portal/admin/staff/recruitment",     label: "Careers ATS & Hiring",      icon: "💼", badge: "ATS" },
         { href: "/portal/admin/staff/appraisals",      label: "360° Faculty Appraisals",   icon: "⭐" },
         { href: "/portal/admin/staff",                 label: "Staff Directory",           icon: "👨‍🏫" },
       ],
     },
     {
-      title: "Section 4: Academic Governance & NEP",
+      title: "Section 4: Academic Governance, AI & Board LOC",
       items: [
-        { href: "/portal/admin/academics/obe",         label: "NEP 2020 OBE Auditor",      icon: "🧠", badge: "NEP" },
+        { href: "/portal/admin/academics/timetable",   label: "AI Master Timetable",       icon: "🧠", badge: "AI" },
+        { href: "/portal/admin/academics/board-loc",   label: "Board Exam LOC Automator",  icon: "📋", badge: "CBSE" },
+        { href: "/portal/admin/academics/obe",         label: "NEP 2020 OBE Auditor",      icon: "🎯", badge: "NEP" },
         { href: "/portal/admin/safespace",             label: "SafeSpace Grievance Triage",icon: "🛡️", badge: "Crisis" },
-        { href: "/portal/admin/academics",             label: "Academic Curriculum",       icon: "📚" },
+        { href: "/portal/admin/academics",             label: "Academic Curriculum",       icon: "📖" },
         { href: "/portal/admin/classes",               label: "Classes & Sections",        icon: "🏫" },
         { href: "/portal/admin/students",              label: "Student Registry",          icon: "👥" },
         { href: "/portal/admin/admissions",            label: "Admissions Desk",           icon: "📋" },
@@ -74,8 +80,11 @@ export default async function AdminPortalLayout({
       ],
     },
     {
-      title: "Section 5: Operations & Settings",
+      title: "Section 5: Operations, Print Room & Compliance",
       items: [
+        { href: "/portal/admin/documents",             label: "Certificate & Print Studio",icon: "🖨️", badge: "Print" },
+        { href: "/portal/admin/compliance/udise",      label: "UDISE+ Compliance Export",  icon: "🏛️", badge: "MoE" },
+        { href: "/portal/admin/alumni",                label: "Alumni Network & 80G CRM",  icon: "🎓", badge: "80G" },
         { href: "/portal/admin/maintenance",           label: "Estate & Helpdesk Command", icon: "🛠️" },
         { href: "/portal/admin/broadcast",             label: "Waterfall Broadcast Studio",icon: "📡" },
         { href: "/portal/admin/circulars",             label: "Official Circulars",        icon: "📢" },

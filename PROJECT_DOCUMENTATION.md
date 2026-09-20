@@ -206,6 +206,21 @@ Unlike legacy portals that force all users onto a single generic login page with
 17. **WhatsApp Notification Audit & Meta Telemetry (`/portal/admin/whatsapp`, `/portal/admin/whatsapp/setup`)**: Real-time delivery logs (`sent`, `delivered`, `read`, `failed`) and WABA phone ID status monitoring.
 18. **Institutional Configuration & Campus Settings (`/portal/admin/settings`)**: School crest/branding, address, academic hours, roll call deadline rules, and administrator password management.
 
+##### Section 7: Level 1 — Core Daily Admin (Must-Haves)
+19. **Dynamic Certificate & Document Studio ("Print Room") (`/portal/admin/documents`)**: Drag-and-drop certificate engine auto-populating student variables (`{{student_name}}`, `{{admission_no}}`, `{{total_fees}}`) for Study, Bonafide, Character, and Bank Education Loan Fee Estimates with tamper-proof QR verification.
+20. **Library & Media Center Console (`/portal/admin/library`)**: ISBN barcode inventory management, active lending tracking, and 7-day overdue auto-fine sync posting pending debits directly to the student central fee ledger.
+
+##### Section 8: Level 2 — Workflow & Revenue Automation
+21. **Automated Defaulter & Late-Penalty Engine (`/portal/admin/fees/defaulters`)**: Configurable late fees (₹50/day after the 10th), dynamic UPI deep links pre-filling outstanding amount, 1-click WhatsApp reminder broadcasts, and class recovery heatmaps.
+22. **Digital Visitor Management System (VMS) & Gatepass (`/portal/admin/visitors`)**: Reception tablet check-in, host teacher approval workflow, thermal badge printing with cryptographic QR code, and real-time campus headcount telemetry for emergency evacuations.
+23. **Government Compliance Exporter (UDISE+ & State Boards) (`/portal/admin/compliance/udise`)**: Demographic auto-compilation (Aadhaar, Social Category, Minority, CWSN, BPL/EWS) with pre-flight validation and 1-click MoE v3.4 JSON/DCF export for school code `28190400102`.
+
+##### Section 9: Level 3 — Enterprise Intelligence & AI Operations
+24. **AI-Powered Timetable & Clash-Resolution Engine (`/portal/admin/academics/timetable`)**: Constraint-based AI solver resolving teacher max periods, room capacities, part-time faculty availability, and subject quotas in <2s with 100% clash-free guarantee.
+25. **Board Exam LOC (List of Candidates) Automator (`/portal/admin/academics/board-loc`)**: 60-point pre-flight validation scanning for missing mandatory physical identification marks, typos, and photo/signatures with inline discrepancy editor and official board CSV export.
+26. **Automated Payroll & Statutory Deductions Engine (`/portal/admin/payroll`)**: Biometric punch and approved leave reconciliation, automated Loss of Pay (LOP), statutory EPF (12%), Professional Tax (PT ₹200), TDS, bulk payslip sync to Faculty HR Hub, and corporate bank transfer CSV export.
+27. **Alumni Network & Endowment CRM (`/portal/admin/alumni`)**: Searchable directory tracking alumni at Tier-1 universities (IITs, NITs, AIIMS) and top tech firms, mentorship tracking, endowment campaigns, and Section 80G Tax Exemption receipt generator with verification QR code.
+
 ---
 
 ### 3. Faculty / Teacher Manual
@@ -353,12 +368,13 @@ Finkfold EdOS maintains continuous end-to-end automated testing to guarantee zer
 
 | Automated Test Suite | Test Runner File | Test Categories | Coverage Scope | Status |
 | :--- | :--- | :--- | :--- | :---: |
+| **Level 1, 2 & 3 Advanced Admin Suite** | `scripts/test_admin_level123_suite.ts` | Server Actions & HTTP Routes | 9 new modules: Document Studio, Library Console, Defaulters Engine, VMS Gatepass, UDISE+ Compliance, AI Timetable, Board LOC, Payroll Engine, Alumni CRM | **30 / 30 (100%)** |
 | **Comprehensive All-Types Faculty Suite** | `scripts/test_faculty_comprehensive_all_types.ts` | Unit (6), Workflow (9), DB Resilience (2), HTTP SSR (22) | Boundary values, OMR parsing, demerit lock, co-teacher unit sync, voice grading, SEN updates | **39 / 39 (100%)** |
 | **Deep Faculty Actions Suite** | `scripts/test_faculty_portal_all.ts` | Server Actions & Features | 23 faculty capabilities, leave approvals, relief desk, field trips, store indents, maintenance SLAs | **61 / 61 (100%)** |
 | **Comprehensive Student Suite** | `scripts/test_student_portal_all.ts` | Self-Service Actions & HTTP Routes | 18 student subpages, lost & found claims, remedial AI drills, fee UPIs, bus routing, QR passes | **40 / 40 (100%)** |
 | **Enterprise Admin Deep Suite** | `scripts/test_admin_enterprise_suite.ts` | Executive Actions & SSR Routes | 5 sections & 10 modules: Lead CRM, Tally XML, Bank Recon, Store Indent, Fleet Radar & RFID, ATS, 360 Appraisals, OBE Heatmap, SafeSpace 2-hr SLA, Estate Command, Waterfall Broadcast | **14 / 14 (100%)** |
 | **TypeScript Strict Compiler** | `npx tsc --noEmit` | Strict Type Checking | All source files, page components, action payloads, and test runners | **0 Errors (100%)** |
-| **TOTAL AUTOMATED TESTS** | | | **All functional layers verified** | **154 / 154 (100%)** |
+| **TOTAL AUTOMATED TESTS** | | | **All functional layers verified** | **184 / 184 (100%)** |
 
 ---
 

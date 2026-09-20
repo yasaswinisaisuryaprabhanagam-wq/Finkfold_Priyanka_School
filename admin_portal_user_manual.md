@@ -127,6 +127,18 @@ graph TD
   - [16. Year-End Academic Promotions](#16-year-end-academic-promotions)
   - [17. WhatsApp Notification Audit & Meta Pipeline](#17-whatsapp-notification-audit--meta-pipeline)
   - [18. Institutional Configuration & Campus Settings](#18-institutional-configuration--campus-settings)
+- [SECTION 7: Level 1 — Core Daily Admin (Must-Haves)](#section-7-level-1--core-daily-admin-must-haves)
+  - [19. Dynamic Certificate & Document Studio (The "Print Room")](#19-dynamic-certificate--document-studio-the-print-room)
+  - [20. Library & Media Center Console](#20-library--media-center-console)
+- [SECTION 8: Level 2 — Workflow & Revenue Automation](#section-8-level-2--workflow--revenue-automation)
+  - [21. Automated Defaulter & Late-Penalty Engine](#21-automated-defaulter--late-penalty-engine)
+  - [22. Digital Visitor Management System (VMS) & Gatepass](#22-digital-visitor-management-system-vms--gatepass)
+  - [23. Government Compliance Exporter (UDISE+ & State Boards)](#23-government-compliance-exporter-udise--state-boards)
+- [SECTION 9: Level 3 — Enterprise Intelligence & AI Operations](#section-9-level-3--enterprise-intelligence--ai-operations)
+  - [24. AI-Powered Timetable & Clash-Resolution Engine](#24-ai-powered-timetable--clash-resolution-engine)
+  - [25. Board Exam LOC (List of Candidates) Automator](#25-board-exam-loc-list-of-candidates-automator)
+  - [26. Automated Payroll & Statutory Deductions Engine](#26-automated-payroll--statutory-deductions-engine)
+  - [27. Alumni Network & Endowment CRM](#27-alumni-network--endowment-crm)
 - [Administrator Daily Operational Checklist](#administrator-daily-operational-checklist)
 - [Troubleshooting & Frequently Asked Questions (FAQ)](#troubleshooting--frequently-asked-questions-faq)
 
@@ -663,6 +675,221 @@ Self-service campus configuration suite:
 
 ---
 
+# SECTION 7: LEVEL 1 — CORE DAILY ADMIN (MUST-HAVES)
+*(Foundational capabilities that eliminate manual paperwork, typing errors, and lost inventory)*
+
+---
+
+### 19. Dynamic Certificate & Document Studio (The "Print Room")
+**Route**: `/portal/admin/documents`
+
+#### 🎯 The Problem Solved:
+Students and parents constantly visit the school administrative office requesting Study Certificates, Bonafide Certificates, Character & Conduct Certificates, and Custom Fee Estimates for bank education loans. Historically, clerks manually typed these into Microsoft Word or generic templates. This led to misspelled student names, mismatched admission numbers, inconsistent fee figures, and zero protection against forged certificates presented to banks or visa offices.
+
+#### ⚡ Core Capabilities:
+- **Dynamic Variable Auto-Fill**: Select any enrolled student, pick an institutional template, and watch the studio instantly populate student details (`{{student_name}}`, `{{admission_no}}`, `{{father_name}}`, `{{class_grade}}`, `{{academic_year}}`, `{{total_fees}}`).
+- **Tamper-Proof Verification QR Code**: Every generated certificate embeds a cryptographic QR hash (`FINKFOLD-VERIF-STU-...`). Anyone scanning the physical printed document instantly sees the authentic institutional record on their smartphone, preventing fraud.
+- **Supported Template Catalog**:
+  1. **Study & Bonafide Certificate**: Enrolment verification for passport, bus pass, or sports trials.
+  2. **Bank Education Loan Fee Estimate**: Itemized breakdown of annual tuition, lab, exam, and transport fees for commercial banks (SBI, HDFC, Canara).
+  3. **Character & Conduct Certificate**: Verified disciplinary and ethical conduct standing.
+  4. **Transfer Certificate (TC)**: Official school leaving document recording date of admission, date of leaving, and conduct.
+- **Live A4 Visual Preview**: Real-time rendering with institutional letterhead, seal watermark, and authorized signatory lines ready for 1-click printing or PDF download.
+
+#### 🖥️ Step-by-Step Screen Walkthrough:
+1. Navigate to `/portal/admin/documents`.
+2. Select target student from search / dropdown (e.g., Kiran Kumar `PRIY-2026-001`).
+3. Click the desired template card on the left panel (e.g., *Bank Education Loan Fee Estimate*).
+4. Review auto-populated variables. Enter custom values if required (e.g., Bank Name `State Bank of India`, Total Fees `₹48,500`).
+5. Review the live A4 document preview on the right.
+6. Click **"Generate Official Certificate"** to create a cryptographically tracked record, or click **"Print Document"** for instant thermal or laser printing.
+
+---
+
+### 20. Library & Media Center Console
+**Route**: `/portal/admin/library`
+
+#### 🎯 The Problem Solved:
+Most campus libraries operate on paper registers. Tracking return due dates is inconsistent, overdue fines are rarely recovered, and damaged or lost books are not reconciled with the campus store or the student's central fee ledger.
+
+#### ⚡ Core Capabilities:
+- **ISBN & Barcode Catalog**: Complete inventory of fiction, textbooks, reference materials, and laboratory manuals with accession numbers, rack locations, and availability states.
+- **14-Day Lending Lifecycle**: 1-click loan issuance to students and faculty with automatic due-date stamping.
+- **7-Day Overdue Central Fee Ledger Sync**: When a borrowed book exceeds 7 days overdue, the system calculates overdue fines (₹5/day) and automatically posts a pending debit to the student's central fee ledger (`/portal/admin/fees`). The student cannot receive a year-end No-Dues clearance until the library fee is settled.
+- **Missing & Damaged Inventory Replacements**: 1-click requisition to the school store fulfillment engine for lost book re-orders.
+
+#### 🖥️ Step-by-Step Screen Walkthrough:
+1. Navigate to `/portal/admin/library`.
+2. **Catalog Tab**: Search books by title, author, or ISBN. Check real-time shelf status (`available` vs `loaned`).
+3. **Issue Book**: Click **"Issue Book Loan"**, select student name and admission number, scan or pick the book, and confirm the 14-day return date.
+4. **Process Returns**: Locate active loan, inspect book condition, and click **"Process Return"**.
+5. **Overdue & Fee Sync**: Switch to the **Overdue Fines** tab. Click **"Sync Overdue Fines to Fee Ledger"** to automatically lock pending penalties to the central bursar cash till.
+
+---
+
+# SECTION 8: LEVEL 2 — WORKFLOW & REVENUE AUTOMATION
+*(Automated late penalties, frictionless UPI collections, modern gate security, and government reporting)*
+
+---
+
+### 21. Automated Defaulter & Late-Penalty Engine
+**Route**: `/portal/admin/fees/defaulters`
+
+#### 🎯 The Problem Solved:
+Fee recovery is one of the most contentious, time-consuming tasks for school administrators. Sending generic paper notices yields low recovery rates, manual calculation of daily late penalties causes parent disputes, and parents lack frictionless digital payment methods.
+
+#### ⚡ Core Capabilities:
+- **Configurable Late-Penalty Engine**: Set automated penalty rules (e.g., ₹50/day applied automatically after the 10th of every month following a grace period).
+- **Dynamic UPI Deep Links**: Generates instant `upi://pay` deep links pre-encoded with the exact outstanding tuition + calculated late fine + student admission number in the transaction note. Parents tap the link in WhatsApp to launch Google Pay, PhonePe, or Paytm with zero manual amount typing.
+- **Automated WhatsApp Reminder Dispatch**: 1-click broadcast of personalized, bilingual WhatsApp payment reminders with the direct UPI link via Meta Cloud API.
+- **Class Recovery Heatmap**: Visual breakdown identifying grades with the highest collection lag (e.g. Class 9-B vs Class 10-A) to prioritize front-desk follow-ups.
+
+#### 🖥️ Step-by-Step Screen Walkthrough:
+1. Navigate to `/portal/admin/fees/defaulters`.
+2. Inspect KPI summary: Total Overdue Balance, Defaulter Count, Average Days Overdue, and Current Month Recovery Rate.
+3. In the **Rule Builder Card**, adjust the daily late fee (₹50) and grace cutoff date (10th of month) and click **"Apply Late-Fee Rule"**.
+4. Review the **Defaulter Ledger Table** showing base fee, overdue days, calculated fine, and total payable.
+5. Click **"Send WhatsApp Reminder"** on an individual student row, or click **"Dispatch WhatsApp Reminders to All"** to execute a bulk broadcast.
+
+---
+
+### 22. Digital Visitor Management System (VMS) & Gatepass
+**Route**: `/portal/admin/visitors`
+
+#### 🎯 The Problem Solved:
+Paper visitor logbooks at the security gate are illegible, easily falsified, and provide zero real-time visibility into who is currently inside the school campus during an emergency evacuation or lockdown.
+
+#### ⚡ Core Capabilities:
+- **Reception Tablet Check-In**: Rapid check-in recording visitor name, contact phone, student/staff relationship, purpose of visit (PTM, Vendor, Fee Payment, Inquiry), host staff member, and government ID type (Aadhaar, Driving License).
+- **Host Staff Approval Workflow**: The designated teacher or administrator receives an instant approval prompt before the visitor is admitted.
+- **Thermal Badge with QR Gatepass**: Issues a printed or digital badge (`VIS-2026-XXXX`) featuring the visitor's name, host department, issue timestamp, and cryptographic verification QR code.
+- **Live On-Campus Headcount Telemetry**: Real-time counter showing exact number of external visitors currently on campus. Security can audit the roster at any moment.
+
+#### 🖥️ Step-by-Step Screen Walkthrough:
+1. Navigate to `/portal/admin/visitors`.
+2. Check in a new visitor using the **Check-In Form** on the left.
+3. Select host staff member (e.g., Mrs. Priyanka Devi, Mathematics).
+4. Click **"Check-In Visitor & Issue Badge"**. The visitor receives badge number `VIS-2026-XXXX` with thermal print preview.
+5. Host confirms appointment.
+6. When the visitor departs, security clicks **"Check-Out Visitor"** to record the exit timestamp and reduce the live campus headcount.
+
+---
+
+### 23. Government Compliance Exporter (UDISE+ & State Boards)
+**Route**: `/portal/admin/compliance/udise`
+
+#### 🎯 The Problem Solved:
+Every academic year, school administrators spend weeks manually compiling student demographics, social categories (General, OBC, SC, ST), minority status, CWSN disability details, and BPL/EWS metrics into complex government portals (UDISE+ Data Capture Format). Typographical errors lead to compliance notices and delayed government scholarship disbursements.
+
+#### ⚡ Core Capabilities:
+- **Demographic Auto-Compilation**: Aggregates active student records directly from the student registry and admissions database.
+- **Pre-Flight Compliance Auditor**: Scans student records for missing fields (unverified Aadhaar, missing parent income slabs, unmapped mother tongues) and flags warnings before submission.
+- **1-Click Ministry Package Export**: Generates compliant UDISE+ JSON and Excel DCF packages formatted according to official Ministry of Education (MoE) v3.4 schemas for school code `28190400102`.
+
+#### 🖥️ Step-by-Step Screen Walkthrough:
+1. Navigate to `/portal/admin/compliance/udise`.
+2. Inspect the **Demographic Audit Matrix**: Review social category breakdown, minority groups, CWSN count, and Aadhaar verification percentage.
+3. Check the **Flagged Compliance Warnings** tab. Click any flagged student to resolve missing information.
+4. Click **"Export Official UDISE+ JSON Package"** or **"Download Excel DCF"**.
+5. Upload the downloaded file directly to the government UDISE+ portal with 100% schema accuracy.
+
+---
+
+# SECTION 9: LEVEL 3 — ENTERPRISE INTELLIGENCE & AI OPERATIONS
+*(Automated timetable generation, board exam pre-flight verification, biometric payroll, and alumni CRM)*
+
+---
+
+### 24. AI-Powered Timetable & Clash-Resolution Engine
+**Route**: `/portal/admin/academics/timetable`
+
+#### 🎯 The Problem Solved:
+Constructing the master school timetable manually takes weeks of trial-and-error. Inevitably, teachers get double-booked, laboratory facilities exceed capacity, or part-time faculty are scheduled on days they are unavailable.
+
+#### ⚡ Core Capabilities:
+- **Hard & Soft Constraint Configuration**:
+  - Teacher maximum daily period limits (e.g., no faculty exceeds 5 periods/day).
+  - Specialized room capacities (e.g., Chemistry Lab restricted to maximum 30 students per slot).
+  - Part-time teacher availability windows (e.g., Dr. Ramanujan available Mon/Wed/Fri only).
+  - Subject quotas (e.g., Class 10 Math requires 6 weekly periods with zero double periods on the same day).
+- **High-Speed AI Permutation Solver**: Analyzes thousands of room-teacher-class combinations in under 2 seconds, guaranteeing 0 schedule clashes.
+- **Interactive Master Schedule Grid**: View weekly schedules class-by-class (10-A, 10-B) or teacher-by-teacher with clear lab markers.
+
+#### 🖥️ Step-by-Step Screen Walkthrough:
+1. Navigate to `/portal/admin/academics/timetable`.
+2. Review **Active Constraints** cards. Click **"Add Constraint"** to specify new faculty or lab limits.
+3. Click **"Execute AI Clash-Resolution Solver"**. The engine evaluates permutations and reports: *0 conflicts detected*.
+4. Inspect the generated master grid. Toggle between classes to view period allocations, teacher assignments, and classroom locations.
+
+---
+
+### 25. Board Exam LOC (List of Candidates) Automator
+**Route**: `/portal/admin/academics/board-loc`
+
+#### 🎯 The Problem Solved:
+Submitting the annual Class 10 and Class 12 List of Candidates (LOC) to CBSE or State Boards is one of the highest-stress administrative tasks of the year. A single typo in a student's name, mother's name, missing mandatory physical identification marks, or wrong subject code results in board fines or student hall ticket withholding.
+
+#### ⚡ Core Capabilities:
+- **60-Point Pre-Flight LOC Validation**: Cross-checks student full names, parent names, date of birth format, category, Aadhaar numbers, subject codes, and photo/signature uploads.
+- **Mandatory Identification Mark Verification**: Automatically flags any candidate missing required identification marks (e.g. "A mole on right cheek") mandatory for board hall tickets.
+- **Inline Discrepancy Resolution**: Administrators can correct missing marks, upload signatures, or update parent names inline without re-uploading spreadsheets.
+- **Official Board-Compliant Export**: Generates submission-ready CSV files matching the official board portal specifications.
+
+#### 🖥️ Step-by-Step Screen Walkthrough:
+1. Navigate to `/portal/admin/academics/board-loc`.
+2. Inspect the **LOC Readiness KPI cards**: Total Candidates, Verified & Clean, and Flagged Errors.
+3. Filter candidates by **"Flagged / Pending"**.
+4. Click **"Edit / Resolve"** on an incomplete student record.
+5. Fill in the missing Identification Mark 1, confirm signature status, and click **"Save & Validate Record"**. The status updates to *Verified*.
+6. Click **"Export Board LOC Package"** to download the verified CSV for board portal submission.
+
+---
+
+### 26. Automated Payroll & Statutory Deductions Engine
+**Route**: `/portal/admin/payroll`
+
+#### 🎯 The Problem Solved:
+School accountants spend days manually cross-referencing biometric attendance punch machines against approved teacher leave forms, calculating Loss of Pay (LOP) for unexcused absences, and computing statutory deductions (EPF 12%, Professional Tax, TDS).
+
+#### ⚡ Core Capabilities:
+- **Biometric & Leave Reconciliation**: Reconciles biometric gate punches with approved leave requests from the Faculty Command Center to automatically compute unexcused absences and LOP days.
+- **Statutory Deductions Automation**:
+  - **Employee Provident Fund (EPF)**: 12% of basic salary.
+  - **Professional Tax (PT)**: ₹200 standard monthly deduction.
+  - **Loss of Pay (LOP)**: `(Gross Salary / Working Days) × Unexcused Days`.
+  - **TDS**: Monthly income tax withholding.
+- **Faculty HR Hub Integration**: When payroll is locked, official digital payslips automatically sync to each teacher's self-service HR portal.
+- **Corporate Bank Transfer CSV**: 1-click export of batch disbursement CSVs formatted for corporate net banking (SBI, HDFC, ICICI).
+
+#### 🖥️ Step-by-Step Screen Walkthrough:
+1. Navigate to `/portal/admin/payroll`.
+2. Review the monthly payroll run for the active month (e.g., September 2026).
+3. Inspect staff salary rows: Check working days, biometric punches, approved leaves, LOP deductions, gross earned, and net payable.
+4. Click **"Execute & Lock Monthly Payroll"**. Digital payslips are generated and synced to the Faculty HR Hub.
+5. Click **"Generate Bank Disbursement CSV"** to download the corporate bank batch transfer file for disbursement.
+
+---
+
+### 27. Alumni Network & Endowment CRM
+**Route**: `/portal/admin/alumni`
+
+#### 🎯 The Problem Solved:
+Schools lose touch with graduating student batches, missing opportunities to celebrate alumni achievements at Tier-1 institutions (IITs, NITs, AIIMS, premier universities), engage alumni as career mentors, or raise endowment funds for campus infrastructure.
+
+#### ⚡ Core Capabilities:
+- **Alumni Directory**: Searchable directory tracking alumni graduation batches, current institutions/employers, designations, and mentor availability.
+- **Endowment & Fundraising Campaigns**: Create targeted campaigns (e.g., "Next-Gen AI & Robotics Laboratory Fund", "Merit Scholarships for Underprivileged Girls in STEM") with target funding goals and real-time progress bars.
+- **Section 80G Tax Exemption Receipts**: Records donations with donor PAN numbers and bank UTRs, automatically generating official Section 80G tax exemption receipts with cryptographic verification QR codes.
+
+#### 🖥️ Step-by-Step Screen Walkthrough:
+1. Navigate to `/portal/admin/alumni`.
+2. Inspect the **Alumni Directory**: Filter by batch or Tier-1 status.
+3. Review **Endowment Campaigns**: Track collected funds against target budgets.
+4. Click **"Record Alumni Contribution"**: Enter donor name, PAN number, contribution amount, campaign, payment mode, and bank transaction UTR.
+5. The system issues an official Section 80G Tax Exemption receipt (`80G-PRIY-2026-XXXX`) with a tamper-proof QR code.
+
+---
+
 # 📅 Administrator Daily Operational Checklist
 
 To ensure maximum operational efficiency, follow this standardized 3-phase daily administrative protocol:
@@ -670,13 +897,13 @@ To ensure maximum operational efficiency, follow this standardized 3-phase daily
 ```mermaid
 graph LR
     subgraph Morning ["🌅 08:30 – 09:00 AM"]
-        A1[Check Pending Roll Calls] --> A2[Verify WhatsApp Alerts Stream] --> A3[Check SafeSpace Board]
+        A1[Check Pending Roll Calls] --> A2[Verify WhatsApp Alerts Stream] --> A3[Check SafeSpace Board] --> A4[Review Gate VMS Headcount]
     end
     subgraph Midday ["☀️ 12:30 – 02:00 PM"]
-        B1[Process Inbound Admissions] --> B2[Review Store Fulfillment] --> B3[Audit Classroom Allocations]
+        B1[Process Inbound Admissions] --> B2[Review Store Fulfillment] --> B3[Process Library Loans & Document Studio Requests]
     end
     subgraph Evening ["🌆 04:45 – 05:15 PM"]
-        C1[Audit EOD Cash Till] --> C2[Verify Bus Fleet Radar] --> C3[Lock Day Records & Export Tally]
+        C1[Audit EOD Cash Till] --> C2[Verify Bus Fleet Radar] --> C3[Lock Defaulter Reminders & Export Tally]
     end
 ```
 
@@ -685,10 +912,12 @@ graph LR
 - [ ] Check **Pending Roll Calls KPI** on the dashboard. If any homeroom is unmarked at 08:50 AM, click **"Mark →"** or notify the teacher.
 - [ ] Inspect the **WhatsApp Delivery Ticker** to confirm absence alerts are reaching parent phones with green `delivered` status.
 - [ ] Review the **SafeSpace Triage Board** (`/portal/admin/safespace`) for any urgent overnight student grievance tokens.
-- [ ] Open **Main Gate RFID Feed** to monitor campus arrivals and unauthorized exit attempts.
+- [ ] Open **Main Gate RFID Feed & VMS Console** (`/portal/admin/visitors`) to monitor campus arrivals, reception visitor check-ins, and live headcount.
 
 ### Phase 2: Mid-Day Operations (12:30 PM – 02:00 PM)
 - [ ] Open **Admissions CRM** (`/portal/admin/admissions/crm`) to advance prospective parents through the tour and verification pipeline.
+- [ ] Process pending student certificate requests in **Document Studio** (`/portal/admin/documents`) for Bank Education Loan fee estimates and bonafide letters.
+- [ ] Review **Library & Media Center** (`/portal/admin/library`) for loan returns, overdue fine sync, and missing inventory.
 - [ ] Inspect the **Store Fulfillment Pick List** (`/portal/admin/store-fulfillment`) to ensure lunch-break student kits are packed and labeled.
 - [ ] Review the **Class Management & Staff Directory** to accommodate any substitute teacher period allocations for absent staff.
 - [ ] Check **Estate Maintenance Tickets** for any urgent classroom repair requests (smartboards, fans, ACs).
@@ -697,7 +926,9 @@ graph LR
 - [ ] Open **Live Fleet Radar** (`/portal/admin/fleet`) to confirm all 15 school buses have finished afternoon routes and returned safely.
 - [ ] Open **Fee Counter & Cash POS** (`/portal/admin/fees`).
 - [ ] Count the physical cash in the bursar till, match against system expected totals, log any discrepancy, and click **"Approve & Lock Till"**.
+- [ ] Open **Automated Defaulters Engine** (`/portal/admin/fees/defaulters`) to review recovery progress and dispatch evening WhatsApp reminders with dynamic UPI links.
 - [ ] On `/portal/admin/treasury`, click **"Generate Tally XML"** to export today's voucher batch for the accounting team.
+- [ ] Verify next day's master timetable on `/portal/admin/academics/timetable` for zero teacher clashes.
 
 ---
 
