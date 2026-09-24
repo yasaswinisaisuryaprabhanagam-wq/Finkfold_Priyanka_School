@@ -94,6 +94,23 @@ export default async function AdminPortalLayout({
     },
   ];
 
+  if (isSuperAdmin) {
+    navSections.unshift({
+      title: "Section 0: Trust HQ Sovereignty & Global Command",
+      items: [
+        { href: "/portal/admin/trust/master-data",      label: "Master Data & Policy Lock",  icon: "🔒", badge: "SAP" },
+        { href: "/portal/admin/hq-reporting",           label: "BoD Pitch Deck Generator",   icon: "📑", badge: "Deck" },
+        { href: "/portal/admin/trust/budgets",          label: "Universal Budget & Burn",    icon: "📊", badge: "Coupa" },
+        { href: "/portal/admin/trust/procurement",      label: "Bulk E-Procurement & Bids",  icon: "📦", badge: "RFQ" },
+        { href: "/portal/admin/trust/staff-mobility",   label: "Inter-Campus Staff Mobility",icon: "🔄", badge: "HR" },
+        { href: "/portal/admin/trust/statutory",        label: "Statutory (EPF, TDS, PT)",   icon: "🏛️", badge: "Gov" },
+        { href: "/portal/admin/trust/accreditation",    label: "Accreditation & Affiliation",icon: "🛡️", badge: "NOC" },
+        { href: "/portal/admin/trust/infrastructure",   label: "RTE & CBSE Asset Audit",     icon: "📐", badge: "RTE" },
+        { href: "/portal/admin/trust/provision-campus", label: "1-Click Campus Deploy",      icon: "🚀", badge: "New" },
+      ],
+    });
+  }
+
   const todayStr = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 
   return (

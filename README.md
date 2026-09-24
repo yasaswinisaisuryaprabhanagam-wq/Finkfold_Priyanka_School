@@ -5,7 +5,8 @@
 [![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL%20RLS-3ECF8E?style=flat&logo=supabase)](https://supabase.com/)
 [![Meta WhatsApp API](https://img.shields.io/badge/Meta%20WhatsApp-Cloud%20API%20v19.0-25D366?style=flat&logo=whatsapp)](https://developers.facebook.com/)
 [![n8n Automation](https://img.shields.io/badge/n8n-Automation%20Engine-FF6584?style=flat&logo=n8n)](https://n8n.io/)
-[![Tests](https://img.shields.io/badge/Automated%20Tests-154%2F154%20Passing-brightgreen?style=flat)](./scripts)
+[![Tests](https://img.shields.io/badge/Automated%20Tests-200%2F200%20Passing-brightgreen?style=flat)](./scripts)
+[![Last Verified](https://img.shields.io/badge/Last%20Verified-Sep%2023%202026-blue?style=flat)](./walkthrough.md)
 
 A modern, autonomous, multi-campus Educational Operating System (EdOS) and institutional web portal built for **Priyanka English Medium School & Trust Campuses** (Fathekhan Pet Main, Gandhi Nagar, Haranathpuram).
 
@@ -62,6 +63,21 @@ Built with **Next.js 16 (App Router, React 19)**, **Supabase PostgreSQL (78 Tabl
   - **Section 7: Level 1 Core Daily Admin**: Dynamic Certificate & Document Studio ("Print Room" with drag-and-drop templates, tamper-proof QR verification for Bonafide, Study, Character, and Bank Loan Fee Estimates), Library & Media Center Console (ISBN/barcode scanning, active loans, 7-day overdue auto-fine sync to central fee ledger).
   - **Section 8: Level 2 Workflow & Revenue Automation**: Automated Defaulter & Late-Penalty Engine (₹50/day after 10th rule, automated WhatsApp reminders with dynamic UPI links, recovery heatmap), Digital Visitor Management System (VMS) & Gatepass (reception tablet check-in, host approval, thermal-printed badge with QR, live campus headcount), Government Compliance Exporter (UDISE+ & State Boards with demographic compilation, pre-flight auditor, JSON & Excel DCF exports).
   - **Section 9: Level 3 Enterprise Intelligence & AI**: AI-Powered Timetable & Clash-Resolution Engine (teacher constraints, room capacities, 100% conflict-free master timetable generation in <2s), Board Exam LOC (List of Candidates) Automator (60-point pre-flight validation for missing marks/typos, inline editor, board-compliant export), Automated Payroll & Statutory Deductions Engine (biometric attendance & approved leaves reconciliation, LOP calculation, EPF 12%, PT ₹200, TDS, batch payslips, bank transfer CSV), Alumni Network & Endowment CRM (directory of alumni at IITs/NITs/AIIMS, campaigns, 80G Tax Exemption receipts with verification QR).
+
+---
+
+## 🔄 Cross-Portal Coordination Protocol (The 12 Master Rules)
+
+Finkfold EdOS connects the **Student & Parent Portal**, **Faculty Workspace**, and **Admin Console** through strict timing SLAs and automated relational loops defined in [`CROSS_PORTAL_COORDINATION_RULES.md`](./CROSS_PORTAL_COORDINATION_RULES.md):
+
+* **The Real-World Constraint**: Students do not carry mobile phones to school. They interact with the portal at home in the evening (06:00 PM – 09:00 PM) to pack their bags and check homework.
+* **Rule 1 (Day-Before Academic Sync & 4:30 PM SLA)**: Teachers must sync lesson plans and required student bag materials by 04:30 PM. At 06:00 PM, students click **"View Lesson Plan & Bag Checklist"** on their dashboard to pack tonight. Admin radar flags any un-synced classes.
+* **Rule 2 (Physical-to-Digital Homework Loop)**: Homework is written in physical notebooks at home (0 digital uploads required). During morning class rounds, teachers open the **"Verify Notebooks (Aisle Walkthrough)"** modal to tap verification. Instantly, the student portal chip flips to **"Checked & Completed"** and parents receive WhatsApp confirmation.
+* **Rule 3 (Triangulated Leave & OD)**: Parent digital request ➔ Faculty inbox approval ➔ Gate turnstiles and roll call automatically lock to "Approved Leave".
+* **Rule 4 (Disciplinary E-Sign & Freeze)**: Severe conduct demerit freezes student self-service widgets until parent logs in and e-signs the remark.
+* **Rule 5 (Zero-Queue Store Pickup)**: Parent pays for uniform/books online ➔ Store manager packs ➔ Student flashes QR at lunch counter for 10-second handover.
+* **Rule 6 (Safe Boarding Dismissal Sync)**: Parent toggles "Private Pickup Today" ➔ Bus manifest automatically removes child ➔ RFID gate logs exit.
+* **Rules 7–12**: In-school infirmary clinic triangulation, queue-free PTM booking, examination hall-ticket release upon fee recovery, digital out-pass turnstile check, desk-delivered lost & found, and confidential SEN shield.
 
 ---
 
@@ -151,9 +167,9 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 
 ---
 
-## 🧪 Automated Testing Suite (154 / 154 Passing — 100%)
+## 🧪 Automated Testing Suite (200 / 200 Passing — 100%)
 
-The codebase features comprehensive end-to-end automation covering Unit, Workflow, Database Resilience, and HTTP SSR Route integrity:
+The codebase features comprehensive end-to-end automation covering Unit, Workflow, Database Resilience, HTTP SSR Route integrity, and Cross-Portal Coordination Rules:
 
 ```bash
 # 1. TypeScript Strict Compile Check
@@ -162,22 +178,41 @@ npx tsc --noEmit
 
 # 2. Comprehensive Faculty Portal Tests (All Types)
 npx tsx scripts/test_faculty_comprehensive_all_types.ts
-# Result: 39/39 passed (100%)
+# Result: 39/39 passed (100%) — Unit, Workflow, DB Resilience, HTTP SSR
 
 # 3. Faculty Deep Action Test Suite
 npx tsx scripts/test_faculty_portal_all.ts
-# Result: 61/61 passed (100%)
+# Result: 61/61 passed (100%) — 23 faculty feature modules
 
 # 4. Student Portal Comprehensive Test Suite
 npx tsx scripts/test_student_portal_all.ts
-# Result: 40/40 passed (100%)
+# Result: 40/40 passed (100%) — 18 student subpages & all self-service actions
 
 # 5. Enterprise Admin Portal Deep Test Suite
 npx tsx scripts/test_admin_enterprise_suite.ts
-# Result: 14/14 passed (100%)
+# Result: 14/14 passed (100%) — 5 enterprise sections & 10 executive modules
+
+# 6. Admin Level 1, 2 & 3 Advanced Suite
+npx tsx scripts/test_admin_level123_suite.ts
+# Result: 30/30 passed (100%) — Document Studio, Library, Payroll, Alumni CRM, Board LOC
+
+# 7. Cross-Portal Coordination Suite (12 Relational Rules)
+npx tsx scripts/test_cross_portal_coordination_suite.ts
+# Result: 16/16 passed (100%) — All inter-portal SLA workflows verified
 ```
 
-**Total Automated Coverage: 154 Tests Executed • 154 Passed • 0 Failed (100% Success Rate)**
+| Suite | Tests | Result |
+| :--- | :---: | :---: |
+| Faculty Comprehensive All-Types | 39 | ✅ 100% |
+| Faculty Deep Actions | 61 | ✅ 100% |
+| Student Portal Comprehensive | 40 | ✅ 100% |
+| Admin Enterprise (Level 4–5) | 14 | ✅ 100% |
+| Admin Level 1–2–3 | 30 | ✅ 100% |
+| Cross-Portal Coordination Rules | 16 | ✅ 100% |
+| **GRAND TOTAL** | **200** | **✅ 100%** |
+
+**Total Automated Coverage: 200 Tests Executed • 200 Passed • 0 Failed (100% Success Rate)**  
+**Last Verified: September 23, 2026 — `npm run dev` (Next.js 16.3.5 Turbopack, `http://localhost:3000`)**
 
 ---
 
@@ -185,10 +220,26 @@ npx tsx scripts/test_admin_enterprise_suite.ts
 
 For comprehensive guides tailored to specific institutional personas, refer to:
 - 📖 [Master Project Documentation](./PROJECT_DOCUMENTATION.md) — Architectural specifications, full schema reference, server action catalog, and security models.
+- 👑 [Super Admin & Trust HQ User Manual](./super_admin_portal_user_manual.md) — Executive guide for Chairpersons and Managing Trustees covering Central Treasury, Till Unlocks, Chairman's Waivers, and Multi-Campus Governance.
 - 🏛️ [School & Branch Admin Portal User Manual](./admin_portal_user_manual.md) — Comprehensive guide for Principals, Admins, and Bursars covering all 9 operational sections.
 - 🍎 [Faculty & Teacher User Manual](./teacher_faculty_user_manual.md) — Guide for teachers covering Roll Call, AI Grading, Seating, SEN Vault, and HR.
 - 🎓 [Student & Parent Portal User Manual](./student_portal_user_manual.md) — Parent and student guide for Fee Payments, Academics, Bus Tracking, and Leaves.
 
 ---
 
-*Finkfold Educational Operating System (EdOS) — Built with pride for Priyanka English Medium School.*
+## 📋 Quick-Reference: Verified Test Commands
+
+```bash
+# Run all suites sequentially
+npx tsx scripts/test_student_portal_all.ts
+npx tsx scripts/test_faculty_portal_all.ts
+npx tsx scripts/test_faculty_comprehensive_all_types.ts
+npx tsx scripts/test_admin_enterprise_suite.ts
+npx tsx scripts/test_admin_level123_suite.ts
+npx tsx scripts/test_cross_portal_coordination_suite.ts
+```
+
+---
+
+*Finkfold Educational Operating System (EdOS) v3.0 — Built with pride for Priyanka English Medium School.*  
+*Last Verified: September 23, 2026 • 200/200 Automated Tests Passing (100%).*

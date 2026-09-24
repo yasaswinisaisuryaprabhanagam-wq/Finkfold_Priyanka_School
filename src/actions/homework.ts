@@ -59,3 +59,32 @@ export async function deleteHomeworkAction(id: string): Promise<{ success: boole
     return { success: false, message: err?.message || "Failed to delete homework." };
   }
 }
+
+export async function saveHomeworkVerificationsAction(
+  homeworkId: string,
+  verifications: import("@/lib/homeworkStore").HomeworkVerification[]
+): Promise<{ success: boolean; message: string }> {
+  try {
+    const profile = await getProfile();
+    if (!profile) {
+      return { success: false, message: "Unauthorized." };
+    }
+
+    const { saveHomeworkVerifications } = await import("@/lib/homeworkStore");
+    await saveHomeworkVerifications(homeworkId, verifications);
+
+    revalidatePath("/portal/faculty/homework");
+    revalidatePath("/portal/student/homework");
+    revalidatePath("/portal/admin/homework");
+    revalidatePath("/portal/admin");
+
+    return {
+      success: true,
+      message: `Successfully recorded ${verifications.length} notebook verifications. Student portals and parent alerts updated in real-time.`,
+    };
+  } catch (err: any) {
+    console.error("saveHomeworkVerificationsAction error:", err);
+    return { success: false, message: err?.message || "Failed to save verifications." };
+  }
+}
+

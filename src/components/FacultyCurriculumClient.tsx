@@ -220,8 +220,56 @@ export default function FacultyCurriculumClient({
           </div>
         </div>
 
-        {/* Right Col: Shared Digital Teaching Resources */}
+        {/* Right Col: Day-Before Sync & Shared Resources */}
         <div className="space-y-6">
+          {/* Day-Before Academic Sync Card (Rule 1) */}
+          <div className="p-5 rounded-xl border border-indigo-200 bg-indigo-50/40 shadow-xs space-y-3">
+            <div className="flex items-center justify-between pb-2 border-b border-indigo-100">
+              <div className="flex items-center gap-2">
+                <span className="text-base">🎒</span>
+                <div>
+                  <h3 className="text-xs font-bold text-indigo-950 uppercase tracking-wide">
+                    Day-Before Academic Sync (4:30 PM SLA)
+                  </h3>
+                  <p className="text-[10px] text-indigo-800">
+                    Rule 1 Protocol: Syncs to Student Evening Portal for Bag Packing
+                  </p>
+                </div>
+              </div>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                ✓ Synced at 03:45 PM
+              </span>
+            </div>
+
+            <p className="text-xs text-slate-700 leading-relaxed">
+              Students pack their school bags at home tonight (06:00 PM – 09:00 PM) without phones at school. The materials configured here are displayed on Kiran&apos;s dashboard in the <strong>&ldquo;View Lesson Plan &amp; Bag Checklist&rdquo;</strong> modal.
+            </p>
+
+            {/* Checklist of Materials */}
+            <div className="space-y-1.5 pt-1">
+              <div className="text-[11px] font-bold text-indigo-900 uppercase">Required Student Bag Materials Tonight:</div>
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-indigo-100 text-xs">
+                  <span className="font-medium text-slate-800">📘 Textbook: NCERT Class 10 Mathematics Part 1</span>
+                  <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-1.5 py-0.5 rounded">Required</span>
+                </div>
+                <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-indigo-100 text-xs">
+                  <span className="font-medium text-slate-800">📓 Notebook: 200-Page Ruled Notebook (Ex 4.3)</span>
+                  <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-1.5 py-0.5 rounded">Required</span>
+                </div>
+                <div className="flex items-center justify-between p-2 rounded-lg bg-white border border-indigo-100 text-xs">
+                  <span className="font-medium text-slate-800">📐 Stationery: Geometry Box (Compass &amp; 15cm Ruler)</span>
+                  <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-1.5 py-0.5 rounded">Required</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-2 flex items-center justify-between text-[10px] text-indigo-700 font-semibold border-t border-indigo-100">
+              <span>Evening Window: 06:00 PM – 09:00 PM</span>
+              <span className="text-emerald-700 font-bold">Admin Radar: Compliant ✓</span>
+            </div>
+          </div>
+
           <div className="p-5 rounded-xl border border-border bg-card shadow-xs">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-bold text-foreground">Synchronized Class Resources</h3>

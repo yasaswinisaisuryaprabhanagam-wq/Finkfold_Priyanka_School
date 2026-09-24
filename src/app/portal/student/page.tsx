@@ -3,6 +3,7 @@ import { createAdminClient } from "@/lib/supabase/server";
 import { SCHOOL } from "@/lib/school-config";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import StudentLessonPlanModal from "@/components/StudentLessonPlanModal";
 
 export const metadata = {
   title: `Student Portal – ${SCHOOL.name}`,
@@ -305,15 +306,20 @@ export default async function StudentPortalPage() {
                   <span>&bull;</span>
                   <span className="flex items-center gap-1">👤 Mrs. Priyanka Devi</span>
                 </div>
+                <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[11px] text-amber-800 bg-amber-50/80 px-2.5 py-1 rounded-md border border-amber-200/60 font-medium">
+                  <span>🎒 Pack Tonight:</span>
+                  <span>Long Ruled Math Vol. 2 Notebook &bull; Geometry Box &bull; NCERT Textbook</span>
+                </div>
               </div>
 
-              <Link
-                href="/portal/student/timetable"
-                className="btn btn-primary px-4 py-2 text-xs font-semibold shadow-xs flex items-center gap-2 whitespace-nowrap"
-              >
-                <span>View Lesson Plan</span>
-                <span>→</span>
-              </Link>
+              <StudentLessonPlanModal
+                subject="Mathematics"
+                className={`${className}-${classSection}`}
+                topic="Advanced Quadratic Equations &amp; Parabolic Optimization"
+                time="08:30 AM – 09:15 AM (Period 1)"
+                room="Room 204"
+                teacher="Mrs. Priyanka Devi"
+              />
             </div>
           </div>
 

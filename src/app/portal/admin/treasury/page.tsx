@@ -105,6 +105,11 @@ export default async function AdminTreasuryPage() {
     if (b.drawerStatus === "discrepancy_flagged") flaggedCount++;
   });
 
+  const isSuperAdmin =
+    profile.role === "super_admin" ||
+    profile.primary_role === "super_admin" ||
+    (profile.roles && profile.roles.includes("super_admin"));
+
   return (
     <TreasuryClient
       orgName="Priyanka Educational Trust"
@@ -119,6 +124,7 @@ export default async function AdminTreasuryPage() {
       recentTransactions={recentTransactions}
       discrepancies={discrepancies}
       currentSchoolId={campus.schoolId}
+      isSuperAdmin={isSuperAdmin}
     />
   );
 }

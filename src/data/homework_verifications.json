@@ -1,0 +1,57 @@
+[
+  {
+    "id": "hv-seed-000",
+    "homework_id": "7f91a5a2-e985-4531-be50-8e0f915d8325",
+    "student_id": "9e9b7741-cf68-4363-8e92-72923e037cea",
+    "student_name": "Kiran Kumar Kotapuri",
+    "roll_no": 11,
+    "status": "verified",
+    "verified_by": "Mrs. Priyanka Devi",
+    "verified_at": "2026-09-19T09:10:00.000Z",
+    "notes": "Completed neatly in 200-page ruled notebook. Full steps shown."
+  },
+  {
+    "id": "hv-seed-001",
+    "homework_id": "hw-seed-001",
+    "student_id": "9e9b7741-cf68-4363-8e92-72923e037cea",
+    "student_name": "Kiran Kumar Kotapuri",
+    "roll_no": 11,
+    "status": "verified",
+    "verified_by": "Mrs. Priyanka Devi",
+    "verified_at": "2026-09-17T09:10:00.000Z",
+    "notes": "Completed neatly in 200-page ruled notebook. Full steps shown."
+  },
+  {
+    "id": "hv-seed-002",
+    "homework_id": "hw-seed-002",
+    "student_id": "9e9b7741-cf68-4363-8e92-72923e037cea",
+    "student_name": "Kiran Kumar Kotapuri",
+    "roll_no": 11,
+    "status": "verified",
+    "verified_by": "Mr. Satish Kumar",
+    "verified_at": "2026-09-18T09:45:00.000Z",
+    "notes": "2 pages of neat notes with diagrams."
+  },
+  {
+    "id": "hv-seed-003",
+    "homework_id": "hw-seed-003",
+    "student_id": "9e9b7741-cf68-4363-8e92-72923e037cea",
+    "student_name": "Kiran Kumar Kotapuri",
+    "roll_no": 11,
+    "status": "verified",
+    "verified_by": "Mrs. Ayesha Khan",
+    "verified_at": "2026-09-19T10:15:00.000Z",
+    "notes": "Checked & stamped during morning walk."
+  },
+  {
+    "id": "hv-seed-004",
+    "homework_id": "hw-seed-004",
+    "student_id": "9e9b7741-cf68-4363-8e92-72923e037cea",
+    "student_name": "Kiran Kumar Kotapuri",
+    "roll_no": 11,
+    "status": "incomplete",
+    "verified_by": "Mr. K. Anjaneyulu",
+    "verified_at": "2026-09-20T08:45:00.000Z",
+    "notes": "Capitals marked; state boundary coloring pending."
+  }
+]

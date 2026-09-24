@@ -1,9 +1,10 @@
 # Finkfold Educational Operating System (EdOS) — Master Project Documentation
 
-**System Version**: 2.5 (Enterprise Multi-Campus Edition)  
+**System Version**: 3.0 (Enterprise Multi-Campus Edition — September 2026 Release)  
 **Target Institution**: Priyanka English Medium School & Trust Multi-Branch Campuses  
 **Technology Base**: Next.js 16 (Turbopack) • React 19 • Supabase PostgreSQL • Meta WhatsApp Cloud API • n8n Automation Engine  
-**Last Updated**: September 2026  
+**Last Updated**: September 23, 2026  
+**Automated Tests**: 200 / 200 Passing (100%) — All portals, workflows, and cross-portal rules verified.  
 
 ---
 
@@ -96,6 +97,32 @@ Unlike legacy portals that force all users onto a single generic login page with
   - **Allow**: `/`, `/student/login`, `/portal/student/*`, `/about`, `/academics`, `/admissions`, `/contact`.
 - **`src/app/sitemap.ts`**: Indexes public admissions and the Student Portal while completely omitting faculty and administrative endpoints.
 - **Admin Clearance Gate**: If an unauthorized user (like a student or teacher) attempts to sign in on `/admin/login`, the security gate rejects the session with an explicit *"Access Denied: Administrative Credentials Required"* message.
+
+---
+
+## 🔄 Cross-Portal Coordination, Relational Rules & Institutional SLAs
+
+Finkfold EdOS enforces strict timing SLAs and automated relational loops connecting the **Student & Parent Portal**, **Faculty Workspace**, and **Admin Console**, documented in detail in [`CROSS_PORTAL_COORDINATION_RULES.md`](./CROSS_PORTAL_COORDINATION_RULES.md).
+
+### The Reality-Grounded Operational Principle
+Students cannot carry or use smartphones in school (08:30 AM – 03:45 PM). Therefore:
+- **Home-to-School Evening Handshake (06:00 PM – 09:00 PM)**: Students & parents check the next-day timetable, read lesson objectives, pack specific books/geometry boxes, and view verified homework marks.
+- **In-Class Aisle Walkthrough (Period 1)**: Subject teachers inspect physical hand-written notebooks in class and tap verification on their tablet/PWA.
+- **Executive SLA Radar (04:30 PM & EOD)**: Admins track on-time lesson plan sync and verification heatmaps in real-time.
+
+### Summary of the 12 Operational Coordination Rules:
+1. **Rule 1: The "Day-Before" Academic Sync (4:30 PM SLA)**: Teachers update next-day lesson plans & required bag materials by 04:30 PM. At 06:00 PM, students view Period 1 on their dashboard and click **"View Lesson Plan & Bag Checklist"** to pack books tonight. Admin radar flags any section missing by 05:00 PM.
+2. **Rule 2: The Physical-to-Digital Homework Loop**: Homework is written in physical notebooks at home (0 digital uploads required). During morning class rounds, the teacher opens the **"Verify Notebooks (Aisle Walkthrough)"** modal, taps students, and saves. Instantly, the student portal badge flips from Amber "Due" to Slate "Checked & Verified by Mrs. Priyanka Devi", and an automated WhatsApp confirmation is dispatched to the parent.
+3. **Rule 3: The Triangulated Leave & OD Protocol**: Parent applies digitally ➔ Class teacher inbox approves ➔ Roll call register and security gate turnstiles auto-lock to "Approved Leave".
+4. **Rule 4: Disciplinary E-Signature & Self-Service Portal Freeze**: Teacher logs conduct demerit with "Require Parent E-Sign" ➔ Student self-service widgets freeze ➔ Parent e-signs remark on mobile ➔ Principal SafeSpace audit confirms compliance.
+5. **Rule 5: Store Fulfillment & "Zero-Queue" Lunch Logistics**: Parent orders books/uniform via UPI ➔ Store manager packs and generates barcode ➔ Student flashes pickup QR code at lunch counter for 10-second handover.
+6. **Rule 6: The "Safe Boarding" Dismissal Sync (03:40 PM)**: Parent toggles "Private Pickup Today" ➔ Teacher's dismissal screen updates ➔ Bus manifest automatically removes student so bus does not wait ➔ RFID gate checkout confirms parent pickup.
+7. **Rule 7: Real-Time In-School Infirmary Triangulation**: School nurse logs clinic visit & vitals ➔ Immediate silent alert pushes to class teacher & parent ➔ Auto digital gate pass generated if student needs to be sent home.
+8. **Rule 8: Regulated Office Hours & Queue-Free PTM Booking**: Teachers publish 10-minute office hour slots ➔ Parents book token digitally ➔ Zero lobby crowding.
+9. **Rule 9: Automated Fee Defaulter Recovery & Examination Gate Release**: Treasury records fee payment ➔ Examination hall ticket immediately unlocked in student portal ➔ Automated PDF WhatsApp receipt dispatched.
+10. **Rule 10: Digital Gate Out-Pass & Security Perimeter Check**: Homeroom teacher approves emergency pass with OTP ➔ Gate turnstile security scans QR/OTP ➔ Parent notified of exact perimeter exit timestamp.
+11. **Rule 11: Lost & Found Desk-Delivery Workflow**: Admin photos found item ➔ Student claims on portal ➔ Security officer confirms identity and delivers directly to student's classroom desk.
+12. **Rule 12: Inclusive Education & Confidential SEN Shield**: Special Educator IEP accommodations (extra time, front-row seating) are strictly restricted to authorized subject teachers and completely hidden from student/peer portals.
 
 ---
 
@@ -239,9 +266,10 @@ Provisioned in `supabase/migrations/008_complete_portal_ecosystem_expansion.sql`
 ### 1. Super Admin Manual (Trust Chairman / Central Director)
 * **Login URL**: `/admin/login`
 * **Credentials**: `superadmin@priyanka.school` / `Admin@123`
+* **Complete Dedicated Guide**: See [Super Admin Portal User Manual](./super_admin_portal_user_manual.md) for the exhaustive operational blueprint.
 
 #### Key Workflows:
-1. **Multi-Campus Switching**:
+1. **Multi-Campus Switching & HQ Intelligence**:
    - Look at the top navigation bar. Click the **Campus Selector** dropdown.
    - Choose any branch (*Fathekhan Pet Main*, *Gandhi Nagar*, or *Haranathpuram*).
    - All statistics, student rosters, and fee ledgers instantly switch to the selected campus.
@@ -477,13 +505,14 @@ Finkfold EdOS maintains continuous end-to-end automated testing to guarantee zer
 
 | Automated Test Suite | Test Runner File | Test Categories | Coverage Scope | Status |
 | :--- | :--- | :--- | :--- | :---: |
+| **Cross-Portal Coordination Suite** | `scripts/test_cross_portal_coordination_suite.ts` | Authenticated Multi-Portal Workflows | 12 coordination rules: Day-Before Academic Sync, Homework Loop, Leave Triangulation, Demerit E-Sign Freeze, Store Fulfillment, Safe Boarding, Out-Pass, Lost & Found, SEN Shield | **16 / 16 (100%)** |
 | **Level 1, 2 & 3 Advanced Admin Suite** | `scripts/test_admin_level123_suite.ts` | Server Actions & HTTP Routes | 9 new modules: Document Studio, Library Console, Defaulters Engine, VMS Gatepass, UDISE+ Compliance, AI Timetable, Board LOC, Payroll Engine, Alumni CRM | **30 / 30 (100%)** |
 | **Comprehensive All-Types Faculty Suite** | `scripts/test_faculty_comprehensive_all_types.ts` | Unit (6), Workflow (9), DB Resilience (2), HTTP SSR (22) | Boundary values, OMR parsing, demerit lock, co-teacher unit sync, voice grading, SEN updates | **39 / 39 (100%)** |
 | **Deep Faculty Actions Suite** | `scripts/test_faculty_portal_all.ts` | Server Actions & Features | 23 faculty capabilities, leave approvals, relief desk, field trips, store indents, maintenance SLAs | **61 / 61 (100%)** |
 | **Comprehensive Student Suite** | `scripts/test_student_portal_all.ts` | Self-Service Actions & HTTP Routes | 18 student subpages, lost & found claims, remedial AI drills, fee UPIs, bus routing, QR passes | **40 / 40 (100%)** |
 | **Enterprise Admin Deep Suite** | `scripts/test_admin_enterprise_suite.ts` | Executive Actions & SSR Routes | 5 sections & 10 modules: Lead CRM, Tally XML, Bank Recon, Store Indent, Fleet Radar & RFID, ATS, 360 Appraisals, OBE Heatmap, SafeSpace 2-hr SLA, Estate Command, Waterfall Broadcast | **14 / 14 (100%)** |
 | **TypeScript Strict Compiler** | `npx tsc --noEmit` | Strict Type Checking | All source files, page components, action payloads, and test runners | **0 Errors (100%)** |
-| **TOTAL AUTOMATED TESTS** | | | **All functional layers verified** | **184 / 184 (100%)** |
+| **TOTAL AUTOMATED TESTS** | | | **All functional layers verified across Student, Faculty, Admin & Cross-Portal** | **200 / 200 (100%)** |
 
 ---
 
@@ -513,4 +542,5 @@ Finkfold EdOS maintains continuous end-to-end automated testing to guarantee zer
 
 ---
 
-*Finkfold Educational Operating System (EdOS) — Autonomous, Multi-Campus Educational Management Platform.*
+*Finkfold Educational Operating System (EdOS) v3.0 — Autonomous, Multi-Campus Educational Management Platform.*  
+*Last Verified: September 23, 2026 • 200/200 Automated Tests Passing (100%).*

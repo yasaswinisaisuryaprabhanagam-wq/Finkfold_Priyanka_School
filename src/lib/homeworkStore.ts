@@ -21,7 +21,42 @@ export interface HomeworkItem {
   } | null;
 }
 
+export interface HomeworkVerification {
+  id: string;
+  homework_id: string;
+  student_id: string;
+  student_name: string;
+  roll_no?: number | string;
+  status: "verified" | "incomplete" | "missing";
+  verified_by: string;
+  verified_at: string;
+  notes?: string;
+}
+
 const DATA_FILE = path.join(process.cwd(), "src", "data", "homework.json");
+const VERIFICATIONS_FILE = path.join(process.cwd(), "src", "data", "homework_verifications.json");
+
+function readLocalVerifications(): HomeworkVerification[] {
+  try {
+    if (fs.existsSync(VERIFICATIONS_FILE)) {
+      const raw = fs.readFileSync(VERIFICATIONS_FILE, "utf-8");
+      return JSON.parse(raw);
+    }
+  } catch (err) {
+    console.warn("Could not read local homework_verifications.json:", err);
+  }
+  return [];
+}
+
+function writeLocalVerifications(items: HomeworkVerification[]): void {
+  try {
+    const dir = path.dirname(VERIFICATIONS_FILE);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(VERIFICATIONS_FILE, JSON.stringify(items, null, 2), "utf-8");
+  } catch (err) {
+    console.warn("Could not write local homework_verifications.json:", err);
+  }
+}
 
 function readLocalHomework(): HomeworkItem[] {
   try {
@@ -50,6 +85,7 @@ export async function getHomeworkList(params?: {
   classId?: string;
   teacherId?: string;
 }): Promise<HomeworkItem[]> {
+  let dbItems: HomeworkItem[] = [];
   try {
     const admin = await createAdminClient();
     let query = admin
@@ -63,29 +99,44 @@ export async function getHomeworkList(params?: {
 
     const { data, error } = await query;
     if (!error && data && data.length > 0) {
-      return data as unknown as HomeworkItem[];
+      dbItems = data as unknown as HomeworkItem[];
     }
   } catch (err) {
     // Supabase table might not exist yet or connection error, fallback to local store
   }
 
-  // Fallback to local store
+  // Read local store
   let items = readLocalHomework();
   if (params?.schoolId) {
-    // Include items that match schoolId OR seed items
     items = items.filter((it) => it.school_id === params.schoolId || it.id.startsWith("hw-seed"));
   }
   if (params?.classId) {
-    items = items.filter((it) => it.class_id === params.classId);
+    const classFiltered = items.filter((it) => it.class_id === params.classId || it.id.startsWith("hw-seed"));
+    if (classFiltered.length > 0) {
+      items = classFiltered;
+    }
   }
   if (params?.teacherId) {
     items = items.filter((it) => it.assigned_by === params.teacherId);
   }
 
+  // Combine dbItems with local items
+  const combined: HomeworkItem[] = [...dbItems];
+  const seenIds = new Set(dbItems.map((d) => d.id));
+  const seenSubjects = new Set(dbItems.map((d) => d.subject.toLowerCase()));
+
+  for (const localItem of items) {
+    if (!seenIds.has(localItem.id) && !seenSubjects.has(localItem.subject.toLowerCase())) {
+      combined.push(localItem);
+    }
+  }
+
+  const finalItems = combined.length > 0 ? combined : items;
+
   // Attach class names if available
   try {
     const admin = await createAdminClient();
-    const classIds = Array.from(new Set(items.map((i) => i.class_id)));
+    const classIds = Array.from(new Set(finalItems.map((i) => i.class_id)));
     if (classIds.length > 0) {
       const { data: clsData } = await admin
         .from("classes")
@@ -93,7 +144,7 @@ export async function getHomeworkList(params?: {
         .in("id", classIds);
       if (clsData) {
         const clsMap = new Map(clsData.map((c) => [c.id, c]));
-        items.forEach((item) => {
+        finalItems.forEach((item) => {
           if (!item.classes && clsMap.has(item.class_id)) {
             item.classes = clsMap.get(item.class_id);
           }
@@ -102,7 +153,7 @@ export async function getHomeworkList(params?: {
     }
   } catch {}
 
-  return items.sort((a, b) => a.due_date.localeCompare(b.due_date));
+  return finalItems.sort((a, b) => a.due_date.localeCompare(b.due_date));
 }
 
 export async function insertHomework(item: Omit<HomeworkItem, "id" | "created_at">): Promise<HomeworkItem> {
@@ -158,3 +209,42 @@ export async function removeHomework(id: string): Promise<boolean> {
 
   return true;
 }
+
+export async function getHomeworkVerifications(homeworkId: string): Promise<HomeworkVerification[]> {
+  const all = readLocalVerifications();
+  return all.filter((v) => v.homework_id === homeworkId);
+}
+
+export async function saveHomeworkVerifications(
+  homeworkId: string,
+  records: HomeworkVerification[]
+): Promise<boolean> {
+  const current = readLocalVerifications();
+  // Filter out any existing records for this homework
+  const filtered = current.filter((v) => v.homework_id !== homeworkId);
+  // Merge new records
+  const updated = [...filtered, ...records];
+  writeLocalVerifications(updated);
+  return true;
+}
+
+export async function getStudentHomeworkVerifications(
+  studentNameOrId?: string
+): Promise<Record<string, HomeworkVerification>> {
+  const all = readLocalVerifications();
+  const map: Record<string, HomeworkVerification> = {};
+
+  all.forEach((v) => {
+    if (
+      !studentNameOrId ||
+      v.student_id === studentNameOrId ||
+      v.student_name.toLowerCase().includes(studentNameOrId.toLowerCase()) ||
+      studentNameOrId.toLowerCase().includes(v.student_name.toLowerCase())
+    ) {
+      map[v.homework_id] = v;
+    }
+  });
+
+  return map;
+}
+

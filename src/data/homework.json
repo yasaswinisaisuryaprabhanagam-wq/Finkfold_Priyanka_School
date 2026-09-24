@@ -1,8 +1,8 @@
 [
   {
     "id": "hw-seed-001",
-    "school_id": "s1701001-0000-4000-a000-000000000001",
-    "class_id": "c10a2026-1701-4cc0-9c59-8812324eb396",
+    "school_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "class_id": "c0000000-0000-0000-0000-000000000033",
     "subject": "Mathematics",
     "task": "Solve Quadratic Equations – Exercise 4.3 (Q1–Q10)",
     "due_date": "2026-09-16",
@@ -11,8 +11,8 @@
   },
   {
     "id": "hw-seed-002",
-    "school_id": "s1701001-0000-4000-a000-000000000001",
-    "class_id": "c10a2026-1701-4cc0-9c59-8812324eb396",
+    "school_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "class_id": "c0000000-0000-0000-0000-000000000033",
     "subject": "Science",
     "task": "Write notes on Newton's Laws of Motion (2 pages)",
     "due_date": "2026-09-17",
@@ -21,8 +21,8 @@
   },
   {
     "id": "hw-seed-003",
-    "school_id": "s1701001-0000-4000-a000-000000000001",
-    "class_id": "c10a2026-1701-4cc0-9c59-8812324eb396",
+    "school_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "class_id": "c0000000-0000-0000-0000-000000000033",
     "subject": "English",
     "task": "Write a paragraph on 'My Favourite Season' (100 words)",
     "due_date": "2026-09-18",
@@ -31,8 +31,8 @@
   },
   {
     "id": "hw-seed-004",
-    "school_id": "s1701001-0000-4000-a000-000000000001",
-    "class_id": "c10a2026-1701-4cc0-9c59-8812324eb396",
+    "school_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "class_id": "c0000000-0000-0000-0000-000000000033",
     "subject": "Social",
     "task": "Draw a map of India and mark state capitals",
     "due_date": "2026-09-20",
@@ -41,8 +41,8 @@
   },
   {
     "id": "hw-seed-005",
-    "school_id": "s1701001-0000-4000-a000-000000000001",
-    "class_id": "c10a2026-1701-4cc0-9c59-8812324eb396",
+    "school_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "class_id": "c0000000-0000-0000-0000-000000000033",
     "subject": "Telugu",
     "task": "Learn poem 'Vande Mataram' by heart",
     "due_date": "2026-09-22",

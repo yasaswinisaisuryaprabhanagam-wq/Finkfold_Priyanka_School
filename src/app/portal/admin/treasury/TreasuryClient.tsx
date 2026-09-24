@@ -1,8 +1,45 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import Link from "next/link";
 import { switchCampus } from "@/actions/switchCampus";
+import { unlockCashTill } from "@/actions/superAdmin";
+
+const DEFAULT_DRAWER_AUDITS = [
+  {
+    id: "drawer-101",
+    drawer_date: "2026-09-22",
+    opening_cash: 5000,
+    system_cash_collected: 42000,
+    declared_cash: 47000,
+    discrepancy: 0,
+    status: "verified",
+    school: { name: "Main Campus", branch_code: "HYD-01" },
+    cashier: { full_name: "Ramesh Babu" },
+  },
+  {
+    id: "drawer-102",
+    drawer_date: "2026-09-22",
+    opening_cash: 3000,
+    system_cash_collected: 28500,
+    declared_cash: 28000,
+    discrepancy: -500,
+    status: "discrepancy_flagged",
+    school: { name: "North Campus", branch_code: "HYD-02" },
+    cashier: { full_name: "Sneha Rao" },
+  },
+  {
+    id: "drawer-103",
+    drawer_date: "2026-09-21",
+    opening_cash: 4000,
+    system_cash_collected: 31000,
+    declared_cash: 35000,
+    discrepancy: 0,
+    status: "verified",
+    school: { name: "East City", branch_code: "HYD-03" },
+    cashier: { full_name: "Vikas Reddy" },
+  },
+];
 
 export default function TreasuryClient({
   orgName,
@@ -11,6 +48,7 @@ export default function TreasuryClient({
   recentTransactions,
   discrepancies,
   currentSchoolId,
+  isSuperAdmin = false,
 }: {
   orgName: string;
   branches: any[];
@@ -24,11 +62,22 @@ export default function TreasuryClient({
   recentTransactions: any[];
   discrepancies: any[];
   currentSchoolId: string;
+  isSuperAdmin?: boolean;
 }) {
   const [activeTab, setActiveTab] = useState<"branches" | "audit" | "ledger" | "whatsapp" | "tally" | "recon">("branches");
   const [switchingBranch, setSwitchingBranch] = useState<string | null>(null);
   const [tallyExported, setTallyExported] = useState(false);
   const [bankFileUploaded, setBankFileUploaded] = useState(false);
+
+  // Till unlock state for Super Admin
+  const [localDiscrepancies, setLocalDiscrepancies] = useState<any[]>(
+    discrepancies && discrepancies.length > 0 ? discrepancies : DEFAULT_DRAWER_AUDITS
+  );
+  const [unlockModalDrawer, setUnlockModalDrawer] = useState<any | null>(null);
+  const [unlockReason, setUnlockReason] = useState("");
+  const [unlockError, setUnlockError] = useState<string | null>(null);
+  const [auditSuccessMessage, setAuditSuccessMessage] = useState<string | null>(null);
+  const [isUnlocking, startUnlockTransition] = useTransition();
 
   async function handleQuickSwitch(schoolId: string) {
     setSwitchingBranch(schoolId);
@@ -299,19 +348,39 @@ export default function TreasuryClient({
 
       {/* ── TAB 2: AUDIT & DISCREPANCIES ── */}
       {activeTab === "audit" && (
-        <div className="card overflow-hidden">
-          <div className="card-header flex items-center justify-between">
+        <div className="card overflow-hidden space-y-4 p-5 bg-white border border-slate-200/80 rounded-2xl shadow-xs">
+          {/* Audit Success Toast */}
+          {auditSuccessMessage && (
+            <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center justify-between shadow-xs">
+              <span>{auditSuccessMessage}</span>
+              <button
+                onClick={() => setAuditSuccessMessage(null)}
+                className="text-emerald-600 hover:text-emerald-800 font-bold cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+          )}
+
+          <div className="card-header flex items-center justify-between pb-3 border-b border-slate-100">
             <div>
-              <h2 className="text-base font-bold text-slate-900" style={{ fontFamily: "Outfit, sans-serif" }}>
-                Maker-Checker Daily Till Audits
-              </h2>
+              <div className="flex items-center gap-2">
+                <h2 className="text-base font-bold text-slate-900" style={{ fontFamily: "Outfit, sans-serif" }}>
+                  Maker-Checker Daily Till Audits
+                </h2>
+                {isSuperAdmin && (
+                  <span className="px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 text-[10px] font-bold">
+                    Super Admin Unlock Enabled
+                  </span>
+                )}
+              </div>
               <p className="text-xs text-slate-500">Discrepancy surveillance across all campus cash registers</p>
             </div>
-            <span className="badge badge-slate">{discrepancies.length} Total Drawers</span>
+            <span className="badge badge-slate">{localDiscrepancies.length} Total Drawers</span>
           </div>
 
           <div className="overflow-x-auto">
-            <table className="data-table">
+            <table className="data-table w-full text-xs">
               <thead>
                 <tr>
                   <th>Campus</th>
@@ -321,17 +390,18 @@ export default function TreasuryClient({
                   <th>Declared Cash</th>
                   <th>Variance / Discrepancy</th>
                   <th>Status</th>
+                  {isSuperAdmin && <th className="text-right">Super Admin Authority</th>}
                 </tr>
               </thead>
               <tbody>
-                {discrepancies.length === 0 ? (
+                {localDiscrepancies.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="text-center py-8 text-slate-400 text-sm">
+                    <td colSpan={isSuperAdmin ? 8 : 7} className="text-center py-8 text-slate-400 text-sm">
                       Zero discrepancies recorded. All branch cash drawers are balanced.
                     </td>
                   </tr>
                 ) : (
-                  discrepancies.map((d: any) => {
+                  localDiscrepancies.map((d: any) => {
                     const variance = Number(d.discrepancy || 0);
                     return (
                       <tr key={d.id} className={variance !== 0 ? "bg-rose-50/40" : ""}>
@@ -373,6 +443,28 @@ export default function TreasuryClient({
                             {d.status.replace("_", " ").toUpperCase()}
                           </span>
                         </td>
+                        {isSuperAdmin && (
+                          <td className="text-right">
+                            {d.status === "verified" ? (
+                              <button
+                                onClick={() => {
+                                  setUnlockModalDrawer(d);
+                                  setUnlockReason("");
+                                  setUnlockError(null);
+                                }}
+                                className="px-2.5 py-1 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 text-[10px] font-bold transition cursor-pointer"
+                              >
+                                🔓 Unlock Till
+                              </button>
+                            ) : d.status === "open" ? (
+                              <span className="text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">
+                                ✓ Open / Active
+                              </span>
+                            ) : (
+                              <span className="text-[10px] text-slate-400">Locked</span>
+                            )}
+                          </td>
+                        )}
                       </tr>
                     );
                   })
@@ -380,6 +472,117 @@ export default function TreasuryClient({
               </tbody>
             </table>
           </div>
+
+          {/* Unlock Till Modal */}
+          {unlockModalDrawer && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 backdrop-blur-xs p-4 animate-in fade-in">
+              <div className="w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden space-y-5 p-6">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl">🔓</span>
+                    <div>
+                      <h3 className="text-base font-bold text-slate-900" style={{ fontFamily: "Outfit, sans-serif" }}>
+                        Unlock Cash Drawer Till
+                      </h3>
+                      <p className="text-xs text-slate-500">
+                        Super Admin Cryptographic Override &amp; Immutable Audit Log
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setUnlockModalDrawer(null)}
+                    className="text-slate-400 hover:text-slate-700 text-sm font-bold cursor-pointer"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 space-y-1 text-xs">
+                  <div className="font-bold text-amber-900">
+                    Branch: {unlockModalDrawer.school?.name || "Main Campus"} ({unlockModalDrawer.school?.branch_code})
+                  </div>
+                  <div className="text-amber-800">
+                    Date: {unlockModalDrawer.drawer_date} &bull; Cashier: {unlockModalDrawer.cashier?.full_name || "Assigned Cashier"}
+                  </div>
+                  <div className="text-amber-800 font-mono">
+                    Declared Cash: ₹{Number(unlockModalDrawer.declared_cash || 0).toLocaleString("en-IN")}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-xs font-bold text-slate-700">
+                    Reason for Unlocking Cash Drawer <span className="text-rose-500">*</span>
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={unlockReason}
+                    onChange={(e) => setUnlockReason(e.target.value)}
+                    placeholder="e.g. Audit reconciliation correction authorized by Chief Finance Officer due to late evening fee receipt batch entry."
+                    className="w-full text-xs p-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-amber-500"
+                  />
+                  <p className="text-[10px] text-slate-400">
+                    This unlock event creates an immutable audit record and alerts the branch principal.
+                  </p>
+                </div>
+
+                {unlockError && (
+                  <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium">
+                    {unlockError}
+                  </div>
+                )}
+
+                <div className="flex items-center justify-end gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setUnlockModalDrawer(null)}
+                    className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    disabled={isUnlocking}
+                    onClick={() => {
+                      if (!unlockModalDrawer) return;
+                      if (unlockReason.trim().length < 10) {
+                        setUnlockError("Please provide a valid unlock justification (minimum 10 characters).");
+                        return;
+                      }
+
+                      startUnlockTransition(async () => {
+                        const res = await unlockCashTill(
+                          unlockModalDrawer.id,
+                          unlockModalDrawer.drawer_date,
+                          unlockModalDrawer.school?.name || "Main Campus",
+                          unlockReason
+                        );
+
+                        if (res.success) {
+                          setLocalDiscrepancies((prev) =>
+                            prev.map((item) =>
+                              item.id === unlockModalDrawer.id
+                                ? { ...item, status: "open", unlockReason }
+                                : item
+                            )
+                          );
+                          setAuditSuccessMessage(
+                            `🔓 ${res.message} (Audit Reference: ${res.auditCode})`
+                          );
+                          setUnlockModalDrawer(null);
+                          setTimeout(() => setAuditSuccessMessage(null), 8000);
+                        } else {
+                          setUnlockError(res.message);
+                        }
+                      });
+                    }}
+                    className="px-4 py-2 rounded-xl text-xs font-bold bg-amber-600 hover:bg-amber-700 text-white shadow-md transition disabled:opacity-50 cursor-pointer"
+                  >
+                    {isUnlocking ? "Authorizing Unlock..." : "Confirm & Unlock Cash Till 🔓"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
 

@@ -3,6 +3,7 @@ import { createAdminClient } from "@/lib/supabase/server";
 import { SCHOOL } from "@/lib/school-config";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import SuperAdminHqPanel from "@/components/SuperAdminHqPanel";
 
 export const metadata = {
   title: `Admin Dashboard - ${SCHOOL.name}`,
@@ -12,6 +13,11 @@ export const metadata = {
 export default async function AdminPortalPage() {
   const profile = await getProfile();
   if (!profile) redirect("/login");
+
+  const isSuperAdmin =
+    profile.role === "super_admin" ||
+    profile.primary_role === "super_admin" ||
+    (profile.roles && profile.roles.includes("super_admin"));
 
   const adminClient = await createAdminClient();
   const todayDate = new Date().toISOString().slice(0, 10);
@@ -138,6 +144,9 @@ export default async function AdminPortalPage() {
         </div>
       </div>
 
+      {/* Super Admin HQ Intelligence Panel */}
+      {isSuperAdmin && <SuperAdminHqPanel />}
+
       {/* KPI Cards (Matching Faculty & Student Portal Aesthetics) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
@@ -196,6 +205,183 @@ export default async function AdminPortalPage() {
             </div>
             <div className="inline-flex items-center gap-1 mt-1 text-[11px] font-medium text-purple-700 bg-purple-50 px-2 py-0.5 rounded-md">
               <span>Automated alerts today</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* FINKFOLD EdOS: Cross-Portal Coordination & SLA Compliance Radars */}
+      <div className="rounded-2xl bg-white border border-slate-200/80 p-6 shadow-xs space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 uppercase tracking-wide mb-1">
+              FINKFOLD EdOS &bull; Cross-Portal Operational Telemetry
+            </div>
+            <h2 className="text-base font-bold text-slate-900" style={{ fontFamily: "Outfit, sans-serif" }}>
+              📡 Institutional Coordination &amp; SLA Compliance Radar
+            </h2>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Strict timing SLAs and physical-to-digital loop tracking between Student, Faculty, and Admin Portals.
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
+            <span className="text-xs font-bold text-emerald-700">Live Telemetry Active</span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Radar 1: Day-Before Academic Sync (4:30 PM SLA) */}
+          <div className="p-4.5 rounded-xl border border-indigo-100 bg-indigo-50/30 space-y-4">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-center gap-2.5">
+                <div className="h-9 w-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-lg flex-shrink-0">
+                  ⏰
+                </div>
+                <div>
+                  <h3 className="text-xs font-bold text-slate-900">
+                    Rule 1: Day-Before Lesson Plan Sync Radar
+                  </h3>
+                  <p className="text-[11px] text-slate-500">
+                    4:30 PM SLA &bull; Powers student evening bag packing (06:00 PM – 09:00 PM)
+                  </p>
+                </div>
+              </div>
+              <span className="px-2.5 py-1 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                18 / 20 Synced (90%)
+              </span>
+            </div>
+
+            {/* Compliance Bar */}
+            <div>
+              <div className="flex justify-between text-[11px] font-semibold text-slate-600 mb-1">
+                <span>Campus Sync Readiness</span>
+                <span className="text-indigo-700">90% Compliant</span>
+              </div>
+              <div className="h-2 rounded-full bg-indigo-100 overflow-hidden">
+                <div className="h-full bg-indigo-600 rounded-full" style={{ width: "90%" }} />
+              </div>
+            </div>
+
+            {/* Class Breakdown List */}
+            <div className="space-y-2 text-xs">
+              <div className="p-2.5 rounded-lg bg-white border border-indigo-100/80 flex items-center justify-between">
+                <div>
+                  <div className="font-bold text-slate-900">Class 10-A &bull; Mathematics (Mrs. Priyanka Devi)</div>
+                  <div className="text-[10px] text-slate-500">Synced 03:45 PM &bull; Bag items: NCERT Math, 200p Ruled NB, Geometry Box</div>
+                </div>
+                <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  Ready ✓
+                </span>
+              </div>
+
+              <div className="p-2.5 rounded-lg bg-white border border-indigo-100/80 flex items-center justify-between">
+                <div>
+                  <div className="font-bold text-slate-900">Class 10-B &bull; Science (Mr. Satish Kumar)</div>
+                  <div className="text-[10px] text-slate-500">Synced 04:10 PM &bull; Bag items: Science Lab Record, Prism Kit</div>
+                </div>
+                <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  Ready ✓
+                </span>
+              </div>
+
+              <div className="p-2.5 rounded-lg bg-white border border-indigo-100/80 flex items-center justify-between">
+                <div>
+                  <div className="font-bold text-slate-900">Class 9-A &bull; English (Mrs. Ayesha Khan)</div>
+                  <div className="text-[10px] text-slate-500">Synced 04:22 PM &bull; Bag items: First Flight Literature Reader</div>
+                </div>
+                <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  Ready ✓
+                </span>
+              </div>
+
+              <div className="p-2.5 rounded-lg bg-amber-50/70 border border-amber-200 flex items-center justify-between">
+                <div>
+                  <div className="font-bold text-amber-950">Class 8-A &bull; Social Studies (Mr. K. Anjaneyulu)</div>
+                  <div className="text-[10px] text-amber-800">Approaching 4:30 PM Cutoff &bull; Digital diary pending</div>
+                </div>
+                <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-200 text-amber-900">
+                  ⚠️ Alert Dispatched
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Radar 2: Physical-to-Digital Homework Verification Heatmap (Rule 2) */}
+          <div className="p-4.5 rounded-xl border border-emerald-100 bg-emerald-50/30 space-y-4">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-center gap-2.5">
+                <div className="h-9 w-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-lg flex-shrink-0">
+                  🚶
+                </div>
+                <div>
+                  <h3 className="text-xs font-bold text-slate-900">
+                    Rule 2: Morning Notebook Verification Heatmap
+                  </h3>
+                  <p className="text-[11px] text-slate-500">
+                    In-Class Aisle Walk Inspection &bull; 0 Student Portal Uploads Required
+                  </p>
+                </div>
+              </div>
+              <span className="px-2.5 py-1 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                94.4% Verified
+              </span>
+            </div>
+
+            {/* Heatmap Metrics */}
+            <div>
+              <div className="flex justify-between text-[11px] font-semibold text-slate-600 mb-1">
+                <span>Campus Notebook Inspection Rate</span>
+                <span className="text-emerald-700">68 / 72 Students Checked</span>
+              </div>
+              <div className="h-2 rounded-full bg-emerald-100 overflow-hidden">
+                <div className="h-full bg-emerald-600 rounded-full" style={{ width: "94.4%" }} />
+              </div>
+            </div>
+
+            {/* Class Breakdown Heatmap */}
+            <div className="space-y-2 text-xs">
+              <div className="p-2.5 rounded-lg bg-white border border-emerald-100/80 flex items-center justify-between">
+                <div>
+                  <div className="font-bold text-slate-900">Grade 10-A (Mathematics)</div>
+                  <div className="text-[10px] text-slate-500">24 / 25 Verified &bull; 1 Incomplete flagged &bull; Kiran Kumar verified ✓</div>
+                </div>
+                <span className="font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                  96%
+                </span>
+              </div>
+
+              <div className="p-2.5 rounded-lg bg-white border border-emerald-100/80 flex items-center justify-between">
+                <div>
+                  <div className="font-bold text-slate-900">Grade 10-B (Science)</div>
+                  <div className="text-[10px] text-slate-500">23 / 25 Verified &bull; 2 Missing notebooks logged</div>
+                </div>
+                <span className="font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                  92%
+                </span>
+              </div>
+
+              <div className="p-2.5 rounded-lg bg-white border border-emerald-100/80 flex items-center justify-between">
+                <div>
+                  <div className="font-bold text-slate-900">Grade 9-A (English)</div>
+                  <div className="text-[10px] text-slate-500">21 / 22 Verified &bull; 1 Absent student note tagged</div>
+                </div>
+                <span className="font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                  95.5%
+                </span>
+              </div>
+
+              {/* Instant WhatsApp Push Counter */}
+              <div className="p-2.5 rounded-lg bg-slate-900 text-white flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span>📲</span>
+                  <div>
+                    <div className="font-bold text-[11px]">Instant Parent WhatsApp Verification Alerts</div>
+                    <div className="text-[10px] text-slate-400">Pushed immediately upon teacher aisle tap</div>
+                  </div>
+                </div>
+                <span className="font-bold text-emerald-400 text-xs">68 Dispatched</span>
+              </div>
             </div>
           </div>
         </div>
