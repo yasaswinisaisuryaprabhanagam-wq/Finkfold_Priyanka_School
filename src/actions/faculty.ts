@@ -430,6 +430,42 @@ export async function reportInfirmaryIncidentAction(payload: {
 
 // ── 7. Lost & Found Snap & Upload ─────────────────────────────────────────────
 export async function getFacultyLostFoundDataAction() {
+  try {
+    const supabase = await createAdminClient();
+    const { data: dbItems, error } = await supabase
+      .from("lost_and_found_items")
+      .select("*")
+      .eq("school_id", SCHOOL.id)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.warn("Could not query lost_and_found_items in faculty:", error.message);
+    }
+
+    if (dbItems && dbItems.length > 0) {
+      const items: LostFoundItem[] = dbItems.map((item: any) => ({
+        id: item.id,
+        title: item.title,
+        category: item.category,
+        description: item.description,
+        foundLocation: item.found_location,
+        foundDate: new Date(item.found_date || item.created_at).toLocaleDateString("en-IN", {
+          day: "numeric",
+          month: "short",
+        }),
+        lockerBin: item.locker_bin,
+        photoEmoji: item.photo_emoji || "🎒",
+        status: item.status,
+        claimedByStudentName: item.claimed_by_student_name,
+        claimedHomeroom: item.claimed_homeroom,
+        claimNote: item.claim_note,
+      }));
+      return { items };
+    }
+  } catch (err: any) {
+    console.warn("getFacultyLostFoundDataAction error:", err?.message);
+  }
+
   return {
     items: lostFoundCatalog,
   };
@@ -455,6 +491,29 @@ export async function snapUploadLostFoundItemAction(payload: {
     status: "available",
   };
 
+  try {
+    const supabase = await createAdminClient();
+    const { data, error } = await supabase.from("lost_and_found_items").insert({
+      school_id: SCHOOL.id,
+      title: payload.title,
+      category: payload.category,
+      description: payload.description,
+      found_location: payload.foundLocation,
+      found_date: new Date().toISOString().split("T")[0],
+      locker_bin: payload.lockerBin,
+      photo_emoji: payload.photoEmoji || "🎒",
+      status: "available",
+    }).select().single();
+
+    if (error) {
+      console.error("Failed to insert lost_and_found_items:", error.message);
+    } else if (data) {
+      newItem.id = data.id;
+    }
+  } catch (err: any) {
+    console.error("snapUploadLostFoundItemAction error:", err?.message);
+  }
+
   lostFoundCatalog = [newItem, ...lostFoundCatalog];
   revalidatePath("/portal/faculty/lost-found");
   revalidatePath("/portal/student/lost-found");
@@ -462,7 +521,7 @@ export async function snapUploadLostFoundItemAction(payload: {
   return {
     success: true,
     item: newItem,
-    message: "Found item uploaded! It is now live on the parent Lost & Found board.",
+    message: "Found item uploaded! It is now live on the parent and student Lost & Found boards.",
   };
 }
 

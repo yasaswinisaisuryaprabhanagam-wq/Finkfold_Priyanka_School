@@ -18,6 +18,11 @@ import {
   generateRemedialWorksheetAction,
   downloadReportCardAction,
 } from "@/actions/academics";
+import {
+  downloadReportCardPDF,
+  downloadWorksheetPDF,
+  downloadArchivedMarksheetPDF,
+} from "@/lib/pdfDownloader";
 
 export default function AcademicsExamPage() {
   const [activeTab, setActiveTab] = useState<"current_exams" | "earlier_archive" | "ai_skills">("current_exams");
@@ -64,11 +69,12 @@ export default function AcademicsExamPage() {
       alert("Institutional Fee Clearance Policy: Digital signed report cards can only be generated once outstanding term fees are cleared. Please visit the Fee Portal to clear dues.");
       return;
     }
-    startTransition(async () => {
-      const res = await downloadReportCardAction(examId);
-      setNotification(res.message);
-      setTimeout(() => setNotification(null), 5000);
-    });
+    const targetExam = exams.find((e) => e.id === examId) || exams[0];
+    if (targetExam) {
+      downloadReportCardPDF(targetExam, "Aarav Sharma", "PRIY-2026-001", "Class 10 - Section A");
+      setNotification(`Digitally signed report card for ${targetExam.examName} generated and downloaded successfully!`);
+      setTimeout(() => setNotification(null), 6000);
+    }
   }
 
   return (
@@ -383,8 +389,8 @@ export default function AcademicsExamPage() {
                     📝 {ws.questionsCount} Targeted Questions + Answer Key
                   </div>
                   <button
-                    onClick={() => alert(`Downloading ${ws.title} with complete diagnostic explanations!`)}
-                    className="w-full py-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-800 text-xs font-bold transition-colors flex items-center justify-center gap-1 shadow-2xs"
+                    onClick={() => downloadWorksheetPDF(ws, "Aarav Sharma", "Class 10-A")}
+                    className="w-full py-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-800 text-xs font-bold transition-colors flex items-center justify-center gap-1 shadow-2xs cursor-pointer"
                   >
                     <span>📥</span>
                     <span>Download PDF</span>
@@ -460,8 +466,8 @@ export default function AcademicsExamPage() {
 
             <div className="flex justify-end pt-2">
               <button
-                onClick={() => alert(`Downloading archived final report card for ${activeEarlierData.academicYear} (${activeEarlierData.classGrade})`)}
-                className="px-4 py-2.5 rounded-xl bg-violet-900 hover:bg-violet-800 text-white text-xs font-bold shadow-sm transition-colors flex items-center gap-1.5"
+                onClick={() => downloadArchivedMarksheetPDF(activeEarlierData, "Aarav Sharma", "PRIY-2026-001")}
+                className="px-4 py-2.5 rounded-xl bg-violet-900 hover:bg-violet-800 text-white text-xs font-bold shadow-sm transition-colors flex items-center gap-1.5 cursor-pointer"
               >
                 <span>📜</span>
                 <span>Download Archived Annual Marksheet (PDF)</span>

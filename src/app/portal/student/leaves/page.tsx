@@ -56,8 +56,9 @@ export default function LeavesAndOdPage() {
         medicalDocName: isMedicalRequired ? medicalDocName || "Dr_Murthy_Medical_Certificate.pdf" : undefined,
       });
 
-      if (res.success) {
-        setLeaves((prev) => [res.leave, ...prev]);
+      if (res.success && res.leave) {
+        const newLeave = res.leave;
+        setLeaves((prev) => [newLeave, ...prev]);
         setNotification(res.message);
         setReason("");
         setMedicalDocName("");

@@ -8,21 +8,22 @@ import { INITIAL_TICKETS } from "@/types/self-service";
 import { createAdminClient } from "@/lib/supabase/server";
 import { SCHOOL } from "@/lib/school-config";
 
-async function getDefaultStudentId(supabase: any) {
-  const { data: stu } = await supabase.from("students").select("id").limit(1).maybeSingle();
-  return stu?.id || "6921082e-75ab-4067-b536-b76d09f71c3a";
-}
+import { getAuthenticatedStudent } from "@/lib/studentSession";
 
 export async function getSupportTicketsData(): Promise<SupportTicket[]> {
-  const supabase = await createAdminClient();
-  const studentId = await getDefaultStudentId(supabase);
-
   try {
-    const { data: dbTickets } = await supabase
+    const { student } = await getAuthenticatedStudent();
+    const supabase = await createAdminClient();
+
+    const { data: dbTickets, error } = await supabase
       .from("support_tickets")
       .select("*")
-      .eq("student_id", studentId)
+      .eq("student_id", student.id)
       .order("created_at", { ascending: false });
+
+    if (error) {
+      console.warn("Could not query support_tickets:", error.message);
+    }
 
     if (dbTickets && dbTickets.length > 0) {
       return dbTickets.map((t: any) => ({
@@ -42,8 +43,8 @@ export async function getSupportTicketsData(): Promise<SupportTicket[]> {
         }),
       }));
     }
-  } catch (err) {
-    // Fallback if table not queried
+  } catch (err: any) {
+    console.warn("getSupportTicketsData error:", err?.message);
   }
 
   return INITIAL_TICKETS;
@@ -72,13 +73,13 @@ export async function createTicketAction(payload: {
     createdAt: "Just now",
   };
 
-  const supabase = await createAdminClient();
-  const studentId = await getDefaultStudentId(supabase);
-
   try {
-    await supabase.from("support_tickets").insert({
-      school_id: SCHOOL.id,
-      student_id: studentId,
+    const { student, schoolId } = await getAuthenticatedStudent();
+    const supabase = await createAdminClient();
+
+    const { data, error } = await supabase.from("support_tickets").insert({
+      school_id: schoolId,
+      student_id: student.id,
       ticket_number: tickNum,
       category: payload.category,
       subject: payload.subject,
@@ -87,12 +88,19 @@ export async function createTicketAction(payload: {
       status: "open",
       sla_remaining_hours: slaRemainingHours,
       assigned_dept: assignedDept,
-    });
-  } catch (err) {
-    // Graceful fallback
+    }).select().single();
+
+    if (error) {
+      console.error("Failed to insert support_tickets:", error.message);
+    } else if (data) {
+      newTicket.id = data.id;
+    }
+  } catch (err: any) {
+    console.error("createTicketAction error:", err?.message);
   }
 
   revalidatePath("/portal/student/documents");
+  revalidatePath("/portal/admin");
   return {
     success: true,
     ticket: newTicket,

@@ -53,6 +53,20 @@ export default async function FacultyStudentsPage() {
     (data || []).forEach((c: any) => classMap.set(c.id, c));
   } catch {}
 
+  // Fetch medical & allergy records
+  let medicalMap = new Map<string, any>();
+  try {
+    const studentIds = students.map((s: any) => s.id);
+    if (studentIds.length > 0) {
+      const { data: meds } = await adminClient
+        .from("student_medical_records")
+        .select("student_id, blood_group, known_allergies, chronic_conditions, emergency_contact_phone")
+        .in("student_id", studentIds);
+
+      (meds || []).forEach((m: any) => medicalMap.set(m.student_id, m));
+    }
+  } catch {}
+
   // Fallback
   if (students.length === 0) {
     students = [
@@ -83,7 +97,7 @@ export default async function FacultyStudentsPage() {
             👥 Student Roster
           </h1>
           <p className="text-slate-500 text-xs sm:text-sm">
-            {students.length} students across your assigned classes
+            {students.length} students across your assigned classes &middot; Real-time allergy &amp; emergency alerts active
           </p>
         </div>
       </div>
@@ -99,23 +113,23 @@ export default async function FacultyStudentsPage() {
           <div className="text-xs text-slate-500 mt-1">Classes</div>
         </div>
         <div className="stat-card text-center">
+          <div className="text-3xl font-black text-rose-600">
+            {Array.from(medicalMap.values()).filter((m: any) => (m.known_allergies?.length > 0 || m.chronic_conditions?.length > 0)).length}
+          </div>
+          <div className="text-xs text-slate-500 mt-1">Medical / Allergy Alerts</div>
+        </div>
+        <div className="stat-card text-center">
           <div className="text-3xl font-black text-green-600">
             {students.filter(s => s.consent_whatsapp).length}
           </div>
           <div className="text-xs text-slate-500 mt-1">WhatsApp Enabled</div>
-        </div>
-        <div className="stat-card text-center">
-          <div className="text-3xl font-black text-slate-700">
-            {students.filter(s => !s.consent_whatsapp).length}
-          </div>
-          <div className="text-xs text-slate-500 mt-1">No WhatsApp</div>
         </div>
       </div>
 
       {/* Students by class */}
       {Array.from(byClass.entries()).map(([classId, classStudents]) => {
         const cls = classMap.get(classId);
-        const className = cls ? `Class ${cls.name} " Section ${cls.section}` : "Class";
+        const className = cls ? `Class ${cls.name} · Section ${cls.section}` : "Class";
         return (
           <div key={classId} className="card overflow-hidden">
             <div className="card-header flex items-center justify-between">
@@ -136,26 +150,56 @@ export default async function FacultyStudentsPage() {
                     <th>Roll No</th>
                     <th>Name</th>
                     <th>Admission No</th>
+                    <th>Medical &amp; Allergies</th>
                     <th>Parent</th>
                     <th>Phone</th>
                     <th>WhatsApp</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {classStudents.map((s: any) => (
-                    <tr key={s.id}>
-                      <td className="font-bold text-center text-slate-700">#{s.roll_no}</td>
-                      <td className="font-semibold text-slate-800">{s.full_name}</td>
-                      <td className="font-mono text-xs text-slate-500">{s.admission_no}</td>
-                      <td className="text-xs text-slate-600">{s.parent_name}</td>
-                      <td className="font-mono text-xs text-slate-500">{s.parent_phone}</td>
-                      <td>
-                        <span className={`badge ${s.consent_whatsapp ? "badge-green" : "badge-slate"}`}>
-                          {s.consent_whatsapp ? "Active" : "Disabled"}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
+                  {classStudents.map((s: any) => {
+                    const med = medicalMap.get(s.id);
+                    const hasAllergies = med && (med.known_allergies?.length > 0 || med.chronic_conditions?.length > 0);
+                    return (
+                      <tr key={s.id}>
+                        <td className="font-bold text-center text-slate-700">#{s.roll_no}</td>
+                        <td className="font-semibold text-slate-800">
+                          {s.full_name}
+                          {med?.blood_group && (
+                            <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 font-mono font-bold">
+                              {med.blood_group}
+                            </span>
+                          )}
+                        </td>
+                        <td className="font-mono text-xs text-slate-500">{s.admission_no}</td>
+                        <td>
+                          {hasAllergies ? (
+                            <div className="flex flex-wrap gap-1 max-w-xs">
+                              {med.known_allergies?.map((a: string, i: number) => (
+                                <span key={i} className="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-50 text-rose-800 border border-rose-200">
+                                  🛑 {a}
+                                </span>
+                              ))}
+                              {med.chronic_conditions?.map((c: string, i: number) => (
+                                <span key={i} className="text-[10px] font-semibold px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200">
+                                  💊 {c}
+                                </span>
+                              ))}
+                            </div>
+                          ) : (
+                            <span className="text-[11px] text-slate-400">None reported</span>
+                          )}
+                        </td>
+                        <td className="text-xs text-slate-600">{s.parent_name}</td>
+                        <td className="font-mono text-xs text-slate-500">{s.parent_phone}</td>
+                        <td>
+                          <span className={`badge ${s.consent_whatsapp ? "badge-green" : "badge-slate"}`}>
+                            {s.consent_whatsapp ? "Active" : "Disabled"}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

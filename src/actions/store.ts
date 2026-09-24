@@ -1,27 +1,23 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-
 import { createAdminClient } from "@/lib/supabase/server";
-import { SCHOOL } from "@/lib/school-config";
+import { getAuthenticatedStudent } from "@/lib/studentSession";
 import type { StoreItem, StoreOrder } from "@/types/self-service";
 import { INITIAL_STORE_ITEMS, INITIAL_ORDERS } from "@/types/self-service";
 
-async function getDefaultStudentId(supabase: any) {
-  const { data: stu } = await supabase.from("students").select("id").limit(1).maybeSingle();
-  return stu?.id || "6921082e-75ab-4067-b536-b76d09f71c3a";
-}
-
 export async function getStoreData(): Promise<{ items: StoreItem[]; orders: StoreOrder[] }> {
+  const { student, schoolId } = await getAuthenticatedStudent();
   const supabase = await createAdminClient();
-  const studentId = await getDefaultStudentId(supabase);
 
   try {
-    const { data: dbOrders } = await supabase
+    const { data: dbOrders, error } = await supabase
       .from("campus_store_orders")
       .select("*")
-      .eq("student_id", studentId)
+      .eq("student_id", student.id)
       .order("created_at", { ascending: false });
+
+    if (error) console.error("Error querying campus_store_orders:", error);
 
     if (dbOrders && dbOrders.length > 0) {
       const mappedOrders: StoreOrder[] = dbOrders.map((o: any) => ({
@@ -42,7 +38,7 @@ export async function getStoreData(): Promise<{ items: StoreItem[]; orders: Stor
       return { items: INITIAL_STORE_ITEMS, orders: mappedOrders };
     }
   } catch (err) {
-    // Fallback if table not queried
+    console.error("Failed to fetch store orders:", err);
   }
 
   return { items: INITIAL_STORE_ITEMS, orders: INITIAL_ORDERS };
@@ -53,12 +49,40 @@ export async function placeStoreOrderAction(payload: {
   totalAmount: number;
   pointsRedeemed: number;
 }) {
+  const { student, schoolId } = await getAuthenticatedStudent();
+  const supabase = await createAdminClient();
+
   const orderNum = "ORD-PRIY-" + Math.floor(1000 + Math.random() * 9000);
-  const pickupQr = `QR-STORE-${orderNum}-LUNCH`;
+  const pickupQr = `QR-STORE-${orderNum}-${Date.now().toString().slice(-4)}`;
   const pickupSlot = "Tomorrow Lunch Break (12:45 PM – 01:25 PM) • School Store";
 
+  const { data, error } = await supabase
+    .from("campus_store_orders")
+    .insert({
+      school_id: schoolId,
+      student_id: student.id,
+      order_number: orderNum,
+      items: payload.items,
+      total_amount: payload.totalAmount,
+      points_redeemed: payload.pointsRedeemed,
+      status: "packing",
+      pickup_pass_qr: pickupQr,
+      pickup_slot: pickupSlot,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Error inserting into campus_store_orders:", error);
+    return {
+      success: false,
+      error: error.message,
+      message: "Failed to log store order into database.",
+    };
+  }
+
   const newOrder: StoreOrder = {
-    id: "ord-" + Date.now(),
+    id: data?.id || "ord-" + Date.now(),
     orderNumber: orderNum,
     items: payload.items,
     totalAmount: payload.totalAmount,
@@ -69,26 +93,8 @@ export async function placeStoreOrderAction(payload: {
     createdAt: "Today",
   };
 
-  const supabase = await createAdminClient();
-  const studentId = await getDefaultStudentId(supabase);
-
-  try {
-    await supabase.from("campus_store_orders").insert({
-      school_id: SCHOOL.id,
-      student_id: studentId,
-      order_number: orderNum,
-      items: payload.items,
-      total_amount: payload.totalAmount,
-      points_redeemed: payload.pointsRedeemed,
-      status: "packing",
-      pickup_pass_qr: pickupQr,
-      pickup_slot: pickupSlot,
-    });
-  } catch (err) {
-    // Graceful fallback
-  }
-
   revalidatePath("/portal/student/store");
+  revalidatePath("/portal/admin");
   return {
     success: true,
     order: newOrder,

@@ -7,21 +7,22 @@ import { SCHOOL } from "@/lib/school-config";
 import type { OutPassRequest, MessDayMenu } from "@/types/self-service";
 import { INITIAL_MESS_MENU, INITIAL_OUTPASSES } from "@/types/self-service";
 
-async function getDefaultStudentId(supabase: any) {
-  const { data: stu } = await supabase.from("students").select("id").limit(1).maybeSingle();
-  return stu?.id || "6921082e-75ab-4067-b536-b76d09f71c3a";
-}
+import { getAuthenticatedStudent } from "@/lib/studentSession";
 
 export async function getOutPassesData(): Promise<OutPassRequest[]> {
-  const supabase = await createAdminClient();
-  const studentId = await getDefaultStudentId(supabase);
-
   try {
-    const { data: dbPasses } = await supabase
+    const { student } = await getAuthenticatedStudent();
+    const supabase = await createAdminClient();
+
+    const { data: dbPasses, error } = await supabase
       .from("digital_outpasses")
       .select("*")
-      .eq("student_id", studentId)
+      .eq("student_id", student.id)
       .order("created_at", { ascending: false });
+
+    if (error) {
+      console.warn("Could not query digital_outpasses:", error.message);
+    }
 
     if (dbPasses && dbPasses.length > 0) {
       return dbPasses.map((p: any) => ({
@@ -44,8 +45,8 @@ export async function getOutPassesData(): Promise<OutPassRequest[]> {
         }),
       }));
     }
-  } catch (err) {
-    // Fallback if table not queried
+  } catch (err: any) {
+    console.warn("getOutPassesData fallback error:", err?.message);
   }
 
   return INITIAL_OUTPASSES;
@@ -75,13 +76,13 @@ export async function submitOutPassAction(payload: {
     createdAt: "Just now",
   };
 
-  const supabase = await createAdminClient();
-  const studentId = await getDefaultStudentId(supabase);
-
   try {
-    await supabase.from("digital_outpasses").insert({
-      school_id: SCHOOL.id,
-      student_id: studentId,
+    const { student, schoolId } = await getAuthenticatedStudent();
+    const supabase = await createAdminClient();
+
+    const { data, error } = await supabase.from("digital_outpasses").insert({
+      school_id: schoolId,
+      student_id: student.id,
       pass_number: passNum,
       leave_type: payload.leaveType,
       exit_date_time: payload.exitDateTime,
@@ -91,12 +92,20 @@ export async function submitOutPassAction(payload: {
       parent_approval: "approved",
       warden_approval: "pending",
       gate_pass_qr: gatePassQr,
-    });
-  } catch (err) {
-    // Graceful fallback
+    }).select().single();
+
+    if (error) {
+      console.error("Failed to insert digital_outpasses:", error.message);
+    } else if (data) {
+      newPass.id = data.id;
+    }
+  } catch (err: any) {
+    console.error("submitOutPassAction exception:", err?.message);
   }
 
   revalidatePath("/portal/student/outpass");
+  revalidatePath("/portal/faculty");
+  revalidatePath("/portal/admin");
   return {
     success: true,
     pass: newPass,

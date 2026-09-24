@@ -14,24 +14,34 @@ import {
   INITIAL_ID_PHOTO,
 } from "@/types/self-service";
 
-async function getDefaultStudentId(supabase: any) {
-  const { data: stu } = await supabase.from("students").select("id, full_name").limit(1).maybeSingle();
-  return stu || { id: "6921082e-75ab-4067-b536-b76d09f71c3a", full_name: "Arjun Reddy" };
-}
+import { getAuthenticatedStudent } from "@/lib/studentSession";
 
 export async function getVaultExtendedData(): Promise<{
   certificates: DigitalCertificate[];
   externalAchievements: ExternalAchievement[];
   idPhoto: IdPhotoSubmission;
+  studentName?: string;
+  admissionNo?: string;
+  className?: string;
+  parentName?: string;
 }> {
-  const supabase = await createAdminClient();
-  const student = await getDefaultStudentId(supabase);
-
   let certificates = INITIAL_CERTIFICATES;
   let externalAchievements = INITIAL_EXTERNAL_ACHIEVEMENTS;
   let idPhoto = INITIAL_ID_PHOTO;
+  let studentName = "Aarav Sharma";
+  let admissionNo = "PRIY-2026-001";
+  let className = "Class 10-A";
+  let parentName = "Sri Rajesh Sharma";
 
   try {
+    const { student, schoolId } = await getAuthenticatedStudent();
+    const supabase = await createAdminClient();
+    studentName = student.full_name;
+    admissionNo = student.admission_no;
+    className = `Class ${student.className || "10"}-${student.classSection || "A"}`;
+    parentName = student.parent_name || "Parent/Guardian";
+
+    // 1. Digital Certificates
     const { data: dbCerts } = await supabase
       .from("student_digital_certificates")
       .select("*")
@@ -57,6 +67,7 @@ export async function getVaultExtendedData(): Promise<{
       }));
     }
 
+    // 2. External Achievements
     const { data: dbExt } = await supabase
       .from("external_achievements_dropbox")
       .select("*")
@@ -80,14 +91,48 @@ export async function getVaultExtendedData(): Promise<{
         principalRemarks: e.principal_remarks,
       }));
     }
-  } catch (err) {
-    // Fallback
+
+    // 3. ID Photo Submissions
+    const { data: dbPhotos } = await supabase
+      .from("student_id_photo_submissions")
+      .select("*")
+      .eq("student_id", student.id)
+      .order("created_at", { ascending: false })
+      .limit(1);
+
+    if (dbPhotos && dbPhotos.length > 0) {
+      const p = dbPhotos[0];
+      idPhoto = {
+        id: p.id,
+        photoUrl: p.photo_url,
+        submittedDate: new Date(p.submitted_date || p.created_at).toLocaleDateString("en-IN", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        }),
+        status: p.status,
+        complianceChecks: p.compliance_meta && Object.keys(p.compliance_meta).length > 0
+          ? p.compliance_meta
+          : {
+              whiteBackground: true,
+              faceRatioPassed: true,
+              formalUniformDetected: true,
+              minResolutionMet: true,
+            },
+      };
+    }
+  } catch (err: any) {
+    console.warn("getVaultExtendedData error:", err?.message);
   }
 
   return {
     certificates,
     externalAchievements,
     idPhoto,
+    studentName,
+    admissionNo,
+    className,
+    parentName,
   };
 }
 
@@ -110,26 +155,33 @@ export async function submitExternalAchievementAction(payload: {
     status: "pending_principal_approval",
   };
 
-  const supabase = await createAdminClient();
-  const student = await getDefaultStudentId(supabase);
-
   try {
-    await supabase.from("external_achievements_dropbox").insert({
-      school_id: SCHOOL.id,
+    const { student, schoolId } = await getAuthenticatedStudent();
+    const supabase = await createAdminClient();
+
+    const { data, error } = await supabase.from("external_achievements_dropbox").insert({
+      school_id: schoolId,
       student_id: student.id,
       title: payload.title,
       organizing_body: payload.organizingBody,
       competition_level: payload.level,
-      event_date: new Date().toISOString().split("T")[0],
+      event_date: payload.eventDate || new Date().toISOString().split("T")[0],
       award_secured: payload.awardSecured,
       proof_document_name: payload.proofDocumentName,
       status: "pending_principal_approval",
-    });
-  } catch (err) {
-    // Graceful fallback
+    }).select().single();
+
+    if (error) {
+      console.error("Failed to insert external_achievements_dropbox:", error.message);
+    } else if (data) {
+      newAch.id = data.id;
+    }
+  } catch (err: any) {
+    console.error("submitExternalAchievementAction error:", err?.message);
   }
 
   revalidatePath("/portal/student/documents");
+  revalidatePath("/portal/admin/documents");
   return {
     success: true,
     achievement: newAch,
@@ -151,22 +203,30 @@ export async function uploadIdPhotoAction(photoDataUrl: string) {
     },
   };
 
-  const supabase = await createAdminClient();
-  const student = await getDefaultStudentId(supabase);
-
   try {
-    await supabase.from("student_id_photo_submissions").insert({
-      school_id: SCHOOL.id,
+    const { student, schoolId } = await getAuthenticatedStudent();
+    const supabase = await createAdminClient();
+
+    const { data, error } = await supabase.from("student_id_photo_submissions").insert({
+      school_id: schoolId,
       student_id: student.id,
-      photo_url: photoDataUrl.slice(0, 100) + "...[truncated]",
+      photo_url: photoDataUrl,
+      submitted_date: new Date().toISOString().split("T")[0],
       status: "approved_batch_ready",
       compliance_meta: updatedPhoto.complianceChecks,
-    });
-  } catch (err) {
-    // Graceful fallback
+    }).select().single();
+
+    if (error) {
+      console.error("Failed to insert student_id_photo_submissions:", error.message);
+    } else if (data) {
+      updatedPhoto.id = data.id;
+    }
+  } catch (err: any) {
+    console.error("uploadIdPhotoAction error:", err?.message);
   }
 
   revalidatePath("/portal/student/documents");
+  revalidatePath("/portal/admin/documents");
   return {
     success: true,
     idPhoto: updatedPhoto,

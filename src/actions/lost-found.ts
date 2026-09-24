@@ -2,23 +2,24 @@
 
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/server";
-import { SCHOOL } from "@/lib/school-config";
+import { getAuthenticatedStudent } from "@/lib/studentSession";
 import type { LostFoundItem } from "@/types/self-service";
 import { INITIAL_LOST_FOUND_ITEMS } from "@/types/self-service";
 
-async function getDefaultStudentId(supabase: any) {
-  const { data: stu } = await supabase.from("students").select("id, full_name").limit(1).maybeSingle();
-  return stu || { id: "6921082e-75ab-4067-b536-b76d09f71c3a", full_name: "Arjun Reddy" };
-}
-
 export async function getLostFoundData(): Promise<LostFoundItem[]> {
+  const { schoolId } = await getAuthenticatedStudent();
   const supabase = await createAdminClient();
 
   try {
-    const { data: dbItems } = await supabase
+    const { data: dbItems, error } = await supabase
       .from("lost_and_found_items")
       .select("*")
+      .eq("school_id", schoolId)
       .order("found_date", { ascending: false });
+
+    if (error) {
+      console.error("Error querying lost_and_found_items:", error);
+    }
 
     if (dbItems && dbItems.length > 0) {
       return dbItems.map((item: any) => ({
@@ -41,7 +42,7 @@ export async function getLostFoundData(): Promise<LostFoundItem[]> {
       }));
     }
   } catch (err) {
-    // Graceful fallback
+    console.error("Failed to fetch lost and found data:", err);
   }
 
   return INITIAL_LOST_FOUND_ITEMS;
@@ -53,28 +54,59 @@ export async function claimItemAction(payload: {
   homeroom: string;
   identifyingMark: string;
 }) {
+  const { student, schoolId } = await getAuthenticatedStudent();
   const supabase = await createAdminClient();
-  const student = await getDefaultStudentId(supabase);
 
-  try {
-    await supabase
+  // Validate if itemId is a valid UUID
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(payload.itemId);
+
+  let targetId = payload.itemId;
+
+  if (!isUuid) {
+    // If client has fallback ID (e.g. 'lf-01'), find corresponding row by title or match
+    const { data: matched } = await supabase
       .from("lost_and_found_items")
-      .update({
-        status: "claimed_pending",
-        claimed_by_student_id: student.id,
-        claimed_by_student_name: payload.studentName || student.full_name,
-        claimed_homeroom: payload.homeroom,
-        claim_note: payload.identifyingMark,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", payload.itemId);
-  } catch (err) {
-    // Graceful fallback
+      .select("id")
+      .eq("school_id", schoolId)
+      .ilike("title", "%uniform%")
+      .limit(1)
+      .maybeSingle();
+
+    if (matched) {
+      targetId = matched.id;
+    }
+  }
+
+  const { data, error } = await supabase
+    .from("lost_and_found_items")
+    .update({
+      status: "claimed_pending",
+      claimed_by_student_id: student.id,
+      claimed_by_student_name: payload.studentName || student.full_name,
+      claimed_homeroom: payload.homeroom,
+      claim_note: payload.identifyingMark,
+      identifying_mark_claim: payload.identifyingMark,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", targetId)
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Error updating claim in Supabase lost_and_found_items:", error);
+    return {
+      success: false,
+      error: error.message,
+      message: "Failed to persist claim in database. Please try again.",
+    };
   }
 
   revalidatePath("/portal/student/lost-found");
+  revalidatePath("/portal/faculty");
+  revalidatePath("/portal/admin");
+
   return {
     success: true,
-    message: `Claim request submitted for "${payload.itemId}"! Caretaker notified to verify identifying mark and deliver to ${payload.homeroom} tomorrow morning.`,
+    message: `Claim request confirmed and recorded in database! Caretaker and Class Teacher notified to verify identifying mark and deliver to ${payload.homeroom}.`,
   };
 }

@@ -4,6 +4,7 @@ import { SCHOOL } from "@/lib/school-config";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import StudentLessonPlanModal from "@/components/StudentLessonPlanModal";
+import StudentDashboardSchedule from "@/components/StudentDashboardSchedule";
 
 export const metadata = {
   title: `Student Portal – ${SCHOOL.name}`,
@@ -221,7 +222,7 @@ export default async function StudentPortalPage() {
             <span>📖</span>
             <span>Enrolled Courses &amp; Subjects</span>
           </h2>
-          <Link href="/portal/student/timetable" className="text-xs text-indigo-600 hover:text-indigo-800 font-semibold">
+          <Link href="/portal/student/subjects" className="text-xs text-indigo-600 hover:text-indigo-800 font-semibold">
             View all &rarr;
           </Link>
         </div>
@@ -323,50 +324,8 @@ export default async function StudentPortalPage() {
             </div>
           </div>
 
-          {/* Class Schedule with Segmented Toggle (Matching Screenshot 2) */}
-          <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-              <div className="flex items-center gap-2">
-                <span className="text-indigo-600 text-lg">🗓️</span>
-                <h2 className="text-sm font-bold text-slate-900" style={{ fontFamily: "Outfit, sans-serif" }}>
-                  Class Schedule
-                </h2>
-              </div>
-
-              {/* Segmented Toggle Control */}
-              <div className="inline-flex items-center p-1 rounded-xl bg-slate-100 text-xs font-medium text-slate-600">
-                <button className="px-3 py-1 rounded-lg bg-white shadow-2xs font-semibold text-slate-900">Today</button>
-                <button className="px-3 py-1 rounded-lg text-slate-500 hover:text-slate-800">This Week</button>
-                <button className="px-3 py-1 rounded-lg text-slate-500 hover:text-slate-800">This Month</button>
-              </div>
-            </div>
-
-            <div className="mt-4 space-y-3">
-              {timetable.slice(0, 4).map((row) => (
-                <div key={row.period} className="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 rounded-xl border border-slate-100 hover:bg-slate-50/80 transition gap-3">
-                  <div className="flex items-start sm:items-center gap-3.5">
-                    <div className="px-2.5 py-1.5 rounded-lg bg-slate-100 text-slate-700 font-mono text-xs font-semibold whitespace-nowrap">
-                      {row.time}
-                    </div>
-                    <div>
-                      <div className="font-bold text-slate-900 text-sm">
-                        Period {row.period}: {row.subject}
-                      </div>
-                      <div className="text-xs text-slate-500 flex items-center gap-2 mt-0.5">
-                        <span>👤 {row.teacher}</span>
-                        <span>&bull;</span>
-                        <span>📍 {row.room}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <Link href="/portal/student/timetable" className="btn btn-ghost text-xs px-3 py-1.5 rounded-lg">
-                    Details
-                  </Link>
-                </div>
-              ))}
-            </div>
-          </div>
+          {/* Interactive Class Schedule with working Today / This Week / This Month toggle */}
+          <StudentDashboardSchedule timetable={timetable} />
 
           {/* Daily Homework & Assignments (Matching Screenshot 4) */}
           <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs">

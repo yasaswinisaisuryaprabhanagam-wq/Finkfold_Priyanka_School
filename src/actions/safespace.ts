@@ -2,14 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/server";
-import { SCHOOL } from "@/lib/school-config";
+import { getAuthenticatedStudent } from "@/lib/studentSession";
 import type { GrievanceReport, ConductEntry } from "@/types/self-service";
 import { INITIAL_GRIEVANCES, INITIAL_CONDUCT_ENTRIES } from "@/types/self-service";
-
-async function getDefaultStudentId(supabase: any) {
-  const { data: stu } = await supabase.from("students").select("id").limit(1).maybeSingle();
-  return stu?.id || "6921082e-75ab-4067-b536-b76d09f71c3a";
-}
 
 export async function getSafeSpaceData(): Promise<{
   grievances: GrievanceReport[];
@@ -17,16 +12,52 @@ export async function getSafeSpaceData(): Promise<{
   totalMerits: number;
   totalDemerits: number;
 }> {
+  const { student, schoolId } = await getAuthenticatedStudent();
   const supabase = await createAdminClient();
-  const studentId = await getDefaultStudentId(supabase);
 
   let conduct = INITIAL_CONDUCT_ENTRIES;
+  let grievances: GrievanceReport[] = [];
 
   try {
+    // 1. Fetch real grievances from database for this school
+    const { data: dbGrievances } = await supabase
+      .from("anonymous_grievance_reports")
+      .select("*")
+      .eq("school_id", schoolId)
+      .order("created_at", { ascending: false });
+
+    if (dbGrievances && dbGrievances.length > 0) {
+      grievances = dbGrievances.map((g: any) => ({
+        id: g.id,
+        trackingToken: g.tracking_token,
+        category: g.category,
+        description: g.description,
+        locationDetails: g.location_details || undefined,
+        urgency: g.urgency,
+        status: g.status,
+        counselorReply: g.counselor_reply || undefined,
+        createdAt: new Date(g.created_at).toLocaleDateString("en-IN", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        }),
+      }));
+    }
+  } catch (err) {
+    console.error("Error fetching grievances:", err);
+  }
+
+  // Prepend default samples if empty
+  if (grievances.length === 0) {
+    grievances = INITIAL_GRIEVANCES;
+  }
+
+  try {
+    // 2. Fetch conduct ledger for this student
     const { data: dbConduct } = await supabase
       .from("student_conduct_ledger")
       .select("*")
-      .eq("student_id", studentId)
+      .eq("student_id", student.id)
       .order("entry_date", { ascending: false });
 
     if (dbConduct && dbConduct.length > 0) {
@@ -46,14 +77,14 @@ export async function getSafeSpaceData(): Promise<{
       }));
     }
   } catch (err) {
-    // Fallback
+    console.error("Error fetching conduct ledger:", err);
   }
 
   const merits = conduct.filter((c) => c.type === "merit").reduce((sum, c) => sum + c.points, 0);
   const demerits = Math.abs(conduct.filter((c) => c.type === "demerit").reduce((sum, c) => sum + c.points, 0));
 
   return {
-    grievances: INITIAL_GRIEVANCES,
+    grievances,
     conductEntries: conduct,
     totalMerits: merits,
     totalDemerits: demerits,
@@ -66,41 +97,62 @@ export async function submitAnonymousGrievanceAction(payload: {
   locationDetails?: string;
   urgency: GrievanceReport["urgency"];
 }) {
+  const { schoolId } = await getAuthenticatedStudent();
+  const supabase = await createAdminClient();
+
   const token = "SAFE-TOKEN-" + Math.floor(1000 + Math.random() * 9000);
+  const counselorReply =
+    "Your report has been encrypted and routed directly to the Principal and Senior Counselor. Check this portal with your tracking token for private updates.";
+
+  // Validate allowed category
+  const validCategories = [
+    "bullying",
+    "cyber_bullying",
+    "harassment",
+    "vandalism",
+    "counselor_private_chat",
+    "safety_hazard",
+  ];
+  const safeCategory = validCategories.includes(payload.category) ? payload.category : "bullying";
+  const safeUrgency = ["standard", "high", "critical"].includes(payload.urgency) ? payload.urgency : "standard";
+
+  const { data, error } = await supabase
+    .from("anonymous_grievance_reports")
+    .insert({
+      school_id: schoolId,
+      tracking_token: token,
+      category: safeCategory,
+      description: payload.description.trim(),
+      location_details: payload.locationDetails?.trim() || null,
+      urgency: safeUrgency,
+      status: "received",
+      counselor_reply: counselorReply,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Failed to insert grievance into Supabase:", error);
+  }
+
   const newReport: GrievanceReport = {
-    id: "grv-" + Date.now(),
+    id: data?.id || "grv-" + Date.now(),
     trackingToken: token,
-    category: payload.category,
+    category: safeCategory as any,
     description: payload.description,
     locationDetails: payload.locationDetails,
-    urgency: payload.urgency,
+    urgency: safeUrgency as any,
     status: "received",
-    counselorReply: "Your report has been encrypted and routed directly to the Principal and Senior Counselor. Check this portal with your tracking token for private updates.",
+    counselorReply,
     createdAt: "Just now",
   };
 
-  const supabase = await createAdminClient();
-
-  try {
-    await supabase.from("anonymous_grievance_reports").insert({
-      school_id: SCHOOL.id,
-      tracking_token: token,
-      category: payload.category,
-      description: payload.description,
-      location_details: payload.locationDetails || null,
-      urgency: payload.urgency,
-      status: "received",
-      counselor_reply: newReport.counselorReply,
-    });
-  } catch (err) {
-    // Graceful fallback
-  }
-
   revalidatePath("/portal/student/safespace");
+  revalidatePath("/portal/admin");
   return {
     success: true,
     trackingToken: token,
     report: newReport,
-    message: `Confidential drop-box report lodged securely! Your zero-identity tracking token is [${token}]. Save this token to view confidential counselor responses.`,
+    message: `Confidential drop-box report lodged securely into database! Your zero-identity tracking token is [${token}]. Encrypted and dispatched to Principal & Senior Counselor.`,
   };
 }

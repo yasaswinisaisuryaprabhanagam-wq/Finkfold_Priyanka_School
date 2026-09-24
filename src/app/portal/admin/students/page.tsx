@@ -64,6 +64,20 @@ export default async function AdminStudentsPage() {
     }
   } catch {}
 
+  // Medical Records for Allergy Alerts
+  let medicalMap = new Map<string, any>();
+  try {
+    const studentIds = students.map((s: any) => s.id);
+    if (studentIds.length > 0) {
+      const { data: meds } = await adminClient
+        .from("student_medical_records")
+        .select("student_id, blood_group, known_allergies, chronic_conditions, emergency_contact_name, emergency_contact_phone")
+        .in("student_id", studentIds);
+
+      (meds || []).forEach((m: any) => medicalMap.set(m.student_id, m));
+    }
+  } catch {}
+
   // Fallback
   if (students.length === 0) {
     students = [
@@ -76,6 +90,7 @@ export default async function AdminStudentsPage() {
 
   const activeCount = students.filter(s => s.is_active).length;
   const whatsAppCount = students.filter(s => s.consent_whatsapp).length;
+  const medicalAlertCount = Array.from(medicalMap.values()).filter((m: any) => (m.known_allergies?.length > 0 || m.chronic_conditions?.length > 0)).length;
 
   return (
     <div className="space-y-6">
@@ -154,16 +169,16 @@ export default async function AdminStudentsPage() {
         </div>
 
         <div className="stat-card flex items-center gap-4 bg-white border border-slate-100 rounded-2xl p-5 shadow-xs">
-          <div className="h-12 w-12 rounded-2xl bg-slate-50 text-slate-600 flex items-center justify-center text-2xl flex-shrink-0">
-            📱
+          <div className="h-12 w-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-2xl flex-shrink-0">
+            🩺
           </div>
           <div>
-            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Missing WhatsApp</div>
-            <div className="text-2xl font-bold text-slate-700 mt-0.5" style={{ fontFamily: "Outfit, sans-serif" }}>
-              {students.length - whatsAppCount}
+            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Medical Alerts</div>
+            <div className="text-2xl font-bold text-rose-600 mt-0.5" style={{ fontFamily: "Outfit, sans-serif" }}>
+              {medicalAlertCount}
             </div>
-            <div className="inline-flex items-center gap-1 mt-1 text-[11px] font-medium text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">
-              <span>Phone Pending</span>
+            <div className="inline-flex items-center gap-1 mt-1 text-[11px] font-medium text-rose-700 bg-rose-50 px-2 py-0.5 rounded-md">
+              <span>Allergies &amp; Care</span>
             </div>
           </div>
         </div>
@@ -207,7 +222,35 @@ export default async function AdminStudentsPage() {
                   <tr key={s.id} className={!s.is_active ? "opacity-60 bg-slate-50/60" : ""}>
                     <td className="font-bold text-center text-slate-700">#{s.roll_no}</td>
                     <td className="font-semibold text-slate-800">
-                      {s.full_name}
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span>{s.full_name}</span>
+                        {(() => {
+                          const med = medicalMap.get(s.id);
+                          return med?.blood_group ? (
+                            <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-100 text-slate-700 font-mono font-bold">
+                              {med.blood_group}
+                            </span>
+                          ) : null;
+                        })()}
+                      </div>
+                      {(() => {
+                        const med = medicalMap.get(s.id);
+                        if (!med || (!med.known_allergies?.length && !med.chronic_conditions?.length)) return null;
+                        return (
+                          <div className="flex flex-wrap gap-1 mt-1 max-w-xs">
+                            {med.known_allergies?.map((a: string, i: number) => (
+                              <span key={i} className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-rose-50 text-rose-700 border border-rose-200">
+                                🛑 {a}
+                              </span>
+                            ))}
+                            {med.chronic_conditions?.map((c: string, i: number) => (
+                              <span key={i} className="text-[9px] font-semibold px-1.5 py-0.2 rounded bg-amber-50 text-amber-700 border border-amber-200">
+                                💊 {c}
+                              </span>
+                            ))}
+                          </div>
+                        );
+                      })()}
                       {!s.is_active && s.left_on && (
                         <div className="text-[10px] text-rose-500 mt-0.5">
                           Left: {new Date(s.left_on).toLocaleDateString("en-IN")}

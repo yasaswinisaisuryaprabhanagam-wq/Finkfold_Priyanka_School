@@ -60,7 +60,22 @@ export default function StudentDocumentsPage() {
   const [achAward, setAchAward] = useState("");
   const [achProofDoc, setAchProofDoc] = useState("");
 
+  const [studentMeta, setStudentMeta] = useState<{
+    studentName: string;
+    admissionNo: string;
+    className: string;
+    parentName: string;
+  }>({
+    studentName: "Aarav Sharma",
+    admissionNo: "PRIY-2026-001",
+    className: "Class 10-A",
+    parentName: "Sri Rajesh Sharma",
+  });
+
   // ID Photo Upload State
+  const [selectedPhotoFile, setSelectedPhotoFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photoError, setPhotoError] = useState<string | null>(null);
   const [newPhotoUrl, setNewPhotoUrl] = useState("");
 
   // Helpdesk Form State
@@ -81,6 +96,14 @@ export default function StudentDocumentsPage() {
         if (res.certificates) setCertificates(res.certificates);
         if (res.externalAchievements) setExternalAchievements(res.externalAchievements);
         if (res.idPhoto) setIdPhoto(res.idPhoto);
+        if (res.studentName) {
+          setStudentMeta({
+            studentName: res.studentName,
+            admissionNo: res.admissionNo || "PRIY-2026-001",
+            className: res.className || "Class 10-A",
+            parentName: res.parentName || "Parent/Guardian",
+          });
+        }
       }
     });
   }, []);
@@ -118,7 +141,7 @@ export default function StudentDocumentsPage() {
         level: achLevel,
         eventDate: achDate,
         awardSecured: achAward.trim() || "Gold Medal / Certificate of Merit",
-        proofDocumentName: achProofDoc.trim() || "Certificate_Scan_Arjun.pdf",
+        proofDocumentName: achProofDoc.trim() || "Certificate_Scan.pdf",
       });
 
       if (res.success) {
@@ -133,16 +156,44 @@ export default function StudentDocumentsPage() {
     });
   }
 
+  function handleFileSelected(e: React.ChangeEvent<HTMLInputElement>) {
+    setPhotoError(null);
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      setPhotoError("Image file size exceeds 5MB. Please upload a compressed passport photo.");
+      return;
+    }
+
+    setSelectedPhotoFile(file);
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (event.target?.result) {
+        setPhotoPreview(event.target.result as string);
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+
   function handlePhotoUpload(e: React.FormEvent) {
     e.preventDefault();
-    const url = newPhotoUrl.trim() || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80";
+    setPhotoError(null);
+
+    const targetPhoto = photoPreview || newPhotoUrl.trim();
+    if (!targetPhoto) {
+      setPhotoError("Please select a student passport photo file or enter an image URL before validating.");
+      return;
+    }
 
     startTransition(async () => {
-      const res = await uploadIdPhotoAction(url);
+      const res = await uploadIdPhotoAction(targetPhoto);
       if (res.success) {
         setIdPhoto(res.idPhoto);
         setNotification(res.message);
         setNewPhotoUrl("");
+        setSelectedPhotoFile(null);
+        setPhotoPreview(null);
         setTimeout(() => setNotification(null), 8000);
       }
     });
@@ -448,12 +499,12 @@ export default function StudentDocumentsPage() {
                         BONAFIDE CERTIFICATE
                       </div>
                       <p>
-                        This is to certify that Master / Kum. <strong>Arjun Reddy</strong>, Son of <strong>Sri Goud garu</strong>, 
-                        is a bonafide student of this institution studying in <strong>Class 10 - Section A</strong> (Admission No: <strong>PRIY-2026-001</strong>) 
+                        This is to certify that Master / Kum. <strong>{studentMeta.studentName}</strong>, Child of <strong>{studentMeta.parentName}</strong>, 
+                        is a bonafide student of this institution studying in <strong>{studentMeta.className}</strong> (Admission No: <strong>{studentMeta.admissionNo}</strong>) 
                         during the academic year <strong>2026–2027</strong>.
                       </p>
                       <p>
-                        According to school records, his date of birth is <strong>14-06-2011</strong> and his character and conduct have been found to be <strong>Exemplary</strong>.
+                        According to school records, the student's date of birth is <strong>14-06-2011</strong> and character and conduct have been found to be <strong>Exemplary</strong>.
                       </p>
                     </div>
                   )}
@@ -465,7 +516,7 @@ export default function StudentDocumentsPage() {
                       </div>
                       <p>
                         Certified that the sum of <strong>₹28,500 (Rupees Twenty Eight Thousand Five Hundred Only)</strong> has been received from 
-                        <strong> Sri Goud garu</strong> towards Tuition Fees for his ward <strong>Arjun Reddy</strong> (Class 10A, Admission No: PRIY-2026-001) 
+                        <strong> {studentMeta.parentName}</strong> towards Tuition Fees for ward <strong>{studentMeta.studentName}</strong> ({studentMeta.className}, Admission No: {studentMeta.admissionNo}) 
                         for the Financial Year <strong>2026–2027</strong>.
                       </p>
                       <div className="p-3 bg-white rounded-xl border border-slate-200 text-xs font-sans space-y-1">
@@ -481,7 +532,7 @@ export default function StudentDocumentsPage() {
                         ATTENDANCE COMPLIANCE CERTIFICATE
                       </div>
                       <p>
-                        Certified that <strong>Arjun Reddy</strong> has recorded <strong>162 working days</strong> attended out of 
+                        Certified that <strong>{studentMeta.studentName}</strong> has recorded <strong>162 working days</strong> attended out of 
                         <strong> 172 working days</strong> held up to 18 September 2026, which computes to an attendance percentage of <strong>94.2%</strong>.
                       </p>
                       <p className="text-xs text-slate-600 font-sans">
@@ -712,40 +763,77 @@ export default function StudentDocumentsPage() {
               <div className="relative w-40 h-48 rounded-2xl overflow-hidden shadow-lg border-2 border-slate-300 dark:border-slate-600 mb-4 bg-slate-200">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={idPhoto.photoUrl}
+                  src={photoPreview || idPhoto.photoUrl}
                   alt="Student ID Preview"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded bg-emerald-600 text-white text-[10px] font-bold">
-                  Batch Ready
+                  {photoPreview ? "Draft Selected" : "Batch Ready"}
                 </div>
               </div>
               <div className="text-center space-y-1">
                 <span className="text-xs font-bold text-slate-900 dark:text-white">
-                  Arjun Reddy (Class 10-A)
+                  {studentMeta.studentName} ({studentMeta.className})
                 </span>
-                <p className="text-[11px] text-slate-400">UID: PRIY-2026-001</p>
+                <p className="text-[11px] text-slate-400">UID: {studentMeta.admissionNo}</p>
               </div>
             </div>
 
-            <form onSubmit={handlePhotoUpload} className="space-y-3">
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                Upload / Update ID Photo Image URL
-              </label>
-              <input
-                type="text"
-                placeholder="Paste HTTPS image URL (or leave blank for demo photo)"
-                value={newPhotoUrl}
-                onChange={(e) => setNewPhotoUrl(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-emerald-500 outline-none"
-              />
+            {photoError && (
+              <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 flex-shrink-0 text-rose-600" />
+                <span>{photoError}</span>
+              </div>
+            )}
+
+            <form onSubmit={handlePhotoUpload} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                  Upload Student ID Photo File (JPG, PNG, WebP) *
+                </label>
+                <input
+                  type="file"
+                  accept="image/png, image/jpeg, image/webp"
+                  onChange={handleFileSelected}
+                  className="block w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer border border-slate-200 rounded-xl p-1 bg-white"
+                />
+                {selectedPhotoFile && (
+                  <p className="text-[11px] text-emerald-600 font-medium mt-1">
+                    ✓ File selected: {selectedPhotoFile.name} ({(selectedPhotoFile.size / 1024).toFixed(1)} KB)
+                  </p>
+                )}
+              </div>
+
+              <div className="relative flex items-center justify-center my-2">
+                <div className="border-t border-slate-200 w-full" />
+                <span className="bg-white dark:bg-slate-900 px-2 text-[10px] text-slate-400 uppercase font-semibold absolute">
+                  or image url
+                </span>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
+                  HTTPS Image URL
+                </label>
+                <input
+                  type="text"
+                  placeholder="https://images.unsplash.com/..."
+                  value={newPhotoUrl}
+                  onChange={(e) => {
+                    setPhotoError(null);
+                    setNewPhotoUrl(e.target.value);
+                  }}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-emerald-500 outline-none"
+                />
+              </div>
+
               <button
                 type="submit"
                 disabled={isPending}
-                className="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-emerald-900/20"
+                className="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-emerald-900/20 disabled:opacity-50"
               >
                 <Camera className="w-4 h-4" />
-                {isPending ? "Validating..." : "Validate & Queue for Batch Print"}
+                {isPending ? "Validating & Uploading..." : "Validate & Queue for Batch Print"}
               </button>
             </form>
           </div>

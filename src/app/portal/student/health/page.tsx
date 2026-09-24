@@ -11,10 +11,24 @@ import {
 export default function StudentHealthPage() {
   const [profile, setProfile] = useState<StudentMedicalProfile>(INITIAL_MEDICAL_PROFILE);
   const [logs, setLogs] = useState(INITIAL_INFIRMARY_LOGS);
+  const [studentMeta, setStudentMeta] = useState({
+    studentName: "Aarav Sharma",
+    admissionNo: "PRIY-2026-001",
+    className: "Class 10-A",
+  });
   const [isEditing, setIsEditing] = useState(false);
+
+  // Edit form state
+  const [bloodGroup, setBloodGroup] = useState(profile.bloodGroup);
+  const [heightCm, setHeightCm] = useState(profile.heightCm);
+  const [weightKg, setWeightKg] = useState(profile.weightKg);
   const [allergyInput, setAllergyInput] = useState(profile.knownAllergies.join(", "));
   const [conditionsInput, setConditionsInput] = useState(profile.chronicConditions.join(", "));
+  const [emergencyContactName, setEmergencyContactName] = useState(profile.emergencyContactName);
+  const [emergencyContactPhone, setEmergencyContactPhone] = useState(profile.emergencyContactPhone);
+  const [pediatricianName, setPediatricianName] = useState(profile.pediatricianName);
   const [pediatricianPhone, setPediatricianPhone] = useState(profile.pediatricianPhone);
+
   const [notification, setNotification] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -23,9 +37,18 @@ export default function StudentHealthPage() {
       if (res) {
         if (res.profile) {
           setProfile(res.profile);
+          setBloodGroup(res.profile.bloodGroup);
+          setHeightCm(res.profile.heightCm);
+          setWeightKg(res.profile.weightKg);
           setAllergyInput(res.profile.knownAllergies.join(", "));
           setConditionsInput(res.profile.chronicConditions.join(", "));
+          setEmergencyContactName(res.profile.emergencyContactName);
+          setEmergencyContactPhone(res.profile.emergencyContactPhone);
+          setPediatricianName(res.profile.pediatricianName);
           setPediatricianPhone(res.profile.pediatricianPhone);
+        }
+        if (res.studentMeta) {
+          setStudentMeta(res.studentMeta);
         }
         if (res.logs && res.logs.length > 0) {
           setLogs(res.logs);
@@ -38,10 +61,15 @@ export default function StudentHealthPage() {
     e.preventDefault();
     startTransition(async () => {
       const updated: StudentMedicalProfile = {
-        ...profile,
+        bloodGroup,
+        heightCm: Number(heightCm) || 142,
+        weightKg: Number(weightKg) || 38,
         knownAllergies: allergyInput.split(",").map((s) => s.trim()).filter(Boolean),
         chronicConditions: conditionsInput.split(",").map((s) => s.trim()).filter(Boolean),
-        pediatricianPhone,
+        emergencyContactName: emergencyContactName.trim() || studentMeta.studentName + " Parent",
+        emergencyContactPhone: emergencyContactPhone.trim() || "+91 9848000001",
+        pediatricianName: pediatricianName.trim() || "Dr. K. S. Murthy, M.D.",
+        pediatricianPhone: pediatricianPhone.trim() || "+91 98480 91823",
       };
 
       const res = await updateMedicalProfileAction(updated);
@@ -96,8 +124,10 @@ export default function StudentHealthPage() {
               <span className="text-[10px] font-bold uppercase tracking-widest text-rose-600 block">
                 Emergency Medical Card
               </span>
-              <h2 className="text-xl font-bold text-slate-900">Arjun Reddy (Class 10A)</h2>
-              <div className="text-xs text-slate-500">Admission No: PRIY-2026-001</div>
+              <h2 className="text-xl font-bold text-slate-900">
+                {studentMeta.studentName} ({studentMeta.className})
+              </h2>
+              <div className="text-xs text-slate-500">Admission No: {studentMeta.admissionNo}</div>
             </div>
           </div>
 
@@ -139,34 +169,42 @@ export default function StudentHealthPage() {
         {/* Known Allergies & Conditions Chips */}
         <div className="pt-2 flex flex-wrap gap-4 text-xs">
           <div>
-            <span className="text-white/60 block mb-1.5 font-bold uppercase tracking-wider text-[10px]">
+            <span className="text-slate-500 block mb-1.5 font-bold uppercase tracking-wider text-[10px]">
               Known Severe Allergies:
             </span>
             <div className="flex flex-wrap gap-2">
-              {profile.knownAllergies.map((a, i) => (
-                <span
-                  key={i}
-                  className="px-3 py-1 rounded-xl bg-rose-500/30 border border-rose-400/50 text-rose-100 font-bold"
-                >
-                  🛑 {a}
-                </span>
-              ))}
+              {profile.knownAllergies.length > 0 ? (
+                profile.knownAllergies.map((a, i) => (
+                  <span
+                    key={i}
+                    className="px-3 py-1 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 font-bold"
+                  >
+                    🛑 {a}
+                  </span>
+                ))
+              ) : (
+                <span className="text-xs text-slate-400 italic">No allergies recorded</span>
+              )}
             </div>
           </div>
 
           <div>
-            <span className="text-white/60 block mb-1.5 font-bold uppercase tracking-wider text-[10px]">
+            <span className="text-slate-500 block mb-1.5 font-bold uppercase tracking-wider text-[10px]">
               Ongoing Medical Directives:
             </span>
             <div className="flex flex-wrap gap-2">
-              {profile.chronicConditions.map((c, i) => (
-                <span
-                  key={i}
-                  className="px-3 py-1 rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-200 font-semibold"
-                >
-                  💊 {c}
-                </span>
-              ))}
+              {profile.chronicConditions.length > 0 ? (
+                profile.chronicConditions.map((c, i) => (
+                  <span
+                    key={i}
+                    className="px-3 py-1 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 font-semibold"
+                  >
+                    💊 {c}
+                  </span>
+                ))
+              ) : (
+                <span className="text-xs text-slate-400 italic">No chronic conditions recorded</span>
+              )}
             </div>
           </div>
         </div>
@@ -183,6 +221,52 @@ export default function StudentHealthPage() {
           </p>
 
           <form onSubmit={handleSaveMedicalProfile} className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                  Blood Group *
+                </label>
+                <select
+                  value={bloodGroup}
+                  onChange={(e) => setBloodGroup(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-rose-500 bg-white"
+                >
+                  <option value="A +ve">A +ve</option>
+                  <option value="A -ve">A -ve</option>
+                  <option value="B +ve">B +ve</option>
+                  <option value="B -ve">B -ve</option>
+                  <option value="AB +ve">AB +ve</option>
+                  <option value="AB -ve">AB -ve</option>
+                  <option value="O +ve">O +ve</option>
+                  <option value="O -ve">O -ve</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                  Height (cm)
+                </label>
+                <input
+                  type="number"
+                  value={heightCm}
+                  onChange={(e) => setHeightCm(Number(e.target.value))}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-rose-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                  Weight (kg)
+                </label>
+                <input
+                  type="number"
+                  value={weightKg}
+                  onChange={(e) => setWeightKg(Number(e.target.value))}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-rose-500"
+                />
+              </div>
+            </div>
+
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
                 Known Allergies (Comma separated)
@@ -209,16 +293,59 @@ export default function StudentHealthPage() {
               />
             </div>
 
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                Family Pediatrician Emergency Phone
-              </label>
-              <input
-                type="text"
-                value={pediatricianPhone}
-                onChange={(e) => setPediatricianPhone(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-rose-500"
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                  Emergency Parent / Guardian Name
+                </label>
+                <input
+                  type="text"
+                  value={emergencyContactName}
+                  onChange={(e) => setEmergencyContactName(e.target.value)}
+                  placeholder="e.g. Sri Rajesh Sharma"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-rose-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                  Emergency Parent Phone
+                </label>
+                <input
+                  type="text"
+                  value={emergencyContactPhone}
+                  onChange={(e) => setEmergencyContactPhone(e.target.value)}
+                  placeholder="e.g. +91 9848000001"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-rose-500"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                  Family Pediatrician Name
+                </label>
+                <input
+                  type="text"
+                  value={pediatricianName}
+                  onChange={(e) => setPediatricianName(e.target.value)}
+                  placeholder="e.g. Dr. K. S. Murthy, M.D."
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-rose-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                  Family Pediatrician Emergency Phone
+                </label>
+                <input
+                  type="text"
+                  value={pediatricianPhone}
+                  onChange={(e) => setPediatricianPhone(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-rose-500"
+                />
+              </div>
             </div>
 
             <div className="flex justify-end gap-3 pt-2">
@@ -234,7 +361,7 @@ export default function StudentHealthPage() {
                 disabled={isPending}
                 className="px-5 py-2.5 rounded-xl bg-rose-700 hover:bg-rose-800 text-white font-bold text-xs shadow-xs transition-all active:scale-98 cursor-pointer disabled:opacity-50"
               >
-                Push Update to Faculty Roster & Infirmary →
+                {isPending ? "Saving to Medical Database..." : "Push Update to Faculty Roster & Infirmary →"}
               </button>
             </div>
           </form>

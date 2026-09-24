@@ -62,11 +62,14 @@ const INITIAL_GRIEVANCES: GrievanceToken[] = [
 
 export default function SafeSpaceClient({
   isSuperAdmin = false,
+  initialGrievances,
 }: {
   isSuperAdmin?: boolean;
+  initialGrievances?: GrievanceToken[];
 }) {
-  const [grievances, setGrievances] = useState<GrievanceToken[]>(INITIAL_GRIEVANCES);
-  const [activeToken, setActiveToken] = useState<GrievanceToken | null>(INITIAL_GRIEVANCES[0]);
+  const combined = initialGrievances && initialGrievances.length > 0 ? initialGrievances : INITIAL_GRIEVANCES;
+  const [grievances, setGrievances] = useState<GrievanceToken[]>(combined);
+  const [activeToken, setActiveToken] = useState<GrievanceToken | null>(combined[0] || null);
   const [replyText, setReplyText] = useState("");
   const [interventionText, setInterventionText] = useState("");
   const [notification, setNotification] = useState<string | null>(null);

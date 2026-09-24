@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getProfile } from "@/lib/auth";
 import { SCHOOL } from "@/lib/school-config";
 import SignOutButton from "@/components/SignOutButton";
+import StudentQuickActionModal from "@/components/StudentQuickActionModal";
 import { redirect } from "next/navigation";
 
 export default async function StudentPortalLayout({
@@ -30,6 +31,7 @@ export default async function StudentPortalLayout({
       title: "Academics & Analytics",
       items: [
         { href: "/portal/student", label: "Attendance Record", icon: "📊" },
+        { href: "/portal/student/subjects", label: "Subjects & Teachers", icon: "📖" },
         { href: "/portal/student/academics", label: "Exams & AI Skill Gaps", icon: "📈" },
         { href: "/portal/student/timetable", label: "Class Timetable", icon: "🗓️" },
         { href: "/portal/student/homework", label: "Daily Homework", icon: "📝" },
@@ -177,12 +179,7 @@ export default async function StudentPortalLayout({
             </div>
 
             {/* Quick Action (+) Button */}
-            <button
-              title="Quick Action"
-              className="h-8 w-8 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-slate-700 flex items-center justify-center text-sm font-semibold transition"
-            >
-              +
-            </button>
+            <StudentQuickActionModal />
 
             {/* Notification Bell */}
             <Link
