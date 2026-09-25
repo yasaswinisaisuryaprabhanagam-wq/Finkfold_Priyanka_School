@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { downloadBoardPacketPdf } from "@/lib/pdfDownloader";
 
 export default function BoardPacketClient() {
   const [activeQuarter, setActiveQuarter] = useState<"Q1" | "Q2" | "Q3" | "Annual">("Q3");
@@ -9,11 +10,15 @@ export default function BoardPacketClient() {
 
   const handleDownloadPacket = () => {
     setIsGeneratingPdf(true);
-    setTimeout(() => {
-      setIsGeneratingPdf(false);
+    try {
+      downloadBoardPacketPdf(activeQuarter);
       setNotification(`✓ Trust Board Packet (${activeQuarter} 2026-27) compiled with cryptographic seal and exported!`);
       setTimeout(() => setNotification(null), 5000);
-    }, 1500);
+    } catch (err: any) {
+      setNotification(`Failed to export Board Packet: ${err?.message || "Unknown error"}`);
+    } finally {
+      setIsGeneratingPdf(false);
+    }
   };
 
   return (

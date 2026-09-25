@@ -129,19 +129,23 @@ export default function AccreditationClient() {
   const warningCount = certs.filter((c) => c.status === "amber_warning").length;
   const nominalCount = certs.filter((c) => c.status === "nominal").length;
 
+  const [formError, setFormError] = useState<string | null>(null);
+
   const handleOpenRenewModal = (cert: CertificateItem) => {
     setSelectedCert(cert);
     setRenewCampus(cert.campusName);
     setRenewDocType(cert.documentType);
     setRenewCertNum(cert.certNumber);
+    setFormError(null);
     setUploadModalOpen(true);
   };
 
   const handleConfirmUpload = () => {
     if (!renewCertNum.trim()) {
-      alert("Please provide the official certificate reference number.");
+      setFormError("Please provide the official certificate reference number.");
       return;
     }
+    setFormError(null);
 
     startTransition(async () => {
       const res = await uploadAccreditationCertificate(
@@ -475,6 +479,13 @@ export default function AccreditationClient() {
                 <div className="text-xs font-semibold text-foreground">Attach Scanned Govt Decree (PDF / JPG)</div>
                 <div className="text-[10px] text-muted-foreground">Certified digital scan up to 25 MB</div>
               </div>
+
+              {formError && (
+                <p className="text-[11px] text-rose-500 font-semibold flex items-center gap-1">
+                  <span>⚠️</span>
+                  <span>{formError}</span>
+                </p>
+              )}
             </div>
 
             <div className="flex justify-end gap-2 pt-2 border-t border-border/60">

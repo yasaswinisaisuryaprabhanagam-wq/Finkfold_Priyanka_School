@@ -146,6 +146,7 @@ export default function StaffMobilityClient() {
   });
   const [isTransferring, startTransition] = useTransition();
   const [confirmationNotice, setConfirmationNotice] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const handleOpenTransferModal = (staff: StaffProfile) => {
     setSelectedStaff(staff);
@@ -154,15 +155,17 @@ export default function StaffMobilityClient() {
     const diff = CAMPUSES.find((c) => c !== staff.currentCampus) || CAMPUSES[0];
     setTargetCampus(diff);
     setTransferReason("");
+    setFormError(null);
     setTransferModalOpen(true);
   };
 
   const handleConfirmTransfer = () => {
     if (!selectedStaff) return;
     if (!transferReason.trim()) {
-      alert("Please provide an executive transfer justification reason.");
+      setFormError("Please provide an executive transfer justification reason.");
       return;
     }
+    setFormError(null);
 
     startTransition(async () => {
       const res = await executeInterCampusTransfer(
@@ -500,10 +503,19 @@ export default function StaffMobilityClient() {
                 <textarea
                   rows={2}
                   value={transferReason}
-                  onChange={(e) => setTransferReason(e.target.value)}
+                  onChange={(e) => {
+                    setTransferReason(e.target.value);
+                    if (formError) setFormError(null);
+                  }}
                   placeholder="State the institutional reason (e.g. CBSE lab commissioning, promotion, staffing balance)..."
                   className="w-full px-3 py-2 rounded-xl border border-border bg-background text-foreground text-xs"
                 />
+                {formError && (
+                  <p className="text-[11px] text-rose-500 font-semibold mt-1 flex items-center gap-1">
+                    <span>⚠️</span>
+                    <span>{formError}</span>
+                  </p>
+                )}
               </div>
 
               {/* Handover & Integrity Checklist */}

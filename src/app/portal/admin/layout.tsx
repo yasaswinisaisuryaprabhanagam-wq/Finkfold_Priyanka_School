@@ -3,6 +3,7 @@ import { getProfile, getAllCampuses } from "@/lib/auth";
 import { SCHOOL } from "@/lib/school-config";
 import SignOutButton from "@/components/SignOutButton";
 import BranchSwitcher from "@/components/BranchSwitcher";
+import AdminQuickActionModal from "@/components/AdminQuickActionModal";
 import { redirect } from "next/navigation";
 
 export default async function AdminPortalLayout({
@@ -243,6 +244,9 @@ export default async function AdminPortalLayout({
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
               Operational
             </span>
+
+            {/* Quick Action Hub (+) Button */}
+            <AdminQuickActionModal />
 
             {/* Notification Bell */}
             <Link

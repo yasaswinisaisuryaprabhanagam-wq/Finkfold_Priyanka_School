@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { downloadInfrastructureRemediationPdf } from "@/lib/pdfDownloader";
 import {
   Building2,
   Users,
@@ -391,10 +392,10 @@ export default function InfrastructureClient() {
               </button>
               <button
                 onClick={() => {
-                  alert("Remediation Plan exported as PDF for Board of Directors review.");
+                  downloadInfrastructureRemediationPdf(selectedCampus?.campusName || "East City Campus (Uppal)");
                   setRemediationModalOpen(false);
                 }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-cyan-600 hover:bg-cyan-700 text-white shadow-sm"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-cyan-600 hover:bg-cyan-700 text-white shadow-sm cursor-pointer"
               >
                 <Download className="w-4 h-4" />
                 Export Remediation PDF

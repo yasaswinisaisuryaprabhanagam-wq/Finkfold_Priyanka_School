@@ -148,6 +148,13 @@ export default function ProcurementClient() {
   const [rfqs, setRfqs] = useState<RFQItem[]>(INITIAL_RFQS);
   const [selectedRfq, setSelectedRfq] = useState<RFQItem>(INITIAL_RFQS[0]);
   const [isAwarding, startTransition] = useTransition();
+  const [isCreateRfqOpen, setIsCreateRfqOpen] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+  const [newCategory, setNewCategory] = useState("Stationery");
+  const [newQuantity, setNewQuantity] = useState("1,500 Units");
+  const [newBaseline, setNewBaseline] = useState("450000");
+  const [newDeadline, setNewDeadline] = useState("2026-10-15");
+
   const [successModal, setSuccessModal] = useState<{
     poNumber: string;
     message: string;
@@ -156,6 +163,56 @@ export default function ProcurementClient() {
     amount: number;
     savings: number;
   } | null>(null);
+
+  const handleCreateRfq = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newTitle.trim()) return;
+    const baseline = Number(newBaseline) || 200000;
+    const serialCode = `RFQ-TRUST-2026-${Math.floor(100 + Math.random() * 900)}`;
+    const createdRfq: RFQItem = {
+      id: `rfq-trust-${Date.now()}`,
+      code: serialCode,
+      title: newTitle.trim(),
+      category: newCategory,
+      totalQuantity: newQuantity,
+      campusBreakdown: [
+        { campus: "Main Campus (HYD-01)", quantity: "45%" },
+        { campus: "North Campus (HYD-02)", quantity: "35%" },
+        { campus: "East City (HYD-03)", quantity: "20%" },
+      ],
+      deadline: newDeadline,
+      status: "bidding_open",
+      marketBaselineTotal: baseline,
+      bids: [
+        {
+          id: `bid-${Date.now()}-1`,
+          vendorName: "Sri Balaji Wholesale Enterprises",
+          rating: 4.8,
+          gstNumber: "36AAACB1234F1Z8",
+          unitPrice: Math.round(baseline * 0.72 / 1000),
+          totalAmount: Math.round(baseline * 0.72),
+          leadTimeDays: 7,
+          isL1Lowest: true,
+          warranty: "1 Year Standard Replacement",
+        },
+        {
+          id: `bid-${Date.now()}-2`,
+          vendorName: "Apex National Distributors",
+          rating: 4.5,
+          gstNumber: "36AAACD9981K1Z3",
+          unitPrice: Math.round(baseline * 0.81 / 1000),
+          totalAmount: Math.round(baseline * 0.81),
+          leadTimeDays: 10,
+          isL1Lowest: false,
+          warranty: "6 Months Return",
+        },
+      ],
+    };
+    setRfqs([createdRfq, ...rfqs]);
+    setSelectedRfq(createdRfq);
+    setIsCreateRfqOpen(false);
+    setNewTitle("");
+  };
 
   const handleAwardBid = (rfq: RFQItem, bid: VendorBid) => {
     const savings = rfq.marketBaselineTotal - bid.totalAmount;
@@ -217,8 +274,8 @@ export default function ProcurementClient() {
           </div>
           <div className="flex items-center gap-2">
             <button
-              onClick={() => alert("Creating a new Trust Sovereign RFQ Aggregator...")}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/20 transition-all active:scale-95"
+              onClick={() => setIsCreateRfqOpen(true)}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/20 transition-all active:scale-95 cursor-pointer"
             >
               <Layers className="w-4 h-4" />
               Aggregate Requisitions (New RFQ)
@@ -512,11 +569,124 @@ export default function ProcurementClient() {
             <div className="flex justify-end gap-2 pt-2">
               <button
                 onClick={() => setSuccessModal(null)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
+                className="px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm cursor-pointer"
               >
                 Close & Return to Dashboard
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Aggregate Requisitions / New RFQ Modal */}
+      {isCreateRfqOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+          <div className="bg-card border border-border rounded-2xl p-6 shadow-2xl max-w-lg w-full space-y-4 animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between pb-3 border-b border-border">
+              <div className="flex items-center gap-2">
+                <span className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                  <Layers className="w-5 h-5" />
+                </span>
+                <div>
+                  <h3 className="text-base font-bold text-foreground">Aggregate Store Requisitions</h3>
+                  <p className="text-xs text-muted-foreground">Consolidate store indents into a sovereign RFQ</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsCreateRfqOpen(false)}
+                className="text-muted-foreground hover:text-foreground text-sm font-bold cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateRfq} className="space-y-3.5">
+              <div>
+                <label className="block text-xs font-semibold text-foreground mb-1">
+                  RFQ Item / Bundle Title
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Annual Copier Paper & Exam Answer Sheets"
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  className="w-full text-xs font-medium px-3.5 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-foreground mb-1">Category</label>
+                  <select
+                    value={newCategory}
+                    onChange={(e) => setNewCategory(e.target.value)}
+                    className="w-full text-xs font-medium px-3 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  >
+                    <option value="Stationery">Stationery</option>
+                    <option value="IT Infrastructure">IT Infrastructure</option>
+                    <option value="Lab Consumables">Lab Consumables</option>
+                    <option value="Sports & Uniforms">Sports & Uniforms</option>
+                    <option value="Sanitation & Facility">Sanitation & Facility</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-foreground mb-1">Aggregated Qty</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. 1,500 Reams"
+                    value={newQuantity}
+                    onChange={(e) => setNewQuantity(e.target.value)}
+                    className="w-full text-xs font-medium px-3.5 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-foreground mb-1">Market Baseline (₹ INR)</label>
+                  <input
+                    type="number"
+                    required
+                    placeholder="450000"
+                    value={newBaseline}
+                    onChange={(e) => setNewBaseline(e.target.value)}
+                    className="w-full text-xs font-mono font-medium px-3.5 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-foreground mb-1">Bidding Deadline</label>
+                  <input
+                    type="date"
+                    required
+                    value={newDeadline}
+                    onChange={(e) => setNewDeadline(e.target.value)}
+                    className="w-full text-xs font-medium px-3.5 py-2.5 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+              </div>
+
+              <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-[11px] text-emerald-800 dark:text-emerald-300">
+                ⚡ <strong>Algorithm:</strong> Consolidates indents across Main, North, and East City campuses. Pre-populates 2 blind competitive bids for immediate evaluation.
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2 border-t border-border">
+                <button
+                  type="button"
+                  onClick={() => setIsCreateRfqOpen(false)}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold bg-muted hover:bg-muted/80 text-foreground cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm cursor-pointer"
+                >
+                  Publish Sovereign RFQ
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

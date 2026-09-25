@@ -654,3 +654,282 @@ export function downloadFacultyPayslipPdf(pay: StaffPayslip, staffName: string =
   openPrintableDocument(`Salary Slip - ${pay.monthYear} - ${staffName}`, bodyHtml);
   triggerDownload(bodyHtml, `Salary_Slip_${pay.monthYear.replace(/[^a-zA-Z0-9]/g, "_")}.html`);
 }
+
+/**
+ * 6. Download Official Board of Directors (BoD) Executive Pitch Packet PDF
+ */
+export function downloadBoardPacketPdf(quarter: string = "Q3") {
+  const timestamp = new Date().toLocaleDateString("en-IN", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
+  const bodyHtml = `
+    <div class="header">
+      <div>
+        <div class="school-name">PRIYANKA EDUCATIONAL TRUST (REGD. 412/1998)</div>
+        <div class="school-sub">Consolidated Multi-Campus Executive Governance & Telemetry</div>
+        <div class="school-sub">Headquarters Command Bureau • Jubilee Hills, Hyderabad / Nellore</div>
+      </div>
+      <div style="text-align:right;">
+        <span class="doc-badge" style="background:#4338ca; color:#ffffff; border-color:#3730a3;">BoD Executive Packet</span>
+        <div style="font-size:10px; color:#64748b; margin-top:4px;">Session 2026-2027 • ${quarter} Review</div>
+      </div>
+    </div>
+
+    <div class="info-grid">
+      <div>
+        <div class="info-label">Reporting Period</div>
+        <div class="info-val">${quarter} Academic & Fiscal</div>
+      </div>
+      <div>
+        <div class="info-label">Trust Campuses</div>
+        <div class="info-val">3 Branches (HYD &amp; NLR)</div>
+      </div>
+      <div>
+        <div class="info-label">Active Enrollment</div>
+        <div class="info-val">1,842 Students (94.8%)</div>
+      </div>
+      <div>
+        <div class="info-label">Certified Date</div>
+        <div class="info-val">${timestamp}</div>
+      </div>
+    </div>
+
+    <!-- Executive Summary Card -->
+    <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:18px; margin-bottom:24px;">
+      <div style="font-size:11px; font-weight:800; color:#1e293b; text-transform:uppercase; margin-bottom:6px;">
+        Executive Boardroom Synopsis
+      </div>
+      <p style="font-size:12px; color:#334155; line-height:1.6; margin:0;">
+        Priyanka Educational Trust achieved <strong>₹1.42 Crores</strong> in consolidated revenue for ${quarter} (+14.8% above budgetary baseline), with automated bank UTR reconciliation standing at <strong>99.4%</strong>. The multi-branch institutional lesson plan SLA closed at <strong>93.8%</strong> on-time compliance. Blended student acquisition cost (CPA) reduced to <strong>₹1,388</strong> yielding a 32.2x marketing ROI.
+      </p>
+    </div>
+
+    <!-- Campus Performance Table -->
+    <div style="margin-bottom:24px;">
+      <div style="font-size:12px; font-weight:800; color:#0f172a; margin-bottom:10px; text-transform:uppercase;">
+        Cross-Campus Financial &amp; Operational Metrics
+      </div>
+      <table style="width:100%; border-collapse:collapse; font-size:12px;">
+        <thead>
+          <tr style="background:#f1f5f9; border-bottom:2px solid #cbd5e1; text-align:left;">
+            <th style="padding:10px;">Campus Branch</th>
+            <th style="padding:10px; text-align:center;">Enrolled</th>
+            <th style="padding:10px; text-align:center;">Capacity</th>
+            <th style="padding:10px; text-align:right;">${quarter} Collections</th>
+            <th style="padding:10px; text-align:right;">Till Variance</th>
+            <th style="padding:10px; text-align:center;">Lesson SLA</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #e2e8f0;">
+            <td style="padding:10px;"><strong>Main Campus (HYD-01)</strong></td>
+            <td style="padding:10px; text-align:center;">840</td>
+            <td style="padding:10px; text-align:center;">96%</td>
+            <td style="padding:10px; text-align:right; font-weight:700; color:#047857;">₹72,40,000</td>
+            <td style="padding:10px; text-align:right; color:#047857;">₹0 (Balanced)</td>
+            <td style="padding:10px; text-align:center;"><span class="grade-badge">96.4%</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid #e2e8f0;">
+            <td style="padding:10px;"><strong>North Campus (HYD-02)</strong></td>
+            <td style="padding:10px; text-align:center;">520</td>
+            <td style="padding:10px; text-align:center;">94%</td>
+            <td style="padding:10px; text-align:right; font-weight:700; color:#047857;">₹39,20,000</td>
+            <td style="padding:10px; text-align:right; color:#047857;">₹0 (Balanced)</td>
+            <td style="padding:10px; text-align:center;"><span class="grade-badge">92.8%</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid #e2e8f0;">
+            <td style="padding:10px;"><strong>East City (HYD-03)</strong></td>
+            <td style="padding:10px; text-align:center;">482</td>
+            <td style="padding:10px; text-align:center;">92%</td>
+            <td style="padding:10px; text-align:right; font-weight:700; color:#047857;">₹30,40,000</td>
+            <td style="padding:10px; text-align:right; color:#047857;">₹0 (Balanced)</td>
+            <td style="padding:10px; text-align:center;"><span class="grade-badge">91.5%</span></td>
+          </tr>
+          <tr style="background:#eef2ff; font-weight:800; border-top:2px solid #6366f1;">
+            <td style="padding:10px;">Trust Consolidated Total</td>
+            <td style="padding:10px; text-align:center;">1,842</td>
+            <td style="padding:10px; text-align:center;">94.8%</td>
+            <td style="padding:10px; text-align:right; color:#312e81; font-size:14px;">₹1,42,00,000</td>
+            <td style="padding:10px; text-align:right; color:#047857;">₹0 (Zero Variance)</td>
+            <td style="padding:10px; text-align:center;"><span class="grade-badge">93.8%</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Statutory Compliance & CAPEX Allocations -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
+      <div style="border:1px solid #e2e8f0; border-radius:12px; padding:16px; background:#fafafa;">
+        <div style="font-size:11px; font-weight:800; color:#334155; text-transform:uppercase; margin-bottom:8px;">
+          Statutory Compliance Status
+        </div>
+        <div style="font-size:11px; color:#475569; line-height:1.8;">
+          <div>● <strong>EPF Remittance:</strong> ₹12,45,000 (100% On-Time)</div>
+          <div>● <strong>TDS 24Q Form:</strong> Filed &amp; Cleared (TRACES)</div>
+          <div>● <strong>State Professional Tax:</strong> Reconciled across 3 branches</div>
+          <div>● <strong>CBSE LOC Affiliation:</strong> 100% Eligible &amp; Sealed</div>
+        </div>
+      </div>
+      <div style="border:1px solid #e2e8f0; border-radius:12px; padding:16px; background:#fafafa;">
+        <div style="font-size:11px; font-weight:800; color:#334155; text-transform:uppercase; margin-bottom:8px;">
+          Trust Governance Assurance
+        </div>
+        <div style="font-size:11px; color:#475569; line-height:1.8;">
+          <div>● <strong>Zero-Trust Maker-Checker:</strong> Enforced on fee tills</div>
+          <div>● <strong>AI Timetable Engine:</strong> Zero conflict matrix achieved</div>
+          <div>● <strong>SafeSpace Grievance SLA:</strong> 100% triaged under 2 hrs</div>
+          <div>● <strong>Central Store E-Procurement:</strong> ₹16.34L Savings</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-signatures">
+      <div class="sig-block">
+        <div class="sig-line">K. Srinivas, Ph.D.</div>
+        <div>Chief Executive Officer &amp; Principal</div>
+      </div>
+      <div class="sig-block" style="text-align:center;">
+        <div style="font-family:monospace; font-size:10px; color:#312e81; border:1px solid #c7d2fe; background:#eef2ff; padding:4px 8px; border-radius:4px;">
+          SHA256: 9E4F-TRUST-HQ-BOD-${quarter}
+        </div>
+        <div style="margin-top:2px;">Digital Cryptographic Seal</div>
+      </div>
+      <div class="sig-block">
+        <div class="sig-line">P. Venkateswara Rao</div>
+        <div>Chairman, Board of Trustees</div>
+      </div>
+    </div>
+  `;
+
+  openPrintableDocument(`Trust Board Packet - ${quarter} 2026-27 - Priyanka Educational Trust`, bodyHtml);
+  triggerDownload(bodyHtml, `Priyanka_Trust_Board_Packet_${quarter}_2026_27.html`);
+}
+
+/**
+ * 7. Download CBSE / RTE Infrastructure Audit & CAPEX Remediation Plan PDF
+ */
+export function downloadInfrastructureRemediationPdf(
+  campusName: string = "East City Campus (Uppal)",
+  data?: any
+) {
+  const timestamp = new Date().toLocaleDateString("en-IN", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
+  const bodyHtml = `
+    <div class="header">
+      <div>
+        <div class="school-name">PRIYANKA EDUCATIONAL TRUST • INFRASTRUCTURE BUREAU</div>
+        <div class="school-sub">CBSE Affiliation Bye-Laws 2018 &amp; RTE Act Section 19 Asset Audit</div>
+        <div class="school-sub">Official Remediation Plan for Board of Directors Review</div>
+      </div>
+      <div style="text-align:right;">
+        <span class="doc-badge" style="background:#0891b2; color:#ffffff; border-color:#0e7490;">Statutory Audit</span>
+        <div style="font-size:10px; color:#64748b; margin-top:4px;">Inspection Cycle 2026-27</div>
+      </div>
+    </div>
+
+    <div class="info-grid">
+      <div>
+        <div class="info-label">Audited Campus</div>
+        <div class="info-val">${campusName}</div>
+      </div>
+      <div>
+        <div class="info-label">Compliance Score</div>
+        <div class="info-val">87.5% (Good)</div>
+      </div>
+      <div>
+        <div class="info-label">Priority Deficits</div>
+        <div class="info-val">2 Corrective Actions</div>
+      </div>
+      <div>
+        <div class="info-label">Audit Date</div>
+        <div class="info-val">${timestamp}</div>
+      </div>
+    </div>
+
+    <!-- Regulatory Deficits Table -->
+    <div style="margin-bottom:24px;">
+      <div style="font-size:12px; font-weight:800; color:#0f172a; margin-bottom:10px; text-transform:uppercase;">
+        Detected Statutory Deficits &amp; Mandatory Remediation
+      </div>
+      <table style="width:100%; border-collapse:collapse; font-size:12px;">
+        <thead>
+          <tr style="background:#f1f5f9; border-bottom:2px solid #cbd5e1; text-align:left;">
+            <th style="padding:10px;">Norm / Metric</th>
+            <th style="padding:10px;">Statutory Threshold</th>
+            <th style="padding:10px;">Current State</th>
+            <th style="padding:10px; text-align:center;">Compliance</th>
+            <th style="padding:10px;">Remediation Prescription</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #e2e8f0;">
+            <td style="padding:10px;"><strong>Pupil-Teacher Ratio (PTR)</strong></td>
+            <td style="padding:10px;">&le; 30:1 (RTE Sec 19)</td>
+            <td style="padding:10px; color:#b91c1c; font-weight:700;">32.8:1</td>
+            <td style="padding:10px; text-align:center;"><span style="background:#fee2e2; color:#991b1b; padding:2px 8px; border-radius:6px; font-weight:700; font-size:10px;">Breach</span></td>
+            <td style="padding:10px; font-size:11px;">Induct 3 additional TGTs in Mathematics and Social Sciences before Term 2.</td>
+          </tr>
+          <tr style="border-bottom:1px solid #e2e8f0;">
+            <td style="padding:10px;"><strong>Library Book Density</strong></td>
+            <td style="padding:10px;">&ge; 1,500 Books (CBSE)</td>
+            <td style="padding:10px; color:#b45309; font-weight:700;">1,280 Books</td>
+            <td style="padding:10px; text-align:center;"><span style="background:#fef3c7; color:#92400e; padding:2px 8px; border-radius:6px; font-weight:700; font-size:10px;">Warning</span></td>
+            <td style="padding:10px; font-size:11px;">Central E-Procurement PO for 220 graded reference &amp; STEM volumes.</td>
+          </tr>
+          <tr style="border-bottom:1px solid #e2e8f0;">
+            <td style="padding:10px;"><strong>Classroom Floor Area</strong></td>
+            <td style="padding:10px;">&ge; 1.0 m&sup2; / Student</td>
+            <td style="padding:10px; color:#15803d; font-weight:700;">1.24 m&sup2;</td>
+            <td style="padding:10px; text-align:center;"><span style="background:#dcfce7; color:#166534; padding:2px 8px; border-radius:6px; font-weight:700; font-size:10px;">Compliant</span></td>
+            <td style="padding:10px; font-size:11px;">Optimal spatial density compliant with National Building Code (NBC).</td>
+          </tr>
+          <tr style="border-bottom:1px solid #e2e8f0;">
+            <td style="padding:10px;"><strong>Fire Safety NOC &amp; Extinguishers</strong></td>
+            <td style="padding:10px;">Valid State Fire NOC</td>
+            <td style="padding:10px; color:#15803d; font-weight:700;">Valid till Aug 2027</td>
+            <td style="padding:10px; text-align:center;"><span style="background:#dcfce7; color:#166534; padding:2px 8px; border-radius:6px; font-weight:700; font-size:10px;">Compliant</span></td>
+            <td style="padding:10px; font-size:11px;">Annual pressure testing completed on all 42 campus dry-chemical units.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Approved CAPEX Budget Box -->
+    <div style="background:#ecfeff; border:2px solid #a5f3fc; border-radius:12px; padding:18px; margin-bottom:24px;">
+      <div style="font-size:11px; font-weight:800; color:#0e7490; text-transform:uppercase; margin-bottom:4px;">
+        Approved Trust CAPEX Remittance Schedule
+      </div>
+      <div style="font-size:12px; color:#155e75; line-height:1.6;">
+        Total immediate remediation expenditure sanctioned by Trust HQ: <strong>₹4.65 Lakhs</strong> (comprising ₹1.80L/mo faculty salary reserve + ₹2.85L central bulk library acquisition). Target zero-breach audit date: <strong>30 October 2026</strong>.
+      </div>
+    </div>
+
+    <div class="footer-signatures">
+      <div class="sig-block">
+        <div class="sig-line">Er. M. Ramanathan</div>
+        <div>Director of Infrastructure &amp; Assets</div>
+      </div>
+      <div class="sig-block" style="text-align:center;">
+        <div style="font-family:monospace; font-size:10px; color:#0e7490; border:1px solid #a5f3fc; background:#f0fdfa; padding:4px 8px; border-radius:4px;">
+          CBSE-ASSET-AUDIT-PASS-OK
+        </div>
+        <div style="margin-top:2px;">Statutory Verification Seal</div>
+      </div>
+      <div class="sig-block">
+        <div class="sig-line">K. Srinivas, Ph.D.</div>
+        <div>Superintendent &amp; Head of Institution</div>
+      </div>
+    </div>
+  `;
+
+  openPrintableDocument(`CBSE RTE Infrastructure Audit - ${campusName}`, bodyHtml);
+  triggerDownload(bodyHtml, `CBSE_RTE_Remediation_Plan_${campusName.replace(/[^a-zA-Z0-9]/g, "_")}.html`);
+}
+
