@@ -3,6 +3,7 @@ import { createAdminClient } from "@/lib/supabase/server";
 import { SCHOOL } from "@/lib/school-config";
 import { getFacultyLeavesAction } from "@/actions/faculty";
 import FacultyLeaveInbox from "@/components/FacultyLeaveInbox";
+import FacultyDashboardSchedule from "@/components/FacultyDashboardSchedule";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -220,70 +221,11 @@ export default async function FacultyPortalPage() {
             </div>
           </div>
 
-          {/* Card: Class Schedule with Segmented Toggle (Matching Screenshot 3) */}
-          <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-              <div className="flex items-center gap-2">
-                <span className="text-indigo-600 text-lg">🗓️</span>
-                <h2 className="text-sm font-bold text-slate-900" style={{ fontFamily: "Outfit, sans-serif" }}>
-                  Class Schedule
-                </h2>
-              </div>
-
-              {/* Segmented Toggle Control */}
-              <div className="inline-flex items-center p-1 rounded-xl bg-slate-100 text-xs font-medium text-slate-600">
-                <button className="px-3 py-1 rounded-lg bg-white shadow-2xs font-semibold text-slate-900">Today</button>
-                <button className="px-3 py-1 rounded-lg text-slate-500 hover:text-slate-800">This Week</button>
-                <button className="px-3 py-1 rounded-lg text-slate-500 hover:text-slate-800">This Month</button>
-              </div>
-            </div>
-
-            {/* Schedule Rows */}
-            <div className="mt-4 space-y-3">
-              {teacherClassesList.slice(0, 3).map((item, idx) => {
-                const cls = item.classes || {};
-                const classId = cls.id || item.class_id;
-                const isMarked = todayMarkedClassIds.has(classId);
-                const times = ["08:30 AM – 09:15 AM", "09:15 AM – 10:00 AM", "11:00 AM – 11:45 AM"];
-                return (
-                  <div key={classId} className="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 rounded-xl border border-slate-100 hover:bg-slate-50/80 transition gap-3">
-                    <div className="flex items-start sm:items-center gap-3.5">
-                      <div className="px-2.5 py-1.5 rounded-lg bg-slate-100 text-slate-700 font-mono text-xs font-semibold whitespace-nowrap">
-                        {times[idx] || "10:00 AM"}
-                      </div>
-                      <div>
-                        <div className="font-bold text-slate-900 text-sm">
-                          Class {cls.name || "10"}-{cls.section || "A"} &bull; {item.subject || "Mathematics"}
-                        </div>
-                        <div className="text-xs text-slate-500 flex items-center gap-2 mt-0.5">
-                          <span>📍 Room {200 + idx}</span>
-                          <span>&bull;</span>
-                          <span>42 Students</span>
-                          {item.is_class_teacher && (
-                            <span className="text-indigo-600 font-semibold text-[11px]">Class Teacher</span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      {isMarked ? (
-                        <span className="badge badge-green text-xs">✓ Done</span>
-                      ) : (
-                        <span className="badge badge-amber text-xs">Pending</span>
-                      )}
-                      <Link
-                        href={`/dashboard/attendance/${classId}`}
-                        className="btn btn-ghost text-xs px-3 py-1.5 rounded-lg"
-                      >
-                        Details
-                      </Link>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+          {/* Interactive Class Schedule with Today, This Week, and This Month Toggles */}
+          <FacultyDashboardSchedule
+            teacherClassesList={teacherClassesList}
+            todayMarkedClassIds={Array.from(todayMarkedClassIds)}
+          />
 
           {/* Digital Leave & OD Approval Inbox */}
           <FacultyLeaveInbox initialLeaves={leaves} />

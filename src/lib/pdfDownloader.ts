@@ -2,6 +2,7 @@
 
 import { SCHOOL } from "@/lib/school-config";
 import type { MultiTierExamRecord, EarlierYearMarksArchive, AiWorksheet } from "@/types/self-service";
+import type { StaffPayslip } from "@/types/faculty";
 
 /**
  * Triggers a native browser download for a generated document
@@ -504,4 +505,152 @@ export function downloadArchivedMarksheetPDF(
 
   openPrintableDocument(`Archived Marksheet ${archive.academicYear} - ${studentName}`, bodyHtml);
   triggerDownload(bodyHtml, `Archived_Marksheet_${archive.academicYear.replace(/[^a-zA-Z0-9]/g, "_")}.html`);
+}
+
+/**
+ * Generates an official, sealed monthly faculty salary payslip PDF document
+ */
+export function downloadFacultyPayslipPdf(pay: StaffPayslip, staffName: string = "Faculty Teacher") {
+  const basicPay = Math.round(pay.grossSalaryInr * 0.50);
+  const hra = Math.round(pay.grossSalaryInr * 0.30);
+  const da = Math.round(pay.grossSalaryInr * 0.12);
+  const specialAllowance = pay.grossSalaryInr - (basicPay + hra + da);
+
+  const bodyHtml = `
+    <div class="header">
+      <div>
+        <div class="school-name">${SCHOOL.name}</div>
+        <div class="school-sub">${SCHOOL.address} &bull; Affiliation No: 130284</div>
+        <div class="school-sub">Staff Payroll & HRIS Central Accounts Registry &bull; Academic Year ${SCHOOL.academicYear}</div>
+      </div>
+      <div>
+        <span class="doc-badge" style="background:#ecfdf5; border-color:#a7f3d0; color:#047857;">Official Salary Slip</span>
+      </div>
+    </div>
+
+    <div class="info-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 24px;">
+      <div>
+        <div class="info-label">Staff Member</div>
+        <div class="info-val">${staffName}</div>
+      </div>
+      <div>
+        <div class="info-label">Designation</div>
+        <div class="info-val">Senior Faculty Teacher</div>
+      </div>
+      <div>
+        <div class="info-label">Pay Period</div>
+        <div class="info-val" style="color:#047857; font-weight:800;">${pay.monthYear}</div>
+      </div>
+      <div>
+        <div class="info-label">Disbursement Date</div>
+        <div class="info-val">${pay.disbursedDate}</div>
+      </div>
+      <div>
+        <div class="info-label">Payment Mode</div>
+        <div class="info-val">Direct NEFT Bank Transfer</div>
+      </div>
+      <div>
+        <div class="info-label">Voucher Reference</div>
+        <div class="info-val" style="font-family:monospace;">${pay.id.toUpperCase()}-NEFT-OK</div>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
+      <!-- Earnings Column -->
+      <div style="border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+        <div style="background:#f8fafc; padding: 10px 16px; font-size: 12px; font-weight: 800; color: #1e293b; border-bottom: 1px solid #e2e8f0; text-transform: uppercase;">
+          Earnings Breakdown
+        </div>
+        <table class="report-table" style="margin: 0; border: none;">
+          <tbody>
+            <tr>
+              <td>Basic Pay (50%)</td>
+              <td class="num font-bold">₹${basicPay.toLocaleString("en-IN")}</td>
+            </tr>
+            <tr>
+              <td>House Rent Allowance (HRA 30%)</td>
+              <td class="num font-bold">₹${hra.toLocaleString("en-IN")}</td>
+            </tr>
+            <tr>
+              <td>Dearness Allowance (DA 12%)</td>
+              <td class="num font-bold">₹${da.toLocaleString("en-IN")}</td>
+            </tr>
+            <tr>
+              <td>Special Faculty Allowance</td>
+              <td class="num font-bold">₹${specialAllowance.toLocaleString("en-IN")}</td>
+            </tr>
+            <tr style="background:#f1f5f9; font-weight: 800;">
+              <td>Gross Monthly Earnings</td>
+              <td class="num" style="color: #0f172a; font-size: 13px;">₹${pay.grossSalaryInr.toLocaleString("en-IN")}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Deductions Column -->
+      <div style="border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+        <div style="background:#f8fafc; padding: 10px 16px; font-size: 12px; font-weight: 800; color: #1e293b; border-bottom: 1px solid #e2e8f0; text-transform: uppercase;">
+          Statutory Deductions
+        </div>
+        <table class="report-table" style="margin: 0; border: none;">
+          <tbody>
+            <tr>
+              <td>Employees' Provident Fund (EPF)</td>
+              <td class="num font-bold text-rose-700">₹${pay.deductions.epf.toLocaleString("en-IN")}</td>
+            </tr>
+            <tr>
+              <td>Professional Tax (PT State Gov)</td>
+              <td class="num font-bold text-rose-700">₹${pay.deductions.professionalTax.toLocaleString("en-IN")}</td>
+            </tr>
+            <tr>
+              <td>TDS / Income Tax (Sec 192)</td>
+              <td class="num font-bold text-rose-700">₹${pay.deductions.tdsIncomeTax.toLocaleString("en-IN")}</td>
+            </tr>
+            <tr>
+              <td>Institutional Welfare Cess</td>
+              <td class="num font-bold text-slate-400">₹0</td>
+            </tr>
+            <tr style="background:#fef2f2; font-weight: 800;">
+              <td style="color:#991b1b;">Total Deductions</td>
+              <td class="num" style="color: #991b1b; font-size: 13px;">₹${pay.deductions.totalDeductions.toLocaleString("en-IN")}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Net Pay Highlight Box -->
+    <div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border: 2px solid #a7f3d0; border-radius: 14px; padding: 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+      <div>
+        <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: #065f46; letter-spacing: 0.5px;">Net Disbursed Take-Home Salary</div>
+        <div style="font-size: 11px; color: #047857; margin-top: 2px;">Transferred directly to registered institutional salary account.</div>
+      </div>
+      <div style="text-align: right;">
+        <div style="font-size: 26px; font-weight: 900; color: #064e3b; font-family: 'Outfit', sans-serif;">
+          ₹${pay.netPayInr.toLocaleString("en-IN")}
+        </div>
+        <div style="font-size: 10px; color: #047857; font-weight: 600;">Indian Rupees Only</div>
+      </div>
+    </div>
+
+    <div class="footer-signatures">
+      <div class="sig-block">
+        <div class="sig-line">Finance & Accounts Bureau</div>
+        <div>Chief Accounts Officer</div>
+      </div>
+      <div class="sig-block" style="text-align:center;">
+        <div style="font-family:monospace; font-size:10px; color:#047857; border:1px solid #a7f3d0; background:#f0fdf4; padding:4px 8px; border-radius:4px;">
+          HRIS-DISBURSED-AUTH-OK
+        </div>
+        <div style="margin-top:2px;">Digital Bank Seal</div>
+      </div>
+      <div class="sig-block">
+        <div class="sig-line">Dr. K. Radhika Devi</div>
+        <div>Principal & Head of Institution</div>
+      </div>
+    </div>
+  `;
+
+  openPrintableDocument(`Salary Slip - ${pay.monthYear} - ${staffName}`, bodyHtml);
+  triggerDownload(bodyHtml, `Salary_Slip_${pay.monthYear.replace(/[^a-zA-Z0-9]/g, "_")}.html`);
 }

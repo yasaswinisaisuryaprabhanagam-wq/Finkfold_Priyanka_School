@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { TeacherLeaveBalance, StaffPayslip, BiometricLogEntry } from "@/types/faculty";
 import { applyTeacherLeaveAction, regularizeBiometricAttendanceAction } from "@/actions/faculty";
+import { downloadFacultyPayslipPdf } from "@/lib/pdfDownloader";
 
 interface Props {
   initialLeaveBalance: TeacherLeaveBalance;
@@ -206,12 +207,13 @@ export default function FacultyHrClient({
                 </div>
 
                 <div className="flex justify-end">
-                  <a
-                    href={pay.downloadPdfUrl}
-                    className="text-xs text-emerald-600 hover:text-emerald-700 font-bold flex items-center gap-1"
+                  <button
+                    type="button"
+                    onClick={() => downloadFacultyPayslipPdf(pay, "Mrs. Priyanka Devi")}
+                    className="text-xs text-emerald-700 hover:text-emerald-800 font-bold flex items-center gap-1.5 cursor-pointer bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-lg border border-emerald-200 transition shadow-2xs"
                   >
                     <span>📥</span> Download Salary Slip PDF
-                  </a>
+                  </button>
                 </div>
               </div>
             ))}

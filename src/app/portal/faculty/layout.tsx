@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getProfile } from "@/lib/auth";
 import { SCHOOL } from "@/lib/school-config";
 import SignOutButton from "@/components/SignOutButton";
+import FacultyQuickActionModal from "@/components/FacultyQuickActionModal";
 import { redirect } from "next/navigation";
 
 export default async function FacultyPortalLayout({
@@ -211,13 +212,8 @@ export default async function FacultyPortalLayout({
               <span>{todayStr}</span>
             </div>
 
-            {/* Quick Action (+) Button */}
-            <button
-              title="Quick Action"
-              className="h-8 w-8 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-slate-700 flex items-center justify-center text-sm font-semibold transition"
-            >
-              +
-            </button>
+            {/* Quick Action (+) Button Modal */}
+            <FacultyQuickActionModal />
 
             {/* Notification Bell with Badge */}
             <Link
